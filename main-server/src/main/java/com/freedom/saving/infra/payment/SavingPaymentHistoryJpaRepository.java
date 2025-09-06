@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
@@ -21,4 +22,9 @@ public interface SavingPaymentHistoryJpaRepository extends JpaRepository<SavingP
     Optional<SavingPaymentHistory> findNextPlannedPayment(@Param("subscriptionId") Long subscriptionId);
 
     Optional<SavingPaymentHistory> findBySubscriptionIdAndCycleNo(Long subscriptionId, Integer cycleNo);
+
+    Optional<SavingPaymentHistory> findFirstBySubscriptionIdAndStatusAndDueServiceDateGreaterThanEqualOrderByDueServiceDateAsc(
+            @Param("subscriptionId") Long subscriptionId,
+            @Param("status") SavingPaymentHistory.PaymentStatus status,
+            @Param("fromDate") LocalDate fromDate);
 }

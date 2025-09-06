@@ -6,6 +6,9 @@ import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.subscription.SavingSubscription;
 import com.freedom.saving.domain.subscription.SubscriptionStatus;
 import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
+import com.freedom.common.time.TimeProvider;
+import com.freedom.wallet.application.SavingTransactionService;
+import com.freedom.saving.domain.policy.TickPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,9 @@ public class SavingPaymentCommandService {
 
     private final SavingSubscriptionJpaRepository subscriptionRepo;
     private final SavingPaymentHistoryRepository paymentRepo;
+    private final SavingTransactionService savingTxnService;
+    private final TimeProvider timeProvider;
+    private final TickPolicy tickPolicy;
 
     /**
      * 다음 예정 회차(PLANNED)에 대해 납입 처리
@@ -33,29 +39,56 @@ public class SavingPaymentCommandService {
             throw new SavingExceptions.SavingSubscriptionInvalidStateException(sub.getStatus().name());
         }
 
-        SavingPaymentHistory planned = paymentRepo.findNextPlannedPayment(subscriptionId)
-                .orElse(null);
-
-        if (planned != null) {
-            BigDecimal payAmount = amount != null ? amount : planned.getExpectedAmount();
-            if (payAmount == null || payAmount.signum() <= 0) {
-                throw new SavingExceptions.SavingInvalidPaymentAmountException();
-            }
-            log.info("[SavingDeposit] userId={}, subscriptionId={}, cycleNo={}, expectedAmount={}, requestAmount={}, finalPayAmount={}",
-                    userId, subscriptionId, planned.getCycleNo(), planned.getExpectedAmount(), amount, payAmount);
-            planned.markPaid(payAmount, null, null);
-            paymentRepo.save(planned);
-            return;
-        }
-
-        // PLANNED 항목이 없으면: 가입 금액으로 즉시 납입 이력 생성 (자유적립식 등)
-        BigDecimal fallbackAmount = sub.getAutoDebitAmount() != null ? sub.getAutoDebitAmount().getValue() : amount;
-        if (fallbackAmount == null || fallbackAmount.signum() <= 0) {
+        // 스케줄이 없던 과거 가입분을 위한 자동 보정: PLANNED 없으면 생성 후 '오늘 기준' 재조회
+        java.time.LocalDate today = timeProvider.today();
+        SavingPaymentHistory planned = paymentRepo.findNextPlannedPaymentFromDate(subscriptionId, today)
+                .orElseGet(() -> {
+                    backfillPlannedScheduleIfMissing(sub);
+                    return paymentRepo.findNextPlannedPaymentFromDate(subscriptionId, today).orElse(null);
+                });
+        if (planned == null) {
             throw new SavingExceptions.SavingNoNextPlannedPaymentException();
         }
-        log.info("[SavingDeposit-Adhoc] userId={}, subscriptionId={}, requestAmount={}, finalPayAmount={}",
-                userId, subscriptionId, amount, fallbackAmount);
-        SavingPaymentHistory paid = SavingPaymentHistory.paidAdhoc(subscriptionId, fallbackAmount);
-        paymentRepo.save(paid);
+
+        BigDecimal payAmount = amount != null ? amount : planned.getExpectedAmount();
+        if (payAmount == null || payAmount.signum() <= 0) {
+            throw new SavingExceptions.SavingInvalidPaymentAmountException();
+        }
+
+        // 하루 1회 제한: 오늘 회차만 허용
+        if (!today.equals(planned.getDueServiceDate())) {
+            throw new SavingExceptions.SavingPolicyInvalidException("오늘 납입 가능한 회차가 없습니다.");
+        }
+
+        // 지갑 출금 + 멱등 처리 (requestId = MANUAL_subId_yyyy-MM-dd)
+        String requestId = "MANUAL_" + subscriptionId + "_" + today.toString();
+        var txn = savingTxnService.processSavingAutoDebit(userId, requestId, payAmount, subscriptionId);
+
+        log.info("[SavingDeposit] userId={}, subscriptionId={}, cycleNo={}, expectedAmount={}, requestAmount={}, finalPayAmount={}, walletTxnId={}",
+                userId, subscriptionId, planned.getCycleNo(), planned.getExpectedAmount(), amount, payAmount, txn.getId());
+
+        planned.markPaid(payAmount, txn.getId(), null);
+        paymentRepo.save(planned);
+    }
+
+    /**
+     * 과거 가입 데이터에 납입 스케줄(PLANNED)이 전혀 없는 경우 전체 스케줄을 생성해 보정한다.
+     */
+    private void backfillPlannedScheduleIfMissing(SavingSubscription sub) {
+        // 안전장치: 금액/기간/시작일 유효성 확인
+        if (sub.getAutoDebitAmount() == null || sub.getAutoDebitAmount().getValue() == null) return;
+        if (sub.getTerm() == null || sub.getTerm().getValue() == null || sub.getTerm().getValue() <= 0) return;
+        if (sub.getDates() == null || sub.getDates().getStartDate() == null) return;
+
+        java.time.LocalDate start = sub.getDates().getStartDate();
+        java.time.LocalDate firstDue = tickPolicy.calcFirstTransferDate(start);
+        java.math.BigDecimal expected = sub.getAutoDebitAmount().getValue();
+        int term = sub.getTerm().getValue();
+
+        for (int i = 1; i <= term; i++) {
+            java.time.LocalDate due = firstDue.plusDays(i - 1L);
+            SavingPaymentHistory h = SavingPaymentHistory.planned(sub.getId(), i, due, expected);
+            paymentRepo.save(h);
+        }
     }
 }
