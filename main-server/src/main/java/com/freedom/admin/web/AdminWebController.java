@@ -26,6 +26,12 @@ public class AdminWebController {
         return "admin/dashboard";
     }
 
+    @GetMapping("/saving")
+    @Loggable("적금 관리 페이지")
+    public String savingManagement() {
+        return "admin/saving";
+    }
+
     @GetMapping("/news")
     @Loggable("뉴스 관리 페이지")
     public String newsManagement() {

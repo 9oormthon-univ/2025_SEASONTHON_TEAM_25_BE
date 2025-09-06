@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -37,5 +38,11 @@ public class SavingPaymentHistoryJpaAdapter implements SavingPaymentHistoryRepos
     @Override
     public Optional<SavingPaymentHistory> findBySubscriptionIdAndCycleNo(Long subscriptionId, Integer cycleNo) {
         return jpaRepository.findBySubscriptionIdAndCycleNo(subscriptionId, cycleNo);
+    }
+
+    @Override
+    public Optional<SavingPaymentHistory> findNextPlannedPaymentFromDate(Long subscriptionId, LocalDate fromDate) {
+        return jpaRepository.findFirstBySubscriptionIdAndStatusAndDueServiceDateGreaterThanEqualOrderByDueServiceDateAsc(
+                subscriptionId, SavingPaymentHistory.PaymentStatus.PLANNED, fromDate);
     }
 }

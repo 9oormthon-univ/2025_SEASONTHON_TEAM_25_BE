@@ -59,6 +59,7 @@ public enum ErrorCode {
     SAVING_POLICY_INVALID("SAV007", "정책 파라미터가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     SAVING_SNAPSHOT_IDENTIFIERS_INVALID("SAV008", "스냅샷 식별자가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     SAVING_DUPLICATE_SUBSCRIPTION("SAV009", "이미 가입한 적금에 또 가입할 수 없습니다.", HttpStatus.BAD_REQUEST),
+    SAVING_NO_TODAY_PAYABLE("SAV010", "오늘 납입 가능한 회차가 없습니다.", HttpStatus.BAD_REQUEST),
 
     // 스크랩 에러
     SCRAP_ALREADY_EXISTS("SCRAP001", "이미 스크랩한 뉴스입니다.", HttpStatus.CONFLICT);

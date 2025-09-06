@@ -192,7 +192,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SavingExceptions.SavingPolicyInvalidException.class)
     public ResponseEntity<ErrorResponse> handleSavingPolicyInvalid(SavingExceptions.SavingPolicyInvalidException e) {
         log.warn("적금 정책 파라미터 오류: {}", e.getMessage());
-        return createErrorResponse(ErrorCode.SAVING_POLICY_INVALID);
+        // 특별 케이스: 오늘 납입 불가 메시지를 포함하면 전용 코드로 매핑
+        if (e.getMessage() != null && e.getMessage().contains("오늘 납입 가능한 회차가 없습니다.")) {
+            return ResponseEntity.status(ErrorCode.SAVING_NO_TODAY_PAYABLE.getStatus())
+                    .body(ErrorResponse.of(ErrorCode.SAVING_NO_TODAY_PAYABLE, e.getMessage()));
+        }
+        return ResponseEntity.status(ErrorCode.SAVING_POLICY_INVALID.getStatus())
+                .body(ErrorResponse.of(ErrorCode.SAVING_POLICY_INVALID, e.getMessage()));
     }
 
     @ExceptionHandler(SavingExceptions.SavingSnapshotIdentifiersInvalidException.class)
