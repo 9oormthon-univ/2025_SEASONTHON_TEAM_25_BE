@@ -1,2 +1,2 @@
 rootProject.name = '2025_SEASONTHON_TEAM_25_BE'
-include('main-server')
+include('main-server', 'admin-server')

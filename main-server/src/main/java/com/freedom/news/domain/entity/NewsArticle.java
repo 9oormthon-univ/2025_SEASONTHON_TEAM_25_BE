@@ -1,7 +1,6 @@
 package com.freedom.news.domain.entity;
 
 import com.freedom.common.entity.BaseEntity;
-import com.freedom.admin.news.application.dto.NewsArticleDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -118,29 +117,5 @@ public class NewsArticle extends BaseEntity {
         this.originalImgUrl = originalImgUrl;
         this.originalUrl = originalUrl;
         this.aiSummary = aiSummary;
-    }
-
-    public void updateFromDto(NewsArticleDto dto) {
-        this.newsItemId = dto.getNewsItemId();
-        this.contentsStatus = dto.getContentsStatus();
-        this.modifyId = dto.getModifyId();
-        this.modifyDate = dto.getModifyDate();
-        this.approveDate = dto.getApproveDate();
-        this.approverName = dto.getApproverName();
-        this.embargoDate = dto.getEmbargoDate();
-        this.groupingCode = dto.getGroupingCode();
-        this.title = dto.getTitle();
-        this.subTitle1 = dto.getSubTitle1();
-        this.subTitle2 = dto.getSubTitle2();
-        this.subTitle3 = dto.getSubTitle3();
-        this.contentsType = dto.getContentsType();
-        this.dataContents = dto.getDataContents();
-        this.plainTextContent = dto.getPlainTextContent();
-        this.contentHash = dto.generateContentHash();
-        this.ministerCode = dto.getMinisterCode();
-        this.thumbnailUrl = dto.getThumbnailUrl();
-        this.originalImgUrl = dto.getOriginalImgUrl();
-        this.originalUrl = dto.getOriginalUrl();
-        this.aiSummary = dto.getAiSummary();
     }
 }
