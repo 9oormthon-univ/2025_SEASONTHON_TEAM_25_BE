@@ -22,9 +22,8 @@ public class NewsScheduler {
             newsFacade.newsCollection();
         } catch (Exception e) {
             String stackTrace = getStackTraceAsString(e);
+
             String errorMessage = e.getMessage();
-            
-            // 중복 키 오류의 경우 더 친화적인 메시지로 변경
             if (errorMessage != null && errorMessage.contains("Duplicate entry")) {
                 errorMessage = "뉴스 중복 저장 시도 - 이미 존재하는 뉴스입니다. 시스템이 자동으로 처리합니다.";
             }

@@ -30,7 +30,6 @@ public class NewsFacade {
     private final NewsExistingCheckService newsExistingCheckService;
     private final OpenAiNewsSummaryClient openAiNewsSummaryClient;
     private final NewsPersistenceService newsPersistenceService;
-    private final NewsQuizGenerationClient quizClient;
     private final QuizService quizService;
 
     @Transactional
@@ -60,7 +59,6 @@ public class NewsFacade {
         if (savedArticles == null || savedArticles.isEmpty()) return;
         for (NewsArticle article : savedArticles) {
             try {
-                // 퀴즈 생성 및 저장
                 quizService.generateAndSaveFromNews(
                         article.getId(),
                         article.getTitle(),
