@@ -1,4 +1,4 @@
-package com.freedom.auth.api;
+package com.freedom.saving;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
