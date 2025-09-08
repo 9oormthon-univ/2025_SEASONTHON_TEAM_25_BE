@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
@@ -18,6 +18,18 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
 
+# Thymeleaf 기본 설정은 starter가 자동 구성합니다. JSP 뷰 설정 제거
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+  
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/META-INF/resources/
+
 # JWT 설정
 jwt:
   secret: ${JWT_SECRET:your-secret-key-must-be-at-least-256-bits-long-for-security}
@@ -25,6 +37,18 @@ jwt:
     expiration: 1800000    # 30분
   refresh-token:
     expiration: 1209600000 # 14일
+
+# 뉴스 API 설정
+news:
+  policy-briefing:
+    service-key: ${NEWS_SERVICE_KEY}
+
+  scheduler:
+    cron: "0 0 0,6,12,18 * * *"  # 매 6시간마다 실행 (0시, 6시, 12시, 18시)
+    zone: "Asia/Seoul"  # 한국 시간대
+
+openai:
+  api-key: ${OPENAI_API_KEY}
 
 discord:
   webhook-url: ${DISCORD_WEBHOOK_URL}
