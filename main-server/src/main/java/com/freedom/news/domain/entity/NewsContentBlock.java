@@ -1,7 +1,6 @@
 package com.freedom.news.domain.entity;
 
 import com.freedom.common.entity.BaseEntity;
-import com.freedom.admin.news.domain.model.ProcessedBlock;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -54,18 +53,5 @@ public class NewsContentBlock extends BaseEntity {
         this.plainContent = plainContent;
         this.url = url;
         this.altText = altText;
-    }
-    
-    public static NewsContentBlock from(ProcessedBlock processedBlock, NewsArticle newsArticle, Integer blockOrder) {
-        return NewsContentBlock.builder()
-                .newsArticle(newsArticle)
-                .newsArticleId(newsArticle.getId())
-                .blockOrder(blockOrder)
-                .blockType(processedBlock.getType())
-                .originalContent(processedBlock.getOriginalContent())
-                .plainContent(processedBlock.getPlainContent())
-                .url(processedBlock.getUrl())
-                .altText(processedBlock.getAlt())
-                .build();
     }
 }

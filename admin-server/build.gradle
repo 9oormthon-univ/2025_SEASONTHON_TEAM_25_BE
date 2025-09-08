@@ -42,16 +42,28 @@ dependencies {
 	// Database
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// AI
+	implementation 'com.openai:openai-java:2.17.0'
+
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
+	// jackson format xml
+	implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+	
+	// HTML 파싱
+	implementation 'org.jsoup:jsoup:1.18.1'
+
 	// 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	
+	// View Template: Thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 	// 테스트컨테이너
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:mysql'

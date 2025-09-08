@@ -36,31 +36,12 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // URL별 인가 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 인증 불필요한 엔드포인트
-                        .dispatcherTypeMatchers(
-                                DispatcherType.FORWARD,
-                                DispatcherType.ERROR,
-                                DispatcherType.INCLUDE
-                        ).permitAll()
-
-                        // ★ 에러/파비콘/정적 리소스 허용
-                        .requestMatchers("/error", "/favicon.ico").permitAll()
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/assets/**","/css/**","/js/**","/images/**","/webjars/**","/static/**").permitAll()
-
                         // ★ 공개 엔드포인트
                         .requestMatchers(
                                 "/api/auth/sign-up",
                                 "/api/auth/login",
-                                "/api/auth/refresh",
-                                "/admin/login",
-                                "/admin/api/auth/login",
-                                "/admin/api/auth/refresh",
-                                "/WEB-INF/views/**"   // forward되는 JSP 실경로
+                                "/api/auth/refresh"
                         ).permitAll()
-
-                        // ★ 관리자 보호
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 // 인증 실패 시 예외 처리
