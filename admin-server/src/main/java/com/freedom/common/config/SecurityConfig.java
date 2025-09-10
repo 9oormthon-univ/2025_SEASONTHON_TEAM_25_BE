@@ -54,6 +54,16 @@ public class SecurityConfig {
                                 "/api/auth/refresh",
                                 "/WEB-INF/views/**"
                         ).permitAll()
+                        
+                        // ★ nginx 프록시 경로 (admin 접두어 포함)
+                        .requestMatchers(
+                                "/admin/login",
+                                "/admin/api/auth/login",
+                                "/admin/api/auth/refresh",
+                                "/admin/css/**",
+                                "/admin/js/**",
+                                "/admin/images/**"
+                        ).permitAll()
 
                         // ★ 관리자 보호
                         .requestMatchers("/**").hasRole("ADMIN")
