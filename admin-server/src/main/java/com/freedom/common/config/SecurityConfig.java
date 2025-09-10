@@ -49,16 +49,17 @@ public class SecurityConfig {
 
                         // ★ 공개 엔드포인트
                         .requestMatchers(
-                                "/admin/login",
-                                "/admin/api/auth/login",
-                                "/admin/api/auth/refresh",
-                                "/WEB-INF/views/**"   // forward되는 JSP 실경로
+                                "/login",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/WEB-INF/views/**"
                         ).permitAll()
 
                         // ★ 관리자 보호
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+
                 // 인증 실패 시 예외 처리
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)

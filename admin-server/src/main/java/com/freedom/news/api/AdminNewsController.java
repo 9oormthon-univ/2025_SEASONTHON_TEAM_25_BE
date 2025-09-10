@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/api/news")
+@RequestMapping("/api/news")
 @RequiredArgsConstructor
 public class AdminNewsController {
 

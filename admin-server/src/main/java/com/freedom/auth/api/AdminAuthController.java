@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * - 비즈니스 로직은 Facade에 위임
  */
 @RestController
-@RequestMapping("/admin/api/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AdminAuthController {
 

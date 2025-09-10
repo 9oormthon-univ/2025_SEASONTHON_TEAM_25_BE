@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * 관리자 웹 페이지 컨트롤러
  */
 @Controller
-@RequestMapping("/admin")
+@RequestMapping
 @RequiredArgsConstructor
 public class AdminWebController {
 
