@@ -23,8 +23,7 @@ public class FssSavingMapper {
         }
 
         List<FssSavingResponseDto.Base> baseList = dto.result.baseList;
-        for (int i = 0; i < baseList.size(); i++) {
-            FssSavingResponseDto.Base b = baseList.get(i);
+        for (FssSavingResponseDto.Base b : baseList) {
             // prdt_div가 "S"(적금)인지 확인
             if (dto.result.prdtDiv != null && !"S".equalsIgnoreCase(dto.result.prdtDiv)) {
                 continue;
@@ -59,8 +58,7 @@ public class FssSavingMapper {
         }
 
         List<FssSavingResponseDto.Option> optionList = dto.result.optionList;
-        for (int i = 0; i < optionList.size(); i++) {
-            FssSavingResponseDto.Option o = optionList.get(i);
+        for (FssSavingResponseDto.Option o : optionList) {
             if (dto.result.prdtDiv != null && !"S".equalsIgnoreCase(dto.result.prdtDiv)) {
                 continue;
             }

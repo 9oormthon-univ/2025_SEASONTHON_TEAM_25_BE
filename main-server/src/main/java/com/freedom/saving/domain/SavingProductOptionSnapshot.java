@@ -21,8 +21,7 @@ import java.math.BigDecimal;
                         columnNames = {"product_snapshot_id", "save_trm_months", "intr_rate_type", "rsrv_type"})
         },
         indexes = {
-                @Index(name = "idx_spos_product", columnList = "product_snapshot_id"),
-                @Index(name = "idx_spos_dcls_month", columnList = "dcls_month")
+                @Index(name = "idx_spos_product", columnList = "product_snapshot_id")
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SavingProductOptionSnapshot {

@@ -126,8 +126,7 @@ public class ProductSnapshotSyncService {
 
             // 해당 제품에 속하는 옵션만 매칭해서 저장
             List<SavingProductOptionSnapshotDraft> matched = matchOptions(allOptionDrafts, pd);
-            for (int j = 0; j < matched.size(); j++) {
-                SavingProductOptionSnapshotDraft od = matched.get(j);
+            for (SavingProductOptionSnapshotDraft od : matched) {
                 SavingProductOptionSnapshot option = SavingProductOptionSnapshot.from(od, saved.getId());
                 optionRepository.save(option);
                 result.optionsSaved += 1;
@@ -144,8 +143,7 @@ public class ProductSnapshotSyncService {
             SavingProductSnapshotDraft pd) {
 
         List<SavingProductOptionSnapshotDraft> list = new ArrayList<SavingProductOptionSnapshotDraft>();
-        for (int i = 0; i < all.size(); i++) {
-            SavingProductOptionSnapshotDraft od = all.get(i);
+        for (SavingProductOptionSnapshotDraft od : all) {
             boolean sameMonth = pd.getDclsMonth().equals(od.getDclsMonth());
             boolean sameCo = pd.getFinCoNo().equals(od.getFinCoNo());
             boolean samePrdt = pd.getFinPrdtCd().equals(od.getFinPrdtCd());
