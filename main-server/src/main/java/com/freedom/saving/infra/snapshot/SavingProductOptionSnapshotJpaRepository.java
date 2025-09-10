@@ -36,20 +36,9 @@ public interface SavingProductOptionSnapshotJpaRepository extends JpaRepository<
            """)
     List<Integer> findDistinctTerms(@Param("productSnapshotId") Long productSnapshotId);
 
-    // ▼ 추가: 특정 기간에서 지원하는 적립유형 코드 Distinct (예: "S","F")
-    @Query("""
-           select distinct o.rsrvType
-             from SavingProductOptionSnapshot o
-            where o.productSnapshotId = :productSnapshotId
-              and o.saveTrmMonths   = :termMonths
-           """)
-    List<String> findDistinctReserveTypes(@Param("productSnapshotId") Long productSnapshotId,
-                                          @Param("termMonths") Integer termMonths);
-
-    // ▼ 추가: 기간/유형 조합 존재 여부
-    boolean existsByProductSnapshotIdAndSaveTrmMonthsAndRsrvType(Long productSnapshotId,
-                                                                 Integer saveTrmMonths,
-                                                                 String rsrvType);
+    // 추가: 기간 존재 여부
+    boolean existsByProductSnapshotIdAndSaveTrmMonths(Long productSnapshotId,
+                                                      Integer saveTrmMonths);
 
     // 기간 일치하는 옵션 중 금리가 가장 높은 하나 선택
     SavingProductOptionSnapshot findFirstByProductSnapshotIdAndSaveTrmMonthsOrderByIntrRateDesc(Long productSnapshotId,

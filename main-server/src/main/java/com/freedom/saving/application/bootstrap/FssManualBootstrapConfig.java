@@ -177,8 +177,6 @@ public class FssManualBootstrapConfig {
                                 o.finPrdtCd,
                                 o.intrRateType,
                                 o.intrRateTypeNm,
-                                o.rsrvType,
-                                o.rsrvTypeNm,
                                 termMonths,
                                 rate,
                                 ratePreferential

@@ -106,12 +106,6 @@ public class FssSavingResponseDto {
         @JsonProperty("intr_rate_type_nm")
         public String intrRateTypeNm;       // 저축 금리 유형명
 
-        @JsonProperty("rsrv_type")
-        public String rsrvType;             // 적립 유형
-
-        @JsonProperty("rsrv_type_nm")
-        public String rsrvTypeNm;           // 적립 유형명
-
         @JsonProperty("save_trm")
         public String saveTrm;              // 저축 기간(개월) → 문자열로 받아두고, 사용 시 Integer.parseInt()
 

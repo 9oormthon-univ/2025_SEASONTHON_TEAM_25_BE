@@ -5,7 +5,9 @@ import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
 import com.freedom.saving.application.port.SavingSubscriptionPort;
-import com.freedom.saving.application.signup.exception.*;
+import com.freedom.saving.application.signup.exception.InvalidAutoDebitAmountForFixedException;
+import com.freedom.saving.application.signup.exception.ProductSnapshotNotFoundException;
+import com.freedom.saving.application.signup.exception.ProductTermNotSupportedException;
 import com.freedom.saving.domain.policy.TickPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,8 +36,7 @@ public class SavingSubscriptionService {
     private final TickPolicy tickPolicy;                    // 1일 = 1개월 정책
     private final SavingPaymentHistoryRepository paymentHistoryRepository; // 가입 시 스케줄 생성
 
-    private static final String RESERVE_S = "S"; // 정액적립식
-    private static final String RESERVE_F = "F"; // 자유적립식
+    private static final String RESERVE_S = "S"; // 정액적립식만 사용
 
     private LocalDate serviceToday(ZonedDateTime now) {
         // "현실 하루 = 서비스 한 달", '오늘'을 서비스 기준일로 그대로 쓴다고 가정
@@ -49,20 +50,14 @@ public class SavingSubscriptionService {
             throw new ProductSnapshotNotFoundException(cmd.getProductSnapshotId());
         }
 
-        // 2) 기간 선택 (save_trm 기준)
-        int chosenTerm = chooseTerm(cmd.getProductSnapshotId(), cmd.getTermMonths());
+        // 2) 기간 검증 (사용자가 선택한 기간이 유효한지 확인)
+        int chosenTerm = validateAndGetTerm(cmd.getProductSnapshotId(), cmd.getTermMonths());
 
-        // 3) 적립유형 선택 (기간별)
-        String chosenReserve = chooseReserveType(
-                cmd.getProductSnapshotId(),
-                chosenTerm,
-                normalizeReserveType(cmd.getReserveType())
-        );
+        // 3) 적립유형은 정액적립식으로 고정
+        String chosenReserve = RESERVE_S;
 
-        // 4) 정액식이면 금액 필수
-        if (RESERVE_S.equals(chosenReserve)) {
-            validateAutoDebitAmountForFixed(cmd.getAutoDebitAmount());
-        }
+        // 4) 정액식이므로 금액 필수
+        validateAutoDebitAmountForFixed(cmd.getAutoDebitAmount());
 
         // 5) 서비스 달력 날짜 계산
         ZonedDateTime now = timeProvider.now();
@@ -102,62 +97,17 @@ public class SavingSubscriptionService {
     }
 
     /**
-     * 기간 선택 규칙:
-     * - 요청 termMonths 가 있으면: 후보 목록에 포함되어야 함
-     * - 요청 termMonths 가 없으면:
-     *    - 후보가 1개면 자동 선택
-     *    - 후보가 2개 이상이면 MissingTermSelectionException(명시 요구)
+     * 기간 검증:
+     * - 사용자가 선택한 기간이 상품에서 지원하는 기간인지 확인
      */
-    private int chooseTerm(Long snapshotId, Integer requestedTerm) {
+    private int validateAndGetTerm(Long snapshotId, Integer requestedTerm) {
         List<Integer> supported = snapshotPort.getSupportedTermMonths(snapshotId);
-        if (requestedTerm != null) {
-            if (!supported.contains(requestedTerm)) {
-                throw new ProductTermNotSupportedException(requestedTerm);
-            }
-            return requestedTerm;
+        if (!supported.contains(requestedTerm)) {
+            throw new ProductTermNotSupportedException(requestedTerm);
         }
-        if (supported.isEmpty()) {
-            throw new MissingTermSelectionException(supported);
-        }
-        if (supported.size() == 1) {
-            return supported.get(0);
-        }
-        // 프론트에서 기간 선택 UI가 없을 때의 기본 정책
-        // 1) 12개월이 지원되면 12개월 선택, 2) 없으면 가장 짧은 기간 선택
-        if (supported.contains(12)) {
-            return 12;
-        }
-        int min = supported.stream().min(Integer::compareTo).orElseThrow(() -> new MissingTermSelectionException(supported));
-        return min;
+        return requestedTerm;
     }
 
-    private String normalizeReserveType(String reserveType) {
-        if (reserveType == null) return null;
-        String v = reserveType.trim();
-        if (v.isEmpty()) return null; // 빈 문자열은 미지정으로 처리
-        v = v.toUpperCase();
-        // 별칭 허용
-        if ("FIXED".equals(v)) return RESERVE_S;
-        if ("FREE".equals(v)) return RESERVE_F;
-        return v;
-    }
-
-    private String chooseReserveType(Long snapshotId, int termMonths, String requested) {
-        List<String> supported = snapshotPort.getSupportedReserveTypes(snapshotId, termMonths);
-        if (requested != null) {
-            if (!supported.contains(requested)) {
-                throw new ReserveTypeNotSupportedException(termMonths, requested);
-            }
-            return requested;
-        }
-        if (supported.isEmpty()) {
-            throw new MissingReserveTypeSelectionException(termMonths, supported);
-        }
-        if (supported.size() == 1) {
-            return supported.get(0);
-        }
-        throw new MissingReserveTypeSelectionException(termMonths, supported);
-    }
 
     private void validateAutoDebitAmountForFixed(BigDecimal amount) {
         if (amount == null || amount.signum() <= 0) {

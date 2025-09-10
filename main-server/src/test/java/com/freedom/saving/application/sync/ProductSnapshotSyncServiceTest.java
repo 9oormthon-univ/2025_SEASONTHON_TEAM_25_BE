@@ -100,8 +100,6 @@ class ProductSnapshotSyncServiceTest {
             opt.finPrdtCd = finPrdtCd;
             opt.intrRateType = "S";
             opt.intrRateTypeNm = "단리";
-            opt.rsrvType = "F";
-            opt.rsrvTypeNm = "자유적립";
             opt.saveTrm = String.valueOf(12 + i);
             opt.intrRate = 3.2 + (i * 0.1);
             opt.intrRate2 = 3.5 + (i * 0.1);

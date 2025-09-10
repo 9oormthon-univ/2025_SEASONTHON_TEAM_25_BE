@@ -132,8 +132,6 @@ class SavingProductReadControllerTest {
         opt.setRatePreferential(new BigDecimal("3.50"));
         opt.setRateType("S");
         opt.setRateTypeName("단리");
-        opt.setReserveType("F");
-        opt.setReserveTypeName("자유적립");
         detail.setOptions(Arrays.asList(opt));
 
         Mockito.when(readService.getDetail(123L)).thenReturn(detail);
