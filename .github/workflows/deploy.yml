@@ -58,9 +58,52 @@ jobs:
       - name: Notify Discord
         if: always()
         run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            COLOR=65280  # 초록색
+            EMOJI="✅"
+            STATUS_TEXT="성공"
+          else
+            COLOR=16711680  # 빨간색
+            EMOJI="❌"
+            STATUS_TEXT="실패"
+          fi
+          
           curl -H "Content-Type: application/json" \
             -X POST \
             -d '{
-              "content": "🚀 CD 완료!\n🔀 브랜치: `${{ github.ref_name }}`\n✅ 상태: `${{ job.status }}`"
+              "username": "🤖 Financial Freedom CI/CD",
+              "avatar_url": "https://cdn.discordapp.com/embed/avatars/4.png",
+              "embeds": [{
+                "title": "'$EMOJI' 배포 완료",
+                "description": "Financial Freedom 시스템이 성공적으로 배포되었습니다!",
+                "color": '$COLOR',
+                "fields": [
+                  {
+                    "name": "🔀 브랜치",
+                    "value": "`${{ github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "📦 커밋",
+                    "value": "`${{ github.sha }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "✅ 상태",
+                    "value": "`'$STATUS_TEXT'`",
+                    "inline": true
+                  },
+                  {
+                    "name": "🚀 서버",
+                    "value": "Main Server: `${{ env.IMAGE_REPO }}:main`\nAdmin Server: `${{ env.IMAGE_REPO }}:admin`",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "Financial Freedom Admin System",
+                  "icon_url": "https://cdn.discordapp.com/embed/avatars/5.png"
+                },
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+              }]
             }' \
             ${{ secrets.DISCORD_WEBHOOK_URL }}

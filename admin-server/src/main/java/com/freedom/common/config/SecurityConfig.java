@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/admin/api/auth/refresh",
                                 "/admin/css/**",
                                 "/admin/js/**",
-                                "/admin/images/**"
+                                "/admin/images/**",
+                                "/static/admin/**"
                         ).permitAll()
 
                         // ★ 관리자 보호
