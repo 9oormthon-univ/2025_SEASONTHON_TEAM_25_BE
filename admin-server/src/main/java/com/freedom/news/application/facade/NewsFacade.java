@@ -7,12 +7,12 @@ import com.freedom.news.domain.model.ProcessedNews;
 import com.freedom.news.domain.service.NewsContentProcessingService;
 import com.freedom.news.domain.service.NewsExistingCheckService;
 import com.freedom.news.domain.service.NewsPersistenceService;
-import com.freedom.news.infra.client.NewsQuizGenerationClient;
 import com.freedom.news.infra.client.OpenAiNewsSummaryClient;
 import com.freedom.news.infra.client.PolicyNewsClient;
 import com.freedom.news.infra.client.response.ClassifiedSummaryResponse;
 import com.freedom.news.infra.client.response.NewsItem;
-import com.freedom.quiz.domain.service.QuizService;
+import com.freedom.quiz.domain.service.FindQuizService;
+import com.freedom.quiz.domain.service.QuizCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class NewsFacade {
     private final NewsExistingCheckService newsExistingCheckService;
     private final OpenAiNewsSummaryClient openAiNewsSummaryClient;
     private final NewsPersistenceService newsPersistenceService;
-    private final QuizService quizService;
+    private final QuizCommandService quizCommandService;
 
     @Transactional
     public void newsCollection() {
@@ -59,7 +59,7 @@ public class NewsFacade {
         if (savedArticles == null || savedArticles.isEmpty()) return;
         for (NewsArticle article : savedArticles) {
             try {
-                quizService.generateAndSaveFromNews(
+                quizCommandService.generateAndSaveFromNews(
                         article.getId(),
                         article.getTitle(),
                         article.getAiSummary(),
