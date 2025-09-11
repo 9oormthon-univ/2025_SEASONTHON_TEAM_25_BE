@@ -155,6 +155,16 @@
                                         </div>
                                     </div>
 
+                                    <!-- 힌트 (관리자 생성문제일 때만 표시) -->
+                                    <div id="hintArea" class="mb-4 d-none">
+                                        <label class="form-label fw-bold">힌트</label>
+                                        <textarea class="form-control" name="hint" rows="3" maxlength="500" placeholder="퀴즈 힌트를 입력하세요 (선택사항)" oninput="updateCharCount('hint', 500)"></textarea>
+                                        <div class="form-text d-flex justify-content-between">
+                                            <span>최대 500자</span>
+                                            <span id="hintCount" class="text-muted">0/500</span>
+                                        </div>
+                                    </div>
+
                                     <!-- 버튼 -->
                                     <div class="d-flex justify-content-between">
                                         <a href="/admin/quiz" class="btn btn-secondary">취소</a>
@@ -184,9 +194,10 @@
             toggleQuizTypeUI();
         });
         
-        // 카테고리 변경 시 뉴스 ID 필드 상태 변경
+        // 카테고리 변경 시 뉴스 ID 필드 상태 변경 및 힌트 필드 토글
         $('select[name="category"]').change(function() {
             toggleNewsIdField();
+            toggleHintField();
         });
         
         // 폼 제출 처리
@@ -197,6 +208,7 @@
         
         toggleQuizTypeUI(); // 초기 UI 설정
         toggleNewsIdField(); // 초기 뉴스 ID 필드 설정
+        toggleHintField(); // 초기 힌트 필드 설정
     });
 
     function toggleQuizTypeUI() {
@@ -232,6 +244,20 @@
         }
     }
 
+    function toggleHintField() {
+        const category = $('select[name="category"]').val();
+        const hintArea = $('#hintArea');
+        
+        if (category === 'ADMIN_CREATED') {
+            hintArea.removeClass('d-none');
+        } else {
+            hintArea.addClass('d-none');
+            // 힌트 필드 초기화
+            $('textarea[name="hint"]').val('');
+            $('#hintCount').text('0/500').removeClass('text-warning text-danger').addClass('text-muted');
+        }
+    }
+
     function submitQuiz() {
         const formData = new FormData(document.getElementById('quizForm'));
         const type = formData.get('type');
@@ -243,7 +269,8 @@
             category: formData.get('category'),
             newsArticleId: formData.get('newsArticleId') && !$('input[name="newsArticleId"]').prop('disabled') ? parseInt(formData.get('newsArticleId')) : null,
             question: formData.get('question'),
-            explanation: formData.get('explanation') || null
+            explanation: formData.get('explanation') || null,
+            hint: formData.get('hint') || null
         };
 
         // 타입별 데이터 추가
