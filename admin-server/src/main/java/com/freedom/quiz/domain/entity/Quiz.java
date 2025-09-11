@@ -99,6 +99,7 @@ public class Quiz extends BaseEntity {
                 .newsArticleId(newsArticleId)
                 .question(mcq.question().trim())
                 .explanation(mcq.explanation().trim())
+                .hint(String.valueOf(newsArticleId))
                 .mcqOption1(options.get(0).text())
                 .mcqOption2(options.get(1).text())
                 .mcqOption3(options.get(2).text())
