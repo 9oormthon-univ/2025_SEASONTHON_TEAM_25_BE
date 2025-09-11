@@ -1,6 +1,6 @@
 package com.freedom.quiz.api.response;
 
-import com.freedom.quiz.application.dto.AdminQuizDto;
+import com.freedom.quiz.application.dto.QuizDomainDto;
 import com.freedom.quiz.domain.entity.QuizType;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class AdminQuizResponse {
     private String question;
     private Long newsArticleId;
 
-    public static AdminQuizResponse from(AdminQuizDto dto) {
+    public static AdminQuizResponse from(QuizDomainDto dto) {
         return AdminQuizResponse.builder()
                 .id(dto.id())
                 .type(dto.type())

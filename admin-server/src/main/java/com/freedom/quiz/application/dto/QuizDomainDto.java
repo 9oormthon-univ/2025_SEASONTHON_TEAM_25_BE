@@ -1,14 +1,10 @@
-package com.freedom.quiz.domain.dto;
+package com.freedom.quiz.application.dto;
 
 import com.freedom.quiz.domain.entity.Quiz;
 import com.freedom.quiz.domain.entity.QuizDifficulty;
 import com.freedom.quiz.domain.entity.QuizType;
 import lombok.Builder;
 
-/**
- * 도메인 계층에서 사용하는 Quiz DTO
- * Entity의 상세 정보를 Application 계층으로 전달하지 않기 위한 변환 객체
- */
 @Builder
 public record QuizDomainDto(
         Long id,
@@ -18,6 +14,7 @@ public record QuizDomainDto(
         Long newsArticleId,
         String question,
         String explanation,
+        String hint,
         Boolean oxAnswer,
         String mcqOption1,
         String mcqOption2,
@@ -35,6 +32,7 @@ public record QuizDomainDto(
                 .newsArticleId(quiz.getNewsArticleId())
                 .question(quiz.getQuestion())
                 .explanation(quiz.getExplanation())
+                .hint(quiz.getHint())
                 .oxAnswer(quiz.getOxAnswer())
                 .mcqOption1(quiz.getMcqOption1())
                 .mcqOption2(quiz.getMcqOption2())
