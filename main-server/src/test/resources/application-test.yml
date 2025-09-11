@@ -30,6 +30,10 @@ logging:
     org.hibernate: WARN
     org.springframework.transaction: WARN
 
+# Discord 테스트 설정
+discord:
+  webhook-url: "https://discord.com/api/webhooks/test/test"
+
 # 테스트 전용 설정
 test:
   integration:

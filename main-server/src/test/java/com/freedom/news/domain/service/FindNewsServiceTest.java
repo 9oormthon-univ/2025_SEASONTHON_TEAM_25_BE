@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,8 +39,8 @@ class FindNewsServiceTest {
     private FindNewsService findNewsService;
 
     @Test
-    @DisplayName("평일 뉴스 조회 - 어제~오늘 범위")
-    void findRecentNews_Weekday_Success() {
+    @DisplayName("이번 주 뉴스 조회 성공 - 월요일~일요일 범위")
+    void findRecentNews_ThisWeek_Success() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         NewsArticle mockNews = createMockNewsArticle("news001", "테스트 뉴스");
@@ -60,6 +61,39 @@ class FindNewsServiceTest {
         assertThat(result.getTotalElements()).isEqualTo(1);
 
         verify(newsArticleRepository).findRecentNewsByApproveDateBetween(
+            any(LocalDateTime.class), 
+            any(LocalDateTime.class), 
+            eq(pageable)
+        );
+    }
+
+    @Test
+    @DisplayName("이번 주 뉴스가 없을 때 전주 뉴스로 fallback")
+    void findRecentNews_ThisWeekEmpty_FallbackToLastWeek() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        NewsArticle mockNews = createMockNewsArticle("news002", "전주 뉴스");
+        Page<NewsArticle> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+        Page<NewsArticle> lastWeekPage = new PageImpl<>(List.of(mockNews), pageable, 1);
+
+        // 이번 주 뉴스 조회 시 빈 결과 반환
+        given(newsArticleRepository.findRecentNewsByApproveDateBetween(
+            any(LocalDateTime.class), 
+            any(LocalDateTime.class), 
+            eq(pageable)
+        )).willReturn(emptyPage)
+          .willReturn(lastWeekPage);
+
+        // when
+        Page<NewsDto> result = findNewsService.findRecentNews(pageable);
+
+        // then
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo("전주 뉴스");
+        assertThat(result.getTotalElements()).isEqualTo(1);
+
+        // 두 번 호출되었는지 확인 (이번 주 + 전주)
+        verify(newsArticleRepository, times(2)).findRecentNewsByApproveDateBetween(
             any(LocalDateTime.class), 
             any(LocalDateTime.class), 
             eq(pageable)
