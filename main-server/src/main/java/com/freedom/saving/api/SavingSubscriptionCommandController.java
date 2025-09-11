@@ -39,7 +39,6 @@ public class SavingSubscriptionCommandController {
                 principal.getId(),
                 req.productSnapshotId(),
                 req.termMonths(),
-                req.reserveType(),
                 req.autoDebitAmount()
         );
         OpenSubscriptionResult r = service.open(cmd);

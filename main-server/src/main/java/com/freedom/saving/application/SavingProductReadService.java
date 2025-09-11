@@ -104,8 +104,6 @@ public class SavingProductReadService {
             oi.setRatePreferential(o.getIntrRate2());
             oi.setRateType(o.getIntrRateType());
             oi.setRateTypeName(o.getIntrRateTypeNm());
-            oi.setReserveType(o.getRsrvType());
-            oi.setReserveTypeName(o.getRsrvTypeNm());
 
             optionItems.add(oi);
         }

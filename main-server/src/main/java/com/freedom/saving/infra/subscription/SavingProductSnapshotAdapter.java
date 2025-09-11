@@ -29,18 +29,10 @@ public class SavingProductSnapshotAdapter implements SavingProductSnapshotPort {
         return optionRepo.findDistinctTerms(productSnapshotId);
     }
 
-    /** 특정 기간에서 지원하는 적립유형 코드 집합("S"/"F" 등) */
+    /** (방어용) 기간이 실제 존재하는지 */
     @Override
-    public List<String> getSupportedReserveTypes(Long productSnapshotId, int termMonths) {
-        return optionRepo.findDistinctReserveTypes(productSnapshotId, termMonths);
-    }
-
-    /** (방어용) 기간/유형 조합이 실제 존재하는지 */
-    @Override
-    public boolean existsOption(Long productSnapshotId, int termMonths, String reserveTypeCode) {
-        // 입력 코드 정규화(앞뒤 공백 제거 + 대문자)
-        String code = reserveTypeCode == null ? null : reserveTypeCode.trim().toUpperCase();
-        return optionRepo.existsByProductSnapshotIdAndSaveTrmMonthsAndRsrvType(productSnapshotId, termMonths, code);
+    public boolean existsOption(Long productSnapshotId, int termMonths) {
+        return optionRepo.existsByProductSnapshotIdAndSaveTrmMonths(productSnapshotId, termMonths);
     }
 
     /** 가입 발생 시 인기 집계 증가 */

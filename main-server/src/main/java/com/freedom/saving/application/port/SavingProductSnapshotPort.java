@@ -15,11 +15,8 @@ public interface SavingProductSnapshotPort {
     /** 스냅샷 기준 지원 기간(개월) 목록 */
     List<Integer> getSupportedTermMonths(Long productSnapshotId);
 
-    /** 특정 기간에서 지원하는 적립유형 코드 집합("S"/"F" 등) */
-    List<String> getSupportedReserveTypes(Long productSnapshotId, int termMonths);
-
-    /** (방어용) 기간/유형 조합이 실제 존재하는지 */
-    boolean existsOption(Long productSnapshotId, int termMonths, String reserveTypeCode);
+    /** (방어용) 기간이 실제 존재하는지 */
+    boolean existsOption(Long productSnapshotId, int termMonths);
 
     /** 가입 발생 시 인기 집계 증가 */
     void incrementSubscriberCount(Long productSnapshotId);

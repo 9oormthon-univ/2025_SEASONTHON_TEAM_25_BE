@@ -46,13 +46,13 @@ public class SavingPaymentHistory extends BaseEntity {
     private Long subscriptionId;
 
     @Column(name = "cycle_no")
-    private Integer cycleNo; // 정액식 1..term, 자유식 NULL
+    private Integer cycleNo; // 정액식 1..term
 
     @Column(name = "due_service_date")
-    private LocalDate dueServiceDate; // 정액식 필수, 자유식 NULL
+    private LocalDate dueServiceDate; // 정액식 필수
 
     @Column(name = "expected_amount", precision = 15, scale = 0)
-    private BigDecimal expectedAmount; // 정액식 기대액, 자유식 NULL
+    private BigDecimal expectedAmount; // 정액식 기대액
 
     public enum PaymentStatus { PLANNED, PAID, PARTIAL, MISSED }
 
@@ -110,19 +110,4 @@ public class SavingPaymentHistory extends BaseEntity {
         this.lastAttemptAt = LocalDateTime.now();
     }
 
-    /**
-     * 자유적립식 등 사전 계획이 없을 때, 가입 금액으로 즉시 납입 이력을 생성하는 팩토리
-     */
-    public static SavingPaymentHistory paidAdhoc(Long subscriptionId, BigDecimal amount) {
-        if (subscriptionId == null) throw new SavingExceptions.SavingPaymentInvalidParamsException("subscriptionId is required");
-        if (amount == null || amount.signum() <= 0) throw new SavingExceptions.SavingInvalidPaymentAmountException();
-        SavingPaymentHistory h = new SavingPaymentHistory();
-        h.subscriptionId = subscriptionId;
-        h.status = PaymentStatus.PAID;
-        h.paidAmount = amount;
-        h.paidAt = LocalDateTime.now();
-        h.attemptCount = 1;
-        h.lastAttemptAt = LocalDateTime.now();
-        return h;
-    }
 }
