@@ -49,6 +49,11 @@
                             <h6><i class="fas fa-lightbulb me-2"></i>해설</h6>
                             <p id="explanation" class="mb-0 text-muted"></p>
                         </div>
+
+                        <div id="hintWrap" class="mt-4 d-none">
+                            <h6><i class="fas fa-key me-2"></i>힌트</h6>
+                            <p id="hint" class="mb-0 text-info"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,6 +79,19 @@
         $('#categoryBadge').text(r.category || '');
         $('#typeBadge').text(r.type === 'OX' ? 'OX' : '4지선다');
         if (r.newsArticleId){ $('#newsLink').attr('href','/admin/news/'+r.newsArticleId).show(); } else { $('#newsLink').hide(); }
+        
+        // 힌트 표시/숨김 처리
+        if (r.hint && r.hint.trim() !== '') {
+            // 뉴스 카테고리이고 newsArticleId가 있으면 링크로 표시
+            if (r.category === 'NEWS_ARTICLE' && r.newsArticleId) {
+                $('#hint').html('<a href="/admin/news/' + r.newsArticleId + '" target="_blank" class="text-info text-decoration-none"><i class="fas fa-external-link-alt me-1"></i>' + escapeHtml(r.hint) + '</a>');
+            } else {
+                $('#hint').text(r.hint);
+            }
+            $('#hintWrap').removeClass('d-none');
+        } else {
+            $('#hintWrap').addClass('d-none');
+        }
 
         if (r.type === 'OX'){
             $('#oxAnswerWrap').removeClass('d-none');

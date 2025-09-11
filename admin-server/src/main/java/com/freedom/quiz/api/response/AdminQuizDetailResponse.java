@@ -1,6 +1,6 @@
 package com.freedom.quiz.api.response;
 
-import com.freedom.quiz.application.dto.AdminQuizDto;
+import com.freedom.quiz.application.dto.QuizDomainDto;
 import com.freedom.quiz.domain.entity.QuizType;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +13,7 @@ public class AdminQuizDetailResponse {
     private String category;
     private String question;
     private String explanation;
+    private String hint;
     private Boolean oxAnswer;
     private String mcqOption1;
     private String mcqOption2;
@@ -21,13 +22,14 @@ public class AdminQuizDetailResponse {
     private Integer mcqCorrectIndex;
     private Long newsArticleId;
 
-    public static AdminQuizDetailResponse from(AdminQuizDto dto) {
+    public static AdminQuizDetailResponse from(QuizDomainDto dto) {
         return AdminQuizDetailResponse.builder()
                 .id(dto.id())
                 .type(dto.type())
                 .category(dto.category())
                 .question(dto.question())
                 .explanation(dto.explanation())
+                .hint(dto.hint())
                 .oxAnswer(dto.oxAnswer())
                 .mcqOption1(dto.mcqOption1())
                 .mcqOption2(dto.mcqOption2())
