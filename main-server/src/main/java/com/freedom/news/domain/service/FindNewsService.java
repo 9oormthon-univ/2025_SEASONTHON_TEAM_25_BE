@@ -23,24 +23,28 @@ public class FindNewsService {
     @Transactional(readOnly = true)
     public Page<NewsDto> findRecentNews(Pageable pageable) {
         LocalDate today = LocalDate.now();
-        LocalDateTime startDate;
-        LocalDateTime endDate;
         
-        // 토요일(6) 또는 일요일(7)인 경우
-        if (today.getDayOfWeek().getValue() >= 6) {
-            LocalDate monday = today.with(java.time.DayOfWeek.MONDAY);
-            LocalDate friday = today.with(java.time.DayOfWeek.FRIDAY);
-            startDate = monday.atStartOfDay();
-            endDate   = friday.plusDays(1).atStartOfDay();
-        } else {
-            // 평일: 어제 00:00 ~ 내일 00:00  ➜ 어제+오늘 포함
-            startDate = today.minusDays(1).atStartOfDay();
-            endDate   = today.plusDays(1).atStartOfDay();
-        }
-        
+        // 이번 주 월요일 ~ 일요일 범위 계산
+        LocalDate thisWeekMonday = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDate thisWeekSunday = thisWeekMonday.plusDays(6);
+        LocalDateTime thisWeekStart = thisWeekMonday.atStartOfDay();
+        LocalDateTime thisWeekEnd = thisWeekSunday.plusDays(1).atStartOfDay();
+
         Page<NewsArticle> newsArticles = newsArticleRepository.findRecentNewsByApproveDateBetween(
-            startDate, endDate, pageable
+            thisWeekStart, thisWeekEnd, pageable
         );
+        
+        // 이번 주에 뉴스가 없으면 전주 뉴스로 fallback
+        if (newsArticles.isEmpty()) {
+            LocalDate lastWeekMonday = thisWeekMonday.minusWeeks(1);
+            LocalDate lastWeekSunday = lastWeekMonday.plusDays(6);
+            LocalDateTime lastWeekStart = lastWeekMonday.atStartOfDay();
+            LocalDateTime lastWeekEnd = lastWeekSunday.plusDays(1).atStartOfDay();
+            
+            newsArticles = newsArticleRepository.findRecentNewsByApproveDateBetween(
+                lastWeekStart, lastWeekEnd, pageable
+            );
+        }
         
         return newsArticles.map(NewsDto::from);
     }

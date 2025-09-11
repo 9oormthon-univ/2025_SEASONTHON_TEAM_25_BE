@@ -9,13 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Repository
 public interface NewsArticleRepository extends JpaRepository<NewsArticle, Long> {
-
-    Optional<NewsArticle> findByNewsItemId(String newsItemId);
-    
     @Query("SELECT na FROM NewsArticle na WHERE na.approveDate >= :startDate AND na.approveDate < :endDate ORDER BY na.approveDate DESC")
     Page<NewsArticle> findRecentNewsByApproveDateBetween(
         @Param("startDate") LocalDateTime startDate,
