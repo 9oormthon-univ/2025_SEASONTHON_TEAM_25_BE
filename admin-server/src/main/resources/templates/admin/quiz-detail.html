@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>퀴즈 상세 - 파이낸셜 프리덤</title>
-    <link rel="icon" href="/static/favicon.ico" />
+    <link rel="icon" href="/admin/static/favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="/admin/static/admin/css/admin-common.css" rel="stylesheet">
@@ -82,9 +82,9 @@
         
         // 힌트 표시/숨김 처리
         if (r.hint && r.hint.trim() !== '') {
-            // 뉴스 카테고리이고 newsArticleId가 있으면 링크로 표시
-            if (r.category === 'NEWS_ARTICLE' && r.newsArticleId) {
-                $('#hint').html('<a href="/admin/news/' + r.newsArticleId + '" target="_blank" class="text-info text-decoration-none"><i class="fas fa-external-link-alt me-1"></i>' + escapeHtml(r.hint) + '</a>');
+            // 뉴스 카테고리이고 힌트가 숫자(newsArticleId)이면 뉴스 링크로 표시
+            if (r.category === 'news' && !isNaN(r.hint)) {
+                $('#hint').html('<a href="/admin/news/' + r.hint + '" target="_blank" class="text-info text-decoration-none"><i class="fas fa-newspaper me-1"></i>뉴스 보기</a>');
             } else {
                 $('#hint').text(r.hint);
             }
