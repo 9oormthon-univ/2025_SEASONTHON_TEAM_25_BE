@@ -32,19 +32,27 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private UserStatus status;
-    
+
+    @Column(name = "characterName", length = 50)
+    private String characterName;
+
     @Column(name = "character_created", nullable = false)
     private Boolean characterCreated;
+
+    @Column(name = "attendance", nullable = false)
+    private Boolean attendance;
 
     @Column(name = "last_auto_payment_date")
     private LocalDate lastAutoPaymentDate;
     
     @Builder
-    public User(String email, String password, UserRole role, UserStatus status) {
+    public User(String email, String password, UserRole role, UserStatus status, String characterName) {
         this.email = email;
         this.password = password;
         this.role = role != null ? role : UserRole.USER;
         this.status = status != null ? status : UserStatus.ACTIVE;
+        this.characterName = characterName;
+        this.attendance = false;
         this.characterCreated = false;
     }
     
@@ -70,5 +78,10 @@ public class User extends BaseEntity {
 
     public void updateLastAutoPaymentDate(LocalDate date) {
         this.lastAutoPaymentDate = date;
+    }
+    
+    public void setCharacterNameAndMarkCreated(String characterName) {
+        this.characterName = characterName;
+        this.characterCreated = true;
     }
 }
