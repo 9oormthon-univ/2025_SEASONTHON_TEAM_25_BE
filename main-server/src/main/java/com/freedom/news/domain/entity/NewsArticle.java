@@ -118,4 +118,12 @@ public class NewsArticle extends BaseEntity {
         this.originalUrl = originalUrl;
         this.aiSummary = aiSummary;
     }
+
+    private NewsArticle(Long id) {
+        this.id = id;
+    }
+
+    public static NewsArticle createNewsArticle(Long id){
+        return new NewsArticle(id);
+    }
 }
