@@ -13,15 +13,15 @@ import java.util.List;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     @Query("SELECT q FROM Quiz q WHERE q.category = 'news' " +
-           "AND q.createdAt >= :startDate AND q.createdAt < :endDate " +
-           "AND q.id NOT IN :excludeQuizIds " +
-           "ORDER BY FUNCTION('RAND')")
-    List<Quiz> findWeekdayQuizzes(@Param("startDate") LocalDateTime startDate,
-                                  @Param("endDate") LocalDateTime endDate,
-                                  @Param("excludeQuizIds") List<Long> excludeQuizIds);
+           "AND q.createdAt >= :weekStart AND q.createdAt <= :weekEnd " +
+           "AND q.id NOT IN :excludeQuizIds ")
+    List<Quiz> findNewsQuizzesInWeek(@Param("weekStart") LocalDateTime weekStart,
+                                     @Param("weekEnd") LocalDateTime weekEnd,
+                                     @Param("excludeQuizIds") List<Long> excludeQuizIds);
 
-    @Query("SELECT q FROM Quiz q WHERE q.category = 'quiz' " +
+    @Query(value = "SELECT * FROM quiz q WHERE q.category = 'quiz' " +
            "AND q.id NOT IN :excludeQuizIds " +
-           "ORDER BY FUNCTION('RAND')")
-    List<Quiz> findWeekendQuizzes(@Param("excludeQuizIds") List<Long> excludeQuizIds);
+           "ORDER BY RAND() LIMIT :limit", nativeQuery = true)
+    List<Quiz> findGeneralQuizzes(@Param("excludeQuizIds") List<Long> excludeQuizIds, 
+                                 @Param("limit") int limit);
 }
