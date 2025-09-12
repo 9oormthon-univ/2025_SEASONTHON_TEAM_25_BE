@@ -15,8 +15,7 @@ public class QuizQuestionResponse {
     private final QuizType type;
     private final String question;
     private final List<String> mcqOptions;
-    private final String newsUrl;
-    
+
     public static QuizQuestionResponse from(UserQuizDto userQuizDto) {
         List<String> mcqOptions = null;
         if (userQuizDto.getType() == QuizType.MCQ) {
@@ -34,7 +33,6 @@ public class QuizQuestionResponse {
                 .type(userQuizDto.getType())
                 .question(userQuizDto.getQuestion())
                 .mcqOptions(mcqOptions)
-                .newsUrl(userQuizDto.getNewsUrl())
                 .build();
     }
 }
