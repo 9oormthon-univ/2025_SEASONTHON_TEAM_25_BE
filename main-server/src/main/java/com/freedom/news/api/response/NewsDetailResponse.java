@@ -1,6 +1,7 @@
 package com.freedom.news.api.response;
 
 import com.freedom.news.application.dto.NewsDetailDto;
+import com.freedom.scrap.application.dto.NewsScrapDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,19 +19,21 @@ public class NewsDetailResponse {
     private String title;
     private LocalDateTime approveDate;
     private LocalDateTime modifyDate;
+    private boolean isScraped;
     private String thumbnailUrl;
     private String aiSummary;
     private String plainTextContent;
     private String ministerCode;
     private List<NewsContentBlockResponse> contentBlocks;
     
-    public static NewsDetailResponse from(NewsDetailDto newsDetailDto) {
+    public static NewsDetailResponse from(NewsDetailDto newsDetailDto, NewsScrapDto newsScrapDto) {
         return NewsDetailResponse.builder()
                 .id(newsDetailDto.getId())
                 .newsItemId(newsDetailDto.getNewsItemId())
                 .title(newsDetailDto.getTitle())
                 .approveDate(newsDetailDto.getApproveDate())
                 .modifyDate(newsDetailDto.getModifyDate())
+                .isScraped(newsScrapDto != null)
                 .thumbnailUrl(newsDetailDto.getThumbnailUrl())
                 .aiSummary(newsDetailDto.getAiSummary())
                 .plainTextContent(newsDetailDto.getPlainTextContent())
