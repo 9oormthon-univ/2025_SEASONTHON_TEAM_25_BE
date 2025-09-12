@@ -8,9 +8,10 @@ import com.freedom.common.logging.Loggable;
 import com.freedom.news.domain.entity.NewsArticle;
 import com.freedom.news.infra.repository.NewsArticleRepository;
 import com.freedom.scrap.application.dto.NewsScrapDto;
+import com.freedom.scrap.application.dto.NewsScrapToggleResult;
 import com.freedom.scrap.domain.entity.NewsScrap;
-import com.freedom.scrap.domain.service.CreateNewsScrapService;
 import com.freedom.scrap.domain.service.FindNewsScrapService;
+import com.freedom.scrap.domain.service.NewsScrapToggleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,21 +23,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ScrapFacade {
     
-    private final CreateNewsScrapService createNewsScrapService;
+    private final NewsScrapToggleService newsScrapToggleService;
     private final FindNewsScrapService findNewsScrapService;
     private final UserJpaRepository userRepository;
     private final NewsArticleRepository newsArticleRepository;
     
-    @Loggable("뉴스 스크랩 등록")
+    @Loggable("뉴스 스크랩 토글")
     @Transactional
-    public void scrapNews(Long userId, Long newsArticleId) {
+    public NewsScrapToggleResult toggleNewsScrap(Long userId, Long newsArticleId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. userId: " + userId));
         
         NewsArticle newsArticle = newsArticleRepository.findById(newsArticleId)
             .orElseThrow(() -> new NewsNotFoundException("뉴스를 찾을 수 없습니다. newsArticleId: " + newsArticleId));
         
-        createNewsScrapService.createNewsScrap(user, newsArticle);
+        boolean isScraped = newsScrapToggleService.toggleNewsScrap(user, newsArticle);
+        
+        return NewsScrapToggleResult.of(newsArticleId, isScraped);
     }
     
     @Loggable("사용자 뉴스 스크랩 목록 조회")
