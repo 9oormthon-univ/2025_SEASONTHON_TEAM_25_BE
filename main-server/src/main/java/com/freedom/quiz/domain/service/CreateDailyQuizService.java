@@ -1,22 +1,21 @@
 package com.freedom.quiz.domain.service;
 
+import com.freedom.quiz.application.dto.UserQuizDto;
 import com.freedom.quiz.domain.entity.Quiz;
 import com.freedom.quiz.domain.entity.UserQuiz;
 import com.freedom.common.exception.custom.InsufficientQuizException;
 import com.freedom.quiz.infra.QuizRepository;
 import com.freedom.quiz.infra.UserQuizRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateDailyQuizService {
@@ -25,84 +24,56 @@ public class CreateDailyQuizService {
     private final UserQuizRepository userQuizRepository;
     
     private static final int DAILY_QUIZ_COUNT = 5;
+    private static final int NEWS_QUIZ_TARGET_COUNT = 4;
     private static final Long EMPTY_LIST_DUMMY_ID = -1L;
 
-    /**
-     * 특정 사용자를 위한 일일 퀴즈 생성
-     */
-    public List<UserQuiz> createDailyQuizzes(Long userId, LocalDate quizDate) {
-        List<Long> excludeQuizIds = getExcludeQuizIds(userId, quizDate);
-        List<Quiz> selectedQuizzes = selectQuizzesByDay(quizDate, excludeQuizIds);
+    public List<UserQuizDto> createDailyQuizzes(Long userId, LocalDate quizDate) {
+        LocalDate monday = quizDate.with(DayOfWeek.MONDAY);
+        LocalDate sunday = quizDate.with(DayOfWeek.SUNDAY);
+        LocalDateTime weekStart = monday.atStartOfDay();
+        LocalDateTime weekEnd = sunday.atTime(23, 59, 59);
+        
+        List<Long> excludeQuizIds = userQuizRepository.findQuizIdsByUserIdAndDateRange(userId, monday, sunday);
+        List<Long> safeExcludeIds = excludeQuizIds.isEmpty() ? List.of(EMPTY_LIST_DUMMY_ID) : excludeQuizIds;
+        
+        List<Quiz> newsQuizzes = quizRepository.findNewsQuizzesInWeek(weekStart, weekEnd, safeExcludeIds);
+        
+        // 뉴스 퀴즈가 4개를 초과하면 4개로 제한
+        if (newsQuizzes.size() > NEWS_QUIZ_TARGET_COUNT) {
+            Collections.shuffle(newsQuizzes);
+            newsQuizzes = new ArrayList<>(newsQuizzes.subList(0, NEWS_QUIZ_TARGET_COUNT));
+        }
+        
+        // 남은 개수만큼 일반 퀴즈 가져오기
+        int remainingCount = DAILY_QUIZ_COUNT - newsQuizzes.size();
+        List<Quiz> generalQuizzes = quizRepository.findGeneralQuizzes(safeExcludeIds, remainingCount);
 
-        // 퀴즈 부족 시 예외 처리
+        List<Quiz> selectedQuizzes = new ArrayList<>(newsQuizzes);
+        
+        // 총 5개를 초과하지 않도록 일반 퀴즈 추가
+        int canAddCount = DAILY_QUIZ_COUNT - selectedQuizzes.size();
+        if (generalQuizzes.size() > canAddCount) {
+            selectedQuizzes.addAll(generalQuizzes.subList(0, canAddCount));
+        } else {
+            selectedQuizzes.addAll(generalQuizzes);
+        }
+        
         if (selectedQuizzes.isEmpty()) {
             throw new InsufficientQuizException("출제 가능한 퀴즈가 없습니다.");
         }
 
-        // 5개보다 많으면 랜덤으로 5개 선택
-        if (selectedQuizzes.size() > DAILY_QUIZ_COUNT) {
-            Collections.shuffle(selectedQuizzes);
-            selectedQuizzes = selectedQuizzes.subList(0, DAILY_QUIZ_COUNT);
-        }
-
-        // 5개보다 적으면 경고 로그
-        if (selectedQuizzes.size() < DAILY_QUIZ_COUNT) {
-            log.warn("일일 퀴즈가 {}개 부족합니다. 사용 가능: {}개, 필요: {}개", 
-                    DAILY_QUIZ_COUNT - selectedQuizzes.size(), 
-                    selectedQuizzes.size(), 
-                    DAILY_QUIZ_COUNT);
-            throw new InsufficientQuizException("출제 가능한 퀴즈가 부족합니다. 현재 " + selectedQuizzes.size() + "개, 필요 " + DAILY_QUIZ_COUNT + "개");
-        }
-
-        // UserQuiz 엔티티로 변환 및 저장
         List<UserQuiz> userQuizzes = selectedQuizzes.stream()
                 .map(quiz -> UserQuiz.builder()
                         .userId(userId)
-                        .quiz(Quiz.builder().id(quiz.getId()).build())
+                        .quiz(quiz)
                         .quizDate(quizDate)
-                        .assignedDate(quizDate) // assignedDate 추가
+                        .assignedDate(quizDate)
                         .build())
                 .toList();
 
-        return userQuizRepository.saveAll(userQuizzes);
-    }
-
-    private List<Long> getExcludeQuizIds(Long userId, LocalDate quizDate) {
-        List<Long> todayQuizIds = userQuizRepository.findQuizIdsByUserIdAndQuizDate(userId, quizDate);
-        
-        if (isWeekend(quizDate)) {
-            // 주말: 정답 맞춘 퀴즈 + 오늘 이미 출제된 퀴즈 제외
-            List<Long> correctQuizIds = userQuizRepository.findCorrectQuizIdsByUserId(userId);
-            return mergeAndDistinct(todayQuizIds, correctQuizIds);
-        } else {
-            // 주중: 오늘 이미 출제된 퀴즈만 제외
-            return todayQuizIds;
-        }
-    }
-
-    private List<Quiz> selectQuizzesByDay(LocalDate quizDate, List<Long> excludeQuizIds) {
-        // 빈 리스트일 때 더미 값 추가 (SQL IN 절 오류 방지)
-        if (excludeQuizIds.isEmpty()) {
-            excludeQuizIds = List.of(EMPTY_LIST_DUMMY_ID);
-        }
-
-        if (isWeekend(quizDate)) {
-            return quizRepository.findWeekendQuizzes(excludeQuizIds);
-        } else {
-            LocalDateTime startDate = quizDate.minusDays(1).atStartOfDay();
-            LocalDateTime endDate = quizDate.plusDays(1).atStartOfDay();   // 내일 00:00
-            return quizRepository.findWeekdayQuizzes(startDate, endDate, excludeQuizIds);
-        }
-    }
-
-    private boolean isWeekend(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
-    }
-
-    private List<Long> mergeAndDistinct(List<Long> list1, List<Long> list2) {
-        return Stream.concat(list1.stream(), list2.stream())
-                .distinct()
+        List<UserQuiz> savedUserQuizzes = userQuizRepository.saveAll(userQuizzes);
+        return savedUserQuizzes.stream()
+                .map(uq -> UserQuizDto.fromQuestionOnly(uq, uq.getQuiz(), null))
                 .toList();
     }
 }
