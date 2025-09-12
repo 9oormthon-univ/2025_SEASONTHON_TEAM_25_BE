@@ -23,6 +23,7 @@ public class AuthFacade {
     private final FindUserService findUserService;
     private final ValidateUserService validateUserService;
     private final RefreshTokenService refreshTokenService;
+    private final CharacterNameService characterNameService;
     private final JwtProvider jwtProvider;
     
     @Value("${jwt.access-token.expiration}")
@@ -67,25 +68,31 @@ public class AuthFacade {
         refreshTokenService.deleteRefreshToken(refreshTokenValue);
     }
 
+    @Loggable("캐릭터 이름 생성 처리")
+    @Transactional
+    public String createCharacterName(Long userId, String characterName) {
+        return characterNameService.createCharacterName(userId, characterName);
+    }
+
     private TokenDto createTokenResponse(User user) {
         String accessToken = jwtProvider.createAccessToken(user.getId());
         String refreshTokenValue = jwtProvider.createRefreshToken(user.getId());
-        
+
         saveRefreshTokenToDatabase(user.getId(), refreshTokenValue);
-        
+
         LoginDto loginDto = LoginDto.from(user);
         return TokenDto.of(
-                accessToken, 
-                refreshTokenValue, 
-                accessTokenExpiration / 1000, 
+                accessToken,
+                refreshTokenValue,
+                accessTokenExpiration / 1000,
                 loginDto
         );
     }
-    
+
     private void saveRefreshTokenToDatabase(Long userId, String refreshTokenValue) {
         LocalDateTime expiresAt = LocalDateTime.now()
                 .plusSeconds(refreshTokenExpiration / 1000);
-        
+
         refreshTokenService.saveRefreshToken(userId, refreshTokenValue, expiresAt);
     }
 }

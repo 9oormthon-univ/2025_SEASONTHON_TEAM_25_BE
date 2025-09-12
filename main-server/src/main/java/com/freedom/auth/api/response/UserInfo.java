@@ -12,6 +12,7 @@ public class UserInfo {
     private final String email;
     private final String role;
     private final String status;
+    private final String characterName;
     private final Boolean characterCreated;
     
     public static UserInfo from(LoginDto loginDto) {
@@ -19,6 +20,7 @@ public class UserInfo {
                 .userId(loginDto.getUserId())
                 .email(loginDto.getEmail())
                 .role(loginDto.getRole())
+                .characterName(loginDto.getCharacterName())
                 .status(loginDto.getStatus())
                 .characterCreated(loginDto.getCharacterCreated())
                 .build();

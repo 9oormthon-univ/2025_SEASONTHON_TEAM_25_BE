@@ -43,6 +43,14 @@ public class UserQuiz extends BaseEntity {
         this.isCorrect = isCorrect;
     }
 
+    private UserQuiz(Long userQuizId) {
+        this.id = userQuizId;
+    }
+
+    public static UserQuiz createUserQuiz(Long userQuizId) {
+        return new UserQuiz(userQuizId);
+    }
+
     // 생성 시 assignedDate 자동 설정
     @PrePersist
     protected void onCreate() {

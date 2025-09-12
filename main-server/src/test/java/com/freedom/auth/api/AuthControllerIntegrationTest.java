@@ -1,7 +1,9 @@
 package com.freedom.auth.api;
 
+import com.freedom.auth.api.request.CharacterNameRequest;
 import com.freedom.auth.api.request.LoginRequest;
 import com.freedom.auth.api.request.SignUpRequest;
+import com.freedom.auth.api.response.CharacterNameResponse;
 import com.freedom.auth.api.response.LoginResponse;
 import com.freedom.auth.api.response.SignUpResponse;
 import com.freedom.auth.domain.User;
@@ -9,6 +11,7 @@ import com.freedom.auth.domain.UserRole;
 import com.freedom.auth.domain.UserStatus;
 import com.freedom.auth.infra.RefreshTokenJpaRepository;
 import com.freedom.auth.infra.UserJpaRepository;
+import com.freedom.common.security.JwtProvider;
 import com.freedom.common.test.TestContainerConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +38,9 @@ class AuthControllerIntegrationTest extends TestContainerConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtProvider jwtProvider;
+
     private final String testPassword = "testpass123!";
 
     @AfterEach
@@ -51,6 +57,10 @@ class AuthControllerIntegrationTest extends TestContainerConfig {
                 .status(UserStatus.ACTIVE)
                 .build();
         return userRepository.save(user);
+    }
+    
+    private String createAccessToken(Long userId) {
+        return jwtProvider.createAccessToken(userId);
     }
 
     @Test
@@ -70,6 +80,7 @@ class AuthControllerIntegrationTest extends TestContainerConfig {
                     assertThat(response.getEmail()).isEqualTo("newuser@example.com");
                     assertThat(response.getRole()).isEqualTo("USER");
                     assertThat(response.getStatus()).isEqualTo("ACTIVE");
+                    assertThat(response.getCharacterName()).isNull();
                     assertThat(response.getCharacterCreated()).isFalse();
                     assertThat(response.getCreatedAt()).isNotNull();
                 });
@@ -134,6 +145,7 @@ class AuthControllerIntegrationTest extends TestContainerConfig {
                     assertThat(response.getUser().getEmail()).isEqualTo("existing@example.com");
                     assertThat(response.getUser().getRole()).isEqualTo("USER");
                     assertThat(response.getUser().getStatus()).isEqualTo("ACTIVE");
+                    assertThat(response.getUser().getCharacterName()).isNull();
                     assertThat(response.getUser().getCharacterCreated()).isFalse();
                 });
     }
@@ -189,5 +201,120 @@ class AuthControllerIntegrationTest extends TestContainerConfig {
                 .expectBody()
                 .jsonPath("$.code").isEqualTo("USER004")
                 .jsonPath("$.message").isEqualTo("탈퇴한 사용자입니다.");
+    }
+
+    // ===== 캐릭터 이름 생성 API 테스트 =====
+    
+    @Test
+    @DisplayName("캐릭터 이름 생성 성공")
+    void createCharacterName_Success() {
+        // given
+        User testUser = createTestUser("user@example.com");
+        String accessToken = createAccessToken(testUser.getId());
+        CharacterNameRequest request = new CharacterNameRequest();
+        // CharacterNameRequest가 setter가 없다면 리플렉션으로 설정하거나, 생성자를 만들어야 할 수도 있습니다.
+        
+        // when & then
+        webTestClient.post()
+                .uri("/api/auth/character/create-name")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"characterName\": \"멋진캐릭터\"}")  // JSON 직접 사용
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(CharacterNameResponse.class)
+                .value(response -> {
+                    assertThat(response.getCharacterName()).isEqualTo("멋진캐릭터");
+                    assertThat(response.isCharacterCreated()).isTrue();
+                    assertThat(response.getMessage()).isEqualTo("캐릭터 이름이 성공적으로 생성되었습니다.");
+                });
+
+        // 실제 DB에서 확인
+        User updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
+        assertThat(updatedUser.getCharacterName()).isEqualTo("멋진캐릭터");
+        assertThat(updatedUser.hasCharacterCreated()).isTrue();
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 생성 실패 - 인증되지 않은 사용자")
+    void createCharacterName_Fail_Unauthorized() {
+        webTestClient.post()
+                .uri("/api/auth/character/create-name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"characterName\": \"멋진캐릭터\"}")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 생성 실패 - 빈 캐릭터 이름")
+    void createCharacterName_Fail_BlankCharacterName() {
+        // given
+        User testUser = createTestUser("user@example.com");
+        String accessToken = createAccessToken(testUser.getId());
+
+        // when & then
+        webTestClient.post()
+                .uri("/api/auth/character/create-name")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"characterName\": \"\"}")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo("VALIDATION001")
+                .jsonPath("$.message").isEqualTo("입력값 검증에 실패했습니다.")
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors[0].field").isEqualTo("characterName")
+                .jsonPath("$.errors[0].code").isEqualTo("NotBlank")
+                .jsonPath("$.errors[0].message").isEqualTo("캐릭터 이름을 입력해주세요.");
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 생성 실패 - 너무 긴 캐릭터 이름")
+    void createCharacterName_Fail_TooLongCharacterName() {
+        // given
+        User testUser = createTestUser("user@example.com");
+        String accessToken = createAccessToken(testUser.getId());
+        String longName = "a".repeat(21); // 21자 (제한: 20자)
+
+        // when & then
+        webTestClient.post()
+                .uri("/api/auth/character/create-name")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"characterName\": \"" + longName + "\"}")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.code").isEqualTo("VALIDATION001")
+                .jsonPath("$.message").isEqualTo("입력값 검증에 실패했습니다.")
+                .jsonPath("$.errors").isArray()
+                .jsonPath("$.errors[0].field").isEqualTo("characterName")
+                .jsonPath("$.errors[0].code").isEqualTo("Size")
+                .jsonPath("$.errors[0].message").isEqualTo("캐릭터 이름은 최대 20자까지 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 생성 실패 - 중복된 캐릭터 이름")
+    void createCharacterName_Fail_DuplicateCharacterName() {
+        // given
+        User existingUser = createTestUser("existing@example.com");
+        existingUser.setCharacterNameAndMarkCreated("중복캐릭터");
+        userRepository.save(existingUser);
+
+        User testUser = createTestUser("user@example.com");
+        String accessToken = createAccessToken(testUser.getId());
+
+        // when & then
+        webTestClient.post()
+                .uri("/api/auth/character/create-name")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"characterName\": \"중복캐릭터\"}")
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("이미 사용 중인 캐릭터 이름입니다.");
     }
 }

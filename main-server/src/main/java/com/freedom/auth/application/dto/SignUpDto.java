@@ -14,6 +14,7 @@ public class SignUpDto {
     private final String email;
     private final String role;
     private final String status;
+    private final String characterName;
     private final Boolean characterCreated;
     private final LocalDateTime createdAt;
     
@@ -22,6 +23,7 @@ public class SignUpDto {
                 .id(user.getId())
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .characterName(user.getCharacterName())
                 .status(user.getStatus().name())
                 .characterCreated(user.hasCharacterCreated())
                 .createdAt(user.getCreatedAt())

@@ -1,9 +1,7 @@
 package com.freedom.auth.api;
 
-import com.freedom.auth.api.request.LoginRequest;
-import com.freedom.auth.api.request.LogoutRequest;
-import com.freedom.auth.api.request.RefreshTokenRequest;
-import com.freedom.auth.api.request.SignUpRequest;
+import com.freedom.auth.api.request.*;
+import com.freedom.auth.api.response.CharacterNameResponse;
 import com.freedom.auth.api.response.LoginResponse;
 import com.freedom.auth.api.response.SignUpResponse;
 import com.freedom.auth.api.response.TokenResponse;
@@ -11,10 +9,12 @@ import com.freedom.auth.application.AuthFacade;
 import com.freedom.auth.application.dto.SignUpDto;
 import com.freedom.auth.application.dto.TokenDto;
 import com.freedom.common.logging.Loggable;
+import com.freedom.common.security.CustomUserPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,5 +59,16 @@ public class AuthController {
     public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
         authFacade.logout(request.getRefreshToken());
         return ResponseEntity.ok().build();
+    }
+
+    @Loggable("캐릭터 이름 생성")
+    @PostMapping("/character/create-name")
+    public ResponseEntity<CharacterNameResponse> createCharacterName(
+            @AuthenticationPrincipal CustomUserPrincipal principal,
+            @Valid @RequestBody CharacterNameRequest request) {
+        
+        String characterName = authFacade.createCharacterName(principal.getId(), request.getCharacterName());
+        CharacterNameResponse response = CharacterNameResponse.success(characterName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

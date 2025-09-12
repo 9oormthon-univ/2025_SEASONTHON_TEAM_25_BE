@@ -1,11 +1,13 @@
 package com.freedom.news.api;
 
+import com.freedom.common.security.CustomUserPrincipal;
 import com.freedom.news.api.response.NewsDetailResponse;
 import com.freedom.news.api.response.NewsResponse;
 import com.freedom.news.application.NewsQueryAppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,15 +25,9 @@ public class NewsController {
     }
 
     @GetMapping("/{newsId}")
-    public ResponseEntity<NewsDetailResponse> getNewsDetail(@PathVariable Long newsId) {
-        NewsDetailResponse newsDetail = newsQueryFacade.getNewsDetail(newsId);
+    public ResponseEntity<NewsDetailResponse> getNewsDetail(@PathVariable Long newsId,
+                                                            @AuthenticationPrincipal CustomUserPrincipal principal) {
+        NewsDetailResponse newsDetail = newsQueryFacade.getNewsDetail(newsId, principal.getId());
         return ResponseEntity.ok(newsDetail);
-    }
-
-    @PostMapping("/{newsId}/scrap")
-    public ResponseEntity<Void> scrapNews(@PathVariable Long newsId) {
-        // TODO: newsService.scrapNews(newsId) 구현 필요
-
-        return ResponseEntity.ok().build();
     }
 }

@@ -11,16 +11,8 @@ import java.util.Optional;
 
 public interface NewsScrapRepository extends JpaRepository<NewsScrap, Long> {
     
-    @Query("""
-        SELECT ns FROM NewsScrap ns 
-        WHERE ns.user.id = :userId 
-        AND ns.newsArticle.id = :newsArticleId
-        """)
-    Optional<NewsScrap> findByUserIdAndNewsArticleId(
-        @Param("userId") Long userId, 
-        @Param("newsArticleId") Long newsArticleId
-    );
-    
+    Optional<NewsScrap> findByUserIdAndNewsArticleId(Long userId, Long newsArticleId);
+
     @Query("""
         SELECT ns FROM NewsScrap ns 
         JOIN FETCH ns.newsArticle na
@@ -32,13 +24,5 @@ public interface NewsScrapRepository extends JpaRepository<NewsScrap, Long> {
         Pageable pageable
     );
     
-    /**
-     * 사용자와 뉴스 기사로 스크랩 존재 여부 확인
-     */
     boolean existsByUserIdAndNewsArticleId(Long userId, Long newsArticleId);
-    
-    /**
-     * 사용자별 스크랩 개수 조회
-     */
-    long countByUserId(Long userId);
 }

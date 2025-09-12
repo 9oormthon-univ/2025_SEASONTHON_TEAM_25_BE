@@ -48,6 +48,7 @@ public enum ErrorCode {
     // 캐릭터 생성 에러
     CHARACTER_ALREADY_CREATED("CHAR001", "이미 캐릭터가 생성되었습니다.", HttpStatus.CONFLICT),
     CHARACTER_NAME_INVALID   ("CHAR002", "캐릭터 이름이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+    CHARACTER_NAME_DUPLICATE ("CHAR003", "이미 사용 중인 캐릭터 이름입니다.", HttpStatus.BAD_REQUEST),
 
     // 적금 에러
     SAVING_SUBSCRIPTION_NOT_FOUND("SAV001", "적금 구독을 찾을 수 없거나 권한이 없습니다.", HttpStatus.NOT_FOUND),

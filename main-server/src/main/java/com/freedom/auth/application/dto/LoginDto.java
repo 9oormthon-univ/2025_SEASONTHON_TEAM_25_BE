@@ -12,12 +12,14 @@ public class LoginDto {
     private final String email;
     private final String role;
     private final String status;
+    private final String characterName;
     private final Boolean characterCreated;
     
     public static LoginDto from(User user) {
         return LoginDto.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
+                .characterName(user.getCharacterName())
                 .role(user.getRole().name())
                 .status(user.getStatus().name())
                 .characterCreated(user.hasCharacterCreated())

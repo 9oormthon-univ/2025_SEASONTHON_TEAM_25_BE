@@ -22,13 +22,5 @@ public interface QuizScrapRepository extends JpaRepository<QuizScrap, Long> {
         Pageable pageable
     );
     
-    /**
-     * 사용자와 UserQuiz로 스크랩 존재 여부 확인
-     */
-    boolean existsByUserIdAndUserQuizId(Long userId, Long userQuizId);
-    
-    /**
-     * 사용자별 퀴즈 스크랩 개수 조회
-     */
-    long countByUserId(Long userId);
+    Optional<QuizScrap> findByUserIdAndUserQuizId(Long userId, Long userQuizId);
 }
