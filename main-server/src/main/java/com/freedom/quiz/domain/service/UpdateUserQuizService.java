@@ -12,9 +12,6 @@ public class UpdateUserQuizService {
 
     private final UserQuizRepository userQuizRepository;
 
-    /**
-     * 사용자 퀴즈 답안 업데이트
-     */
     public void updateAnswer(Long userQuizId, String userAnswer, boolean isCorrect) {
         UserQuiz userQuiz = userQuizRepository.findById(userQuizId)
                 .orElseThrow(() -> new UserQuizNotFoundException(String.valueOf(userQuizId)));
