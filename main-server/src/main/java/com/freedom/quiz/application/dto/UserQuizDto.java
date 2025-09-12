@@ -6,14 +6,18 @@ import com.freedom.quiz.domain.entity.UserQuiz;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
 @Builder
 public class UserQuizDto {
     private final Long userQuizId;
     private final Long quizId;
     private final QuizType type;
+    private final String category;  // 퀴즈 카테고리 (news, quiz)
     private final String question;
     private final String explanation;
+    private final String hint;
     
     // OX 타입
     private final Boolean oxAnswer;
@@ -30,14 +34,19 @@ public class UserQuizDto {
     private final Boolean isCorrect;
 
     private final String newsUrl;
+    
+    // 퀴즈 날짜
+    private final LocalDate quizDate;
 
     public static UserQuizDto from(UserQuiz userQuiz, Quiz quiz, String newsUrl) {
         return UserQuizDto.builder()
                 .userQuizId(userQuiz.getId())
                 .quizId(quiz.getId())
                 .type(quiz.getType())
+                .category(quiz.getCategory())
                 .question(quiz.getQuestion())
                 .explanation(quiz.getExplanation())
+                .hint(quiz.getHint())
                 .oxAnswer(quiz.getOxAnswer())
                 .mcqOption1(quiz.getMcqOption1())
                 .mcqOption2(quiz.getMcqOption2())
@@ -47,6 +56,29 @@ public class UserQuizDto {
                 .userAnswer(userQuiz.getUserAnswer())
                 .isCorrect(userQuiz.getIsCorrect())
                 .newsUrl(newsUrl)
+                .quizDate(userQuiz.getQuizDate())
+                .build();
+    }
+
+    public static UserQuizDto fromQuestionOnly(UserQuiz userQuiz, Quiz quiz, String newsUrl) {
+        return UserQuizDto.builder()
+                .userQuizId(userQuiz.getId())
+                .quizId(quiz.getId())
+                .type(quiz.getType())
+                .category(quiz.getCategory())
+                .question(quiz.getQuestion())
+                .explanation(null)
+                .hint(null)
+                .oxAnswer(null)
+                .mcqOption1(quiz.getMcqOption1())
+                .mcqOption2(quiz.getMcqOption2())
+                .mcqOption3(quiz.getMcqOption3())
+                .mcqOption4(quiz.getMcqOption4())
+                .mcqCorrectIndex(null)
+                .userAnswer(userQuiz.getUserAnswer())
+                .isCorrect(userQuiz.getIsCorrect())
+                .newsUrl(newsUrl)
+                .quizDate(userQuiz.getQuizDate())
                 .build();
     }
 }
