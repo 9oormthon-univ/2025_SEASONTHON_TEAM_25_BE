@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         log.warn("사용자를 찾을 수 없음: {}", e.getMessage());
         return createErrorResponse(ErrorCode.USER_NOT_FOUND);
     }
-  
+
     @ExceptionHandler(NewsNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNewsNotFoundException(NewsNotFoundException e) {
         log.warn("뉴스를 찾을 수 없음: {}", e.getMessage());
@@ -271,9 +271,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CharacterAlreadyCreatedException.class)
     public ResponseEntity<ErrorResponse> handleCharacterAlreadyCreated(CharacterAlreadyCreatedException e) {
+        log.warn("이미 캐릭터 생성됨: {}", e.getMessage());
         return ResponseEntity
                 .status(ErrorCode.CHARACTER_ALREADY_CREATED.getStatus())
                 .body(ErrorResponse.of(ErrorCode.CHARACTER_ALREADY_CREATED));
+    }
+
+    @ExceptionHandler(DuplicateCharacterNameException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateCharacterName(DuplicateCharacterNameException e) {
+        log.warn("캐릭터 이름 중복: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.CHARACTER_NAME_DUPLICATE.getStatus())
+                .body(ErrorResponse.of(ErrorCode.CHARACTER_NAME_DUPLICATE));
     }
 
     @ExceptionHandler(NewsScrapAlreadyExistsException.class)
@@ -320,7 +329,7 @@ public class GlobalExceptionHandler {
         }
         return s;
     }
-  
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e, HttpServletRequest request) {
         log.error("예상하지 못한 예외 발생: {} {}", request.getMethod(), request.getRequestURI(), e);
