@@ -9,10 +9,11 @@ import lombok.Getter;
 @Getter
 @Builder
 public class QuizAnswerResultResponse {
-    private final boolean isCorrect;
-    private final String explanation;
-    private final String hint;
-    private final String correctAnswer;
+    private boolean isCorrect;
+    private String explanation;
+    private String category;
+    private String hint;
+    private String correctAnswer;
 
 
     public static QuizAnswerResultResponse from(boolean isCorrect, UserQuizDto quiz) {
@@ -23,6 +24,7 @@ public class QuizAnswerResultResponse {
         return QuizAnswerResultResponse.builder()
                 .isCorrect(isCorrect)
                 .explanation(quiz.getExplanation())
+                .category(quiz.getCategory())
                 .hint(quiz.getHint())
                 .correctAnswer(correctAnswer)
                 .build();
