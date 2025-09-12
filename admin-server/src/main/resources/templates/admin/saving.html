@@ -49,7 +49,12 @@
             output.style.display = 'none';
             output.textContent = '';
             try {
-                const res = await fetch('/admin/api/saving/fss-sync', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                const res = await fetch('/api/saving/fss-sync', {
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    } 
+                });
                 const json = await res.json();
                 if (res.ok) { showToast('적금 동기화가 완료되었습니다.', 'success'); }
                 else { showToast('적금 동기화에 실패했습니다.', 'error'); }
