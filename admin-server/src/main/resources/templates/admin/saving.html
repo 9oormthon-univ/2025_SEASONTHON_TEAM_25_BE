@@ -43,24 +43,32 @@
         const output = document.getElementById('output');
 
         btn.addEventListener('click', async () => {
+            console.log('[DEBUG] 동기화 버튼 클릭됨');
             btn.disabled = true;
             const original = btn.innerHTML;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>동기화 중...';
             output.style.display = 'none';
             output.textContent = '';
             try {
-                const res = await fetch('/api/saving/fss-sync', {
+                console.log('[DEBUG] API 호출 시작: /api/saving/fss-sync');
+                const res = await fetch('/api/saving/fss-sync', { 
                     method: 'POST', 
                     headers: { 
                         'Content-Type': 'application/json'
                     } 
                 });
+                console.log('[DEBUG] API 응답 상태:', res.status);
                 const json = await res.json();
-                if (res.ok) { showToast('적금 동기화가 완료되었습니다.', 'success'); }
-                else { showToast('적금 동기화에 실패했습니다.', 'error'); }
+                console.log('[DEBUG] API 응답 데이터:', json);
+                if (res.ok) { 
+                    showToast('적금 동기화가 완료되었습니다.', 'success'); 
+                } else { 
+                    showToast('적금 동기화에 실패했습니다.', 'error'); 
+                }
                 output.style.display = 'block';
                 output.textContent = JSON.stringify(json, null, 2);
             } catch (e) {
+                console.error('[DEBUG] API 호출 중 오류:', e);
                 showToast('적금 동기화 호출 중 오류가 발생했습니다.', 'error');
                 output.style.display = 'block';
                 output.textContent = String(e);
