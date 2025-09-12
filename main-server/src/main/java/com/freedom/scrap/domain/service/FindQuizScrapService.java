@@ -18,8 +18,4 @@ public class FindQuizScrapService {
     public Page<QuizScrap> findQuizScrapsByUserId(Long userId, Pageable pageable) {
         return quizScrapRepository.findByUserIdOrderByScrappedDateDesc(userId, pageable);
     }
-    
-    public long countQuizScrapsByUserId(Long userId) {
-        return quizScrapRepository.countByUserId(userId);
-    }
 }

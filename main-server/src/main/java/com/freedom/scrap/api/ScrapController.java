@@ -5,9 +5,11 @@ import com.freedom.common.logging.Loggable;
 import com.freedom.common.security.CustomUserPrincipal;
 import com.freedom.scrap.api.request.QuizScrapRequest;
 import com.freedom.scrap.application.QuizScrapFacade;
-import com.freedom.scrap.application.ScrapFacade;
+import com.freedom.scrap.application.NewsScrapFacade;
 import com.freedom.scrap.application.dto.NewsScrapDto;
+import com.freedom.scrap.application.dto.NewsScrapToggleResult;
 import com.freedom.scrap.application.dto.QuizScrapDto;
+import com.freedom.scrap.application.dto.QuizScrapToggleResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +24,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ScrapController {
     
-    private final ScrapFacade scrapFacade;
+    private final NewsScrapFacade scrapFacade;
     private final QuizScrapFacade quizScrapFacade;
 
-    @Loggable("뉴스 스크랩 등록 API")
+    @Loggable("뉴스 스크랩 API")
     @PostMapping("/news/{newsArticleId}")
-    public ResponseEntity<Void> scrapNews(
+    public ResponseEntity<NewsScrapToggleResult> toggleNewsScrap(
             @PathVariable Long newsArticleId,
             @AuthenticationPrincipal CustomUserPrincipal userPrincipal) {
         
-        scrapFacade.scrapNews(userPrincipal.getId(), newsArticleId);
+        NewsScrapToggleResult result = scrapFacade.toggleNewsScrap(
+                userPrincipal.getId(), newsArticleId);
         
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(result);
     }
-    
+
     @Loggable("뉴스 스크랩 목록 조회 API")
     @GetMapping("/news")
     public ResponseEntity<PageResponse<NewsScrapDto>> getNewsScrapList(
@@ -49,18 +52,18 @@ public class ScrapController {
         return ResponseEntity.ok(response);
     }
     
-    @Loggable("퀴즈 스크랩 등록 API")
+    @Loggable("퀴즈 스크랩 API")
     @PostMapping("/quiz")
-    public ResponseEntity<Void> scrapQuiz(
+    public ResponseEntity<QuizScrapToggleResult> toggleQuizScrap(
             @Valid @RequestBody QuizScrapRequest request,
             @AuthenticationPrincipal CustomUserPrincipal userPrincipal) {
         
-        quizScrapFacade.scrapQuiz(
+        QuizScrapToggleResult result = quizScrapFacade.toggleQuizScrap(
                 userPrincipal.getId(), 
                 request.getUserQuizId(), 
                 request.getIsCorrect());
         
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(result);
     }
     
     @Loggable("퀴즈 스크랩 목록 조회 API")

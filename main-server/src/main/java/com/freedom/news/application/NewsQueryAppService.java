@@ -5,6 +5,8 @@ import com.freedom.news.api.response.NewsResponse;
 import com.freedom.news.application.dto.NewsDetailDto;
 import com.freedom.news.application.dto.NewsDto;
 import com.freedom.news.domain.service.FindNewsService;
+import com.freedom.scrap.application.dto.NewsScrapDto;
+import com.freedom.scrap.domain.service.FindNewsScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +18,8 @@ import org.springframework.stereotype.Service;
 public class NewsQueryAppService {
     
     private final FindNewsService findNewsService;
-    
+    private final FindNewsScrapService findNewsScrapService;
+
     public Page<NewsResponse> getRecentNewsList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<NewsDto> newsDtos = findNewsService.findRecentNews(pageable);
@@ -24,9 +27,9 @@ public class NewsQueryAppService {
         return newsDtos.map(NewsResponse::from);
     }
 
-    public NewsDetailResponse getNewsDetail(Long newsId) {
+    public NewsDetailResponse getNewsDetail(Long newsId, Long userId) {
         NewsDetailDto newsDetailDto = findNewsService.findNewsById(newsId);
-        
-        return NewsDetailResponse.from(newsDetailDto);
+        NewsScrapDto newsScrapDto = findNewsScrapService.getNewsScrapById(newsId, userId);
+        return NewsDetailResponse.from(newsDetailDto, newsScrapDto);
     }
 }
