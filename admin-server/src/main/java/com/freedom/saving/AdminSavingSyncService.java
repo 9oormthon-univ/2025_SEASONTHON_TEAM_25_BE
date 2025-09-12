@@ -4,6 +4,7 @@ import com.freedom.saving.application.policy.ProductSnapshotSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 어드민용 금감원(FSS) 적금 상품 스냅샷 동기화 서비스
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AdminSavingSyncService {
 
     private final ProductSnapshotSyncService syncService;

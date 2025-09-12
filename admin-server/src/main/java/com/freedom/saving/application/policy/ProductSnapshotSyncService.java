@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductSnapshotSyncService {
 
     private static final String GROUP_BANK = "020000"; // 은행만 수집
