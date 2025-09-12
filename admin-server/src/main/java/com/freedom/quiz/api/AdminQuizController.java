@@ -3,6 +3,7 @@ package com.freedom.quiz.api;
 import com.freedom.quiz.api.request.CreateQuizRequest;
 import com.freedom.quiz.api.response.AdminQuizDetailResponse;
 import com.freedom.quiz.api.response.AdminQuizResponse;
+import com.freedom.quiz.api.response.ImportResultResponse;
 import com.freedom.quiz.application.AdminQuizService;
 import com.freedom.common.dto.PageResponse;
 import com.freedom.common.logging.Loggable;
@@ -56,5 +57,13 @@ public class AdminQuizController {
     public ResponseEntity<Void> deleteQuiz(@PathVariable Long quizId) {
         adminQuizService.deleteQuiz(quizId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/import")
+    @Loggable("AdminQuizController : 외부 퀴즈 가져오기")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ImportResultResponse> importExternalQuizzes() {
+        int importedCount = adminQuizService.importExternalQuizzes();
+        return ResponseEntity.ok(ImportResultResponse.from(importedCount));
     }
 }

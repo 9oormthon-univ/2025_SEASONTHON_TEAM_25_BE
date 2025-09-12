@@ -1,6 +1,7 @@
 package com.freedom.quiz.domain.service;
 
 import com.freedom.common.exception.custom.UserQuizNotFoundException;
+import com.freedom.quiz.application.dto.UserQuizDto;
 import com.freedom.quiz.domain.entity.UserQuiz;
 import com.freedom.quiz.infra.UserQuizRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,42 +16,25 @@ public class FindUserQuizService {
 
     private final UserQuizRepository userQuizRepository;
 
-    /**
-     * 특정 사용자의 특정 날짜 퀴즈 조회
-     */
-    public List<UserQuiz> findDailyQuizzes(Long userId, LocalDate quizDate) {
-        return userQuizRepository.findByUserIdAndQuizDate(userId, quizDate);
+    public List<UserQuizDto> findDailyQuizzes(Long userId, LocalDate quizDate) {
+        List<UserQuiz> userQuizzes = userQuizRepository.findByUserIdAndQuizDate(userId, quizDate);
+        
+        return userQuizzes.stream()
+                .map(uq -> UserQuizDto.fromQuestionOnly(uq, uq.getQuiz(), null))
+                .toList();
     }
 
-    /**
-     * 특정 사용자가 정답 맞춘 모든 퀴즈 ID 조회 (주말용)
-     */
-    public List<Long> findCorrectQuizIds(Long userId) {
-        return userQuizRepository.findCorrectQuizIdsByUserId(userId);
+    public UserQuizDto findUserQuizById(Long userQuizId) {
+        UserQuiz userQuiz = userQuizRepository.findById(userQuizId)
+                .orElseThrow(() -> new UserQuizNotFoundException(String.valueOf(userQuizId)));
+        return UserQuizDto.from(userQuiz, userQuiz.getQuiz(), null);
     }
 
-    /**
-     * 특정 사용자의 특정 날짜에 이미 출제된 퀴즈 ID 조회
-     */
-    public List<Long> findTodayQuizIds(Long userId, LocalDate quizDate) {
-        return userQuizRepository.findQuizIdsByUserIdAndQuizDate(userId, quizDate);
-    }
-
-    /**
-     * UserQuiz ID로 퀴즈 ID 조회 - 예외 처리 강화
-     */
     public Long findQuizIdByUserQuizId(Long userQuizId) {
         Long quizId = userQuizRepository.findQuizIdByUserQuizId(userQuizId);
         if (quizId == null) {
             throw new UserQuizNotFoundException(String.valueOf(userQuizId));
         }
         return quizId;
-    }
-
-    /**
-     * UserQuiz 존재 여부 확인
-     */
-    public boolean existsUserQuiz(Long userQuizId) {
-        return userQuizRepository.existsById(userQuizId);
     }
 }

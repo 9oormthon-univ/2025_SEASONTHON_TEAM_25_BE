@@ -39,6 +39,12 @@ jwt:
   refresh-token:
     expiration: 1209600000 # 14일
 
+# 퀴즈 API 설정
+external:
+  quiz:
+    api:
+      service-key: ${QUIZ_API_SERVICE_KEY}
+
 # 뉴스 API 설정
 news:
   policy-briefing:

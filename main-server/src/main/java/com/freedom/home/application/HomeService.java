@@ -1,7 +1,9 @@
 package com.freedom.home.application;
 
+import com.freedom.character.domain.Character;
 import com.freedom.character.infra.CharacterRepository;
 import com.freedom.home.api.dto.HomeResponse;
+import com.freedom.quiz.application.dto.UserQuizDto;
 import com.freedom.quiz.domain.entity.UserQuiz;
 import com.freedom.quiz.domain.service.FindUserQuizService;
 import com.freedom.wallet.application.WalletService;
@@ -24,13 +26,13 @@ public class HomeService {
 
     public HomeResponse getHome(Long userId) {
         String nickname = characterRepository.findByUserId(userId)
-                .map(c -> c.getCharacterName())
+                .map(Character::getCharacterName)
                 .orElse("");
 
         BigDecimal balance = walletService.getWalletByUserId(userId).getBalance();
 
         LocalDate today = LocalDate.now();
-        List<UserQuiz> todays = findUserQuizService.findDailyQuizzes(userId, today);
+        List<UserQuizDto> todays = findUserQuizService.findDailyQuizzes(userId, today);
         int quizCount = (int) todays.stream()
                 .filter(uq -> uq.getIsCorrect() != null) // answered (correct or wrong)
                 .count();
