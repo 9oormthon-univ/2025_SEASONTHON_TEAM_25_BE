@@ -14,6 +14,7 @@ public class SignUpResponse {
     private final String email;
     private final String role;
     private final String status;
+    private final String characterName;
     private final Boolean characterCreated;
     private final LocalDateTime createdAt;
     
@@ -22,6 +23,7 @@ public class SignUpResponse {
                 .id(dto.getId())
                 .email(dto.getEmail())
                 .role(dto.getRole())
+                .characterName(dto.getCharacterName())
                 .status(dto.getStatus())
                 .characterCreated(dto.getCharacterCreated())
                 .createdAt(dto.getCreatedAt())
