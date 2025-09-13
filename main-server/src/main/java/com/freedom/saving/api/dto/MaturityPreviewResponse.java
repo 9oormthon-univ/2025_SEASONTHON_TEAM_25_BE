@@ -15,15 +15,10 @@ public class MaturityPreviewResponse {
 
     private MaturityInfo ourService;
     private MaturityInfo preferentialRate;
-    private String productName;
-    private String bankName;
 
-    public MaturityPreviewResponse(MaturityInfo ourService, MaturityInfo preferentialRate,
-                                   String productName, String bankName) {
+    public MaturityPreviewResponse(MaturityInfo ourService, MaturityInfo preferentialRate) {
         this.ourService = ourService;
         this.preferentialRate = preferentialRate;
-        this.productName = productName;
-        this.bankName = bankName;
     }
 
     /**

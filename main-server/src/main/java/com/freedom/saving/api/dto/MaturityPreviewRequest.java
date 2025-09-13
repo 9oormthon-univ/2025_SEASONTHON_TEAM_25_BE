@@ -23,12 +23,8 @@ public class MaturityPreviewRequest {
     @Min(value = 1, message = "적금 기간은 1개월 이상이어야 합니다.")
     private Integer termMonths;
 
-    @NotNull(message = "적금 상품 ID는 필수입니다.")
-    private Long productId;
-
-    public MaturityPreviewRequest(BigDecimal monthlyAmount, Integer termMonths, Long productId) {
+    public MaturityPreviewRequest(BigDecimal monthlyAmount, Integer termMonths) {
         this.monthlyAmount = monthlyAmount;
         this.termMonths = termMonths;
-        this.productId = productId;
     }
 }

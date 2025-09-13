@@ -11,11 +11,10 @@ import com.freedom.saving.infra.snapshot.SavingProductSnapshotJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,10 +92,25 @@ public class SavingProductReadService {
         detail.setMaxLimit(s.getMaxLimit()); // 최고한도
         detail.setEtcNote(s.getEtcNote());
         detail.setFetchedAt(s.getFetchedAt());
-
         detail.setAiSummary(s.getAiSummary() != null ? s.getAiSummary() : "");
 
+        // 상품 정보 자세히 보기 섹션용 정보 설정
+        detail.setFinancialCompanyName(s.getKorCoNm());
+        detail.setFinancialProductName(s.getFinPrdtNm());
+        detail.setMaturityInterestRate(s.getMtrtInt());
+        detail.setPreferentialConditions(s.getSpclCnd());
+        detail.setJoinRestrictions(s.getJoinDeny());
+        detail.setJoinTarget(s.getJoinMember());
+        detail.setMaxLimitFormatted(formatAmount(s.getMaxLimit()));
+
         List<SavingProductOptionItem> optionItems = new ArrayList<SavingProductOptionItem>();
+        List<Integer> availableTerms = new ArrayList<>();
+        List<BigDecimal> savingsRates = new ArrayList<>();
+        List<BigDecimal> maxPreferentialRates = new ArrayList<>();
+        
+        BigDecimal minRate = null;
+        BigDecimal maxRate = null;
+        
         for (SavingProductOptionSnapshot o : options) {
             SavingProductOptionItem oi = new SavingProductOptionItem();
             oi.setTermMonths(o.getSaveTrmMonths());
@@ -106,9 +120,76 @@ public class SavingProductReadService {
             oi.setRateTypeName(o.getIntrRateTypeNm());
 
             optionItems.add(oi);
+            
+            // 히어로 섹션용 정보 수집
+            if (o.getSaveTrmMonths() != null) {
+                availableTerms.add(o.getSaveTrmMonths());
+            }
+            if (o.getIntrRate() != null) {
+                savingsRates.add(o.getIntrRate().setScale(2, java.math.RoundingMode.HALF_UP));
+                if (minRate == null || o.getIntrRate().compareTo(minRate) < 0) {
+                    minRate = o.getIntrRate();
+                }
+                if (maxRate == null || o.getIntrRate().compareTo(maxRate) > 0) {
+                    maxRate = o.getIntrRate();
+                }
+            }
+            if (o.getIntrRate2() != null) {
+                maxPreferentialRates.add(o.getIntrRate2().setScale(2, java.math.RoundingMode.HALF_UP));
+            }
         }
+        
         detail.setOptions(optionItems);
+        detail.setAvailableTermMonths(availableTerms);
+        detail.setSavingsRates(savingsRates);
+        detail.setMaxPreferentialRates(maxPreferentialRates);
+        
+        // 히어로 섹션용 정보 설정
+        detail.setInterestRateRange(formatInterestRateRange(minRate, maxRate));
+        detail.setAvailableTerms(formatAvailableTerms(availableTerms));
+        detail.setMaxMonthlyAmount(formatAmount(s.getMaxLimit()));
+        
+        // 옵션에서 첫 번째 항목의 정보를 상세 정보로 설정
+        if (!options.isEmpty()) {
+            SavingProductOptionSnapshot firstOption = options.get(0);
+            detail.setSavingsRateType(firstOption.getIntrRateType());
+            detail.setSavingsRateTypeName(firstOption.getIntrRateTypeNm());
+            // 적립 유형은 기본적으로 "정액적립"으로 설정 (실제 데이터에 따라 수정 필요)
+            detail.setDepositType("정액적립");
+            detail.setDepositTypeName("정액적립");
+        }
 
         return detail;
+    }
+    
+    /**
+     * 금액 포맷팅 (천 단위 콤마)
+     */
+    private String formatAmount(Integer amount) {
+        if (amount == null) return "제한없음";
+        return String.format("%,d원", amount);
+    }
+    
+    /**
+     * 금리 범위 포맷팅
+     */
+    private String formatInterestRateRange(BigDecimal minRate, BigDecimal maxRate) {
+        if (minRate == null || maxRate == null) return "금리 정보 없음";
+        if (minRate.equals(maxRate)) {
+            return String.format("연 %.2f%%", minRate);
+        }
+        return String.format("연 %.2f%%~%.2f%%", minRate, maxRate);
+    }
+    
+    /**
+     * 가능한 기간 포맷팅
+     */
+    private String formatAvailableTerms(List<Integer> terms) {
+        if (terms.isEmpty()) return "기간 정보 없음";
+        return terms.stream()
+                .sorted()
+                .map(term -> term + "개월")
+                .reduce((a, b) -> a + "/" + b)
+                .orElse("기간 정보 없음") + " 중 선택";
     }
 }
