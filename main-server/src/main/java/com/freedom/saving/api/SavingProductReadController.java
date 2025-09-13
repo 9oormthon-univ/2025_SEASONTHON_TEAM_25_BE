@@ -1,27 +1,27 @@
 package com.freedom.saving.api;
 
 import com.freedom.common.exception.custom.SavingExceptions;
+import com.freedom.saving.api.dto.MaturityPreviewRequest;
+import com.freedom.saving.api.dto.MaturityPreviewResponse;
+import com.freedom.saving.application.SavingMaturityPreviewService;
 import com.freedom.saving.application.SavingProductReadService;
 import com.freedom.saving.application.read.SavingProductDetail;
-import com.freedom.saving.application.read.SavingProductListItem;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import org.springframework.data.domain.Page;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Validated
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/saving")
+@RequiredArgsConstructor
 public class SavingProductReadController {
 
     private final SavingProductReadService readService;
-
-    public SavingProductReadController(SavingProductReadService readService) {
-        this.readService = readService;
-    }
+    private final SavingMaturityPreviewService maturityPreviewService;
 
     @GetMapping
     public Object getProducts(
@@ -49,5 +49,21 @@ public class SavingProductReadController {
     public SavingProductDetail getProductDetail(
             @PathVariable("id") @Positive Long productSnapshotId) {
         return readService.getDetail(productSnapshotId);
+    }
+
+    /**
+     * 적금 만기 금액 미리보기
+     * 
+     * @param productId 상품 ID
+     * @param request 만기 금액 계산 요청
+     * @return 만기 금액 미리보기 결과
+     */
+    @PostMapping("/{id}/maturity-preview")
+    public ResponseEntity<MaturityPreviewResponse> previewMaturity(
+            @PathVariable("id") @Positive Long productId,
+            @Valid @RequestBody MaturityPreviewRequest request) {
+        
+        MaturityPreviewResponse response = maturityPreviewService.previewMaturity(productId, request);
+        return ResponseEntity.ok(response);
     }
 }
