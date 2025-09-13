@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,16 +87,34 @@ public class SavingProductReadService {
         detail.setJoinMember(s.getJoinMember()); // 가입대상
         detail.setMaxLimit(s.getMaxLimit()); // 최고한도
 
-        // 옵션에서 첫 번째 항목의 정보를 상세 정보로 설정
+        // 모든 옵션의 정보를 수집
         if (!options.isEmpty()) {
             SavingProductOptionSnapshot firstOption = options.get(0);
             detail.setIntrRateType(firstOption.getIntrRateType()); // 저축 금리 유형
             detail.setIntrRateTypeNm(firstOption.getIntrRateTypeNm()); // 저축 금리 유형명
             detail.setRsrvType("정액적립"); // 적립 유형 (기본값)
             detail.setRsrvTypeNm("정액적립"); // 적립 유형명 (기본값)
-            detail.setSaveTrm(firstOption.getSaveTrmMonths()); // 저축 기간
-            detail.setIntrRate(firstOption.getIntrRate()); // 저축 금리
-            detail.setIntrRate2(firstOption.getIntrRate2()); // 최고 우대금리
+            
+            // 모든 옵션의 기간, 금리 정보 수집
+            List<Integer> saveTrmList = new ArrayList<>();
+            List<BigDecimal> intrRateList = new ArrayList<>();
+            List<BigDecimal> intrRate2List = new ArrayList<>();
+            
+            for (SavingProductOptionSnapshot option : options) {
+                if (option.getSaveTrmMonths() != null) {
+                    saveTrmList.add(option.getSaveTrmMonths());
+                }
+                if (option.getIntrRate() != null) {
+                    intrRateList.add(option.getIntrRate());
+                }
+                if (option.getIntrRate2() != null) {
+                    intrRate2List.add(option.getIntrRate2());
+                }
+            }
+            
+            detail.setSaveTrm(saveTrmList); // 저축 기간 목록
+            detail.setIntrRate(intrRateList); // 저축 금리 목록
+            detail.setIntrRate2(intrRate2List); // 최고 우대금리 목록
         }
 
         return detail;

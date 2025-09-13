@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 상세 응답용 dto
@@ -26,7 +27,7 @@ public class SavingProductDetail {
     private String intrRateTypeNm; // 저축 금리 유형명
     private String rsrvType; // 적립 유형
     private String rsrvTypeNm; // 적립 유형명
-    private Integer saveTrm; // 저축 기간 (개월)
-    private BigDecimal intrRate; // 저축 금리
-    private BigDecimal intrRate2; // 최고 우대금리
+    private List<Integer> saveTrm; // 저축 기간 목록 (개월)
+    private List<BigDecimal> intrRate; // 저축 금리 목록
+    private List<BigDecimal> intrRate2; // 최고 우대금리 목록
 }
