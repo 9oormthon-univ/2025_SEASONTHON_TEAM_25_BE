@@ -65,7 +65,7 @@ public class SavingSubscriptionCommandController {
         return maturitySettlementService.listPendingMaturities(principal.getId());
     }
 
-    @PostMapping("/{subscriptionId}/maturity/claim")
+    @PostMapping("/{subscriptionId}/maturity/settlement")
     @ResponseStatus(HttpStatus.OK)
     public MaturityQuoteResponse claim(
             @AuthenticationPrincipal CustomUserPrincipal principal,

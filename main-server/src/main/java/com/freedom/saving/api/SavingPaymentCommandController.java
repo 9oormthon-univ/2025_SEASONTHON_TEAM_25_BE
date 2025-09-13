@@ -16,7 +16,7 @@ public class SavingPaymentCommandController {
 
     private final SavingPaymentCommandService commandService;
 
-    @PostMapping("/{subscriptionId}/deposit")
+    @PostMapping("/{subscriptionId}/payments")
     public ResponseEntity<?> deposit(
             @AuthenticationPrincipal CustomUserPrincipal principal,
             @PathVariable Long subscriptionId

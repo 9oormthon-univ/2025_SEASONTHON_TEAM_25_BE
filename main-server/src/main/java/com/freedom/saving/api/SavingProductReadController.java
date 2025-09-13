@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/saving")
+@RequestMapping("/api/savings/products")
 @RequiredArgsConstructor
 public class SavingProductReadController {
 
@@ -51,9 +51,9 @@ public class SavingProductReadController {
         return readService.getSavingProductsWithBankNames(sort, bankNames);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}")
     public SavingProductDetail getProductDetail(
-            @PathVariable("id") @Positive Long productSnapshotId) {
+            @PathVariable("productId") @Positive Long productSnapshotId) {
         return readService.getDetail(productSnapshotId);
     }
 
@@ -64,9 +64,9 @@ public class SavingProductReadController {
      * @param request 만기 금액 계산 요청
      * @return 만기 금액 미리보기 결과
      */
-    @PostMapping("/{id}/maturity-preview")
+    @PostMapping("/{productId}/maturity-preview")
     public ResponseEntity<MaturityPreviewResponse> previewMaturity(
-            @PathVariable("id") @Positive Long productId,
+            @PathVariable("productId") @Positive Long productId,
             @Valid @RequestBody MaturityPreviewRequest request) {
         
         MaturityPreviewResponse response = maturityPreviewService.previewMaturity(productId, request);
