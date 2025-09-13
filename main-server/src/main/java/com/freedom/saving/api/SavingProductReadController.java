@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/saving")
@@ -49,10 +48,7 @@ public class SavingProductReadController {
         List<String> bankNames = SavingProductQueryUtil.parseBankNames(banks);
         
         // 정렬 옵션과 은행사 필터에 따라 서비스 호출
-        return Map.of(
-                "content",
-                readService.getSavingProducts(sort, bankNames, 0, Integer.MAX_VALUE).getContent()
-        );
+        return readService.getSavingProductsWithBankNames(sort, bankNames);
     }
 
     @GetMapping("/{id}")

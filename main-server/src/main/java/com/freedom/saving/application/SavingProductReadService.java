@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -88,6 +90,26 @@ public class SavingProductReadService {
      */
     public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
         return getSavingProducts("popular", page, size);
+    }
+
+    /**
+     * [목록] 적금 상품 조회 결과와 은행사명 리스트를 함께 반환
+     * @param sort 정렬 옵션
+     * @param bankNames 은행사 필터
+     * @return 상품 목록과 은행사명 리스트가 포함된 Map
+     */
+    public Map<String, Object> getSavingProductsWithBankNames(String sort, List<String> bankNames) {
+        var products = getSavingProducts(sort, bankNames, 0, Integer.MAX_VALUE);
+        var bankNameList = products.getContent().stream()
+                .map(SavingProductListItem::getBankName)
+                .distinct()
+                .sorted()
+                .toList();
+        
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("content", products.getContent());
+        result.put("bankNames", bankNameList);
+        return result;
     }
 
     /**
