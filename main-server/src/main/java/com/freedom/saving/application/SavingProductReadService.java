@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 읽기 전용 유스케이스: 상품 목록/상세 조회
@@ -37,11 +39,12 @@ public class SavingProductReadService {
     }
 
     /**
-     * [목록] 정렬 옵션에 따른 적금 상품 조회
+     * [목록] 정렬 옵션과 은행사 필터에 따른 적금 상품 조회
      * 정렬 옵션: popular(인기순), name(상품명 가나다순)
+     * 은행사 필터: 여러 은행사 선택 가능
      * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
-    public Page<SavingProductListItem> getSavingProducts(String sort, int page, int size) {
+    public Page<SavingProductListItem> getSavingProducts(String sort, List<String> bankNames, int page, int size) {
         // 1) 최신 스냅샷 전체 조회
         List<SavingProductSnapshot> contents = productRepo.findAllLatestOrderBySubscriberCountDesc();
 
@@ -59,11 +62,23 @@ public class SavingProductReadService {
             items.add(item);
         }
 
-        // 3) 정렬 옵션에 따른 정렬 적용
+        // 3) 은행사 필터링 적용
+        items = applyBankFilter(items, bankNames);
+
+        // 4) 정렬 옵션에 따른 정렬 적용
         applySorting(items, sort);
 
-        // 4) Page 래핑 반환 (전체)
+        // 5) Page 래핑 반환 (전체)
         return new PageImpl<SavingProductListItem>(items, PageRequest.of(0, items.isEmpty() ? 1 : items.size()), items.size());
+    }
+
+    /**
+     * [목록] 정렬 옵션에 따른 적금 상품 조회
+     * 정렬 옵션: popular(인기순), name(상품명 가나다순)
+     * 프론트 요구에 따라 전체 리스트를 반환한다.
+     */
+    public Page<SavingProductListItem> getSavingProducts(String sort, int page, int size) {
+        return getSavingProducts(sort, Collections.emptyList(), page, size);
     }
 
     /**
@@ -73,6 +88,22 @@ public class SavingProductReadService {
      */
     public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
         return getSavingProducts("popular", page, size);
+    }
+
+    /**
+     * 은행사 필터링을 적용
+     * @param items 상품 목록
+     * @param bankNames 필터링할 은행사명 리스트 (빈 리스트인 경우 필터링하지 않음)
+     * @return 필터링된 상품 목록
+     */
+    private List<SavingProductListItem> applyBankFilter(List<SavingProductListItem> items, List<String> bankNames) {
+        if (bankNames == null || bankNames.isEmpty()) {
+            return items;
+        }
+        
+        return items.stream()
+                .filter(item -> bankNames.contains(item.getBankName()))
+                .collect(Collectors.toList());
     }
 
     /**
