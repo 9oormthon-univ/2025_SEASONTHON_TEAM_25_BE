@@ -65,15 +65,6 @@ public class SavingSubscriptionCommandController {
         return maturitySettlementService.listPendingMaturities(principal.getId());
     }
 
-    @GetMapping("/{subscriptionId}/maturity/quote")
-    public MaturityQuoteResponse quote(
-            @AuthenticationPrincipal CustomUserPrincipal principal,
-            @PathVariable Long subscriptionId
-    ) {
-        var q = maturitySettlementService.getMaturityQuote(principal.getId(), subscriptionId);
-        return new MaturityQuoteResponse(q.principal(), q.rate(), q.interest(), q.total());
-    }
-
     @PostMapping("/{subscriptionId}/maturity/claim")
     @ResponseStatus(HttpStatus.OK)
     public MaturityQuoteResponse claim(
