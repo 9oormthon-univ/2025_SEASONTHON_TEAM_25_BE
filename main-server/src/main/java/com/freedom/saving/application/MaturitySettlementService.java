@@ -38,17 +38,6 @@ public class MaturitySettlementService {
                                      BigDecimal principal, BigDecimal interest, BigDecimal total,
                                      String joinDate, String maturityDate) {}
 
-    /**
-     * 만기 예상 금액 조회
-     */
-    @Transactional(readOnly = true)
-    public PayoutQuote getMaturityQuote(Long userId, Long subscriptionId) {
-        SavingSubscription sub = subscriptionRepo.findByIdAndUserId(subscriptionId, userId)
-                .orElseThrow(SavingExceptions.SavingSubscriptionNotFoundException::new);
-        ensureMaturedByDate(sub);
-
-        return computeQuote(sub);
-    }
 
     /**
      * 만기 정산 처리: 납입 총액 + 이자(intr_rate 적용)를 지갑에 입금하고, 구독 상태를 MATURED로 전환
