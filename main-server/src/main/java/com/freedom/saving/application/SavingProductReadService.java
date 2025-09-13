@@ -1,6 +1,7 @@
 package com.freedom.saving.application;
 
 import com.freedom.common.exception.custom.SavingProductNotFoundException;
+import com.freedom.saving.util.ProductSortUtil;
 import com.freedom.saving.application.read.SavingProductDetail;
 import com.freedom.saving.application.read.SavingProductListItem;
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
@@ -36,12 +37,12 @@ public class SavingProductReadService {
     }
 
     /**
-     * [목록] 인기순 적금 상품 조회
-     * 정렬 기준: 최신 스냅샷 중 subscriberCount 내림차순
+     * [목록] 정렬 옵션에 따른 적금 상품 조회
+     * 정렬 옵션: popular(인기순), name(상품명 가나다순)
      * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
-    public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
-        // 1) 최신 스냅샷 전체 조회(가입자수 내림차순)
+    public Page<SavingProductListItem> getSavingProducts(String sort, int page, int size) {
+        // 1) 최신 스냅샷 전체 조회
         List<SavingProductSnapshot> contents = productRepo.findAllLatestOrderBySubscriberCountDesc();
 
         // 2) 엔티티 -> 목록 DTO
@@ -58,8 +59,35 @@ public class SavingProductReadService {
             items.add(item);
         }
 
-        // 3) Page 래핑 반환 (전체)
+        // 3) 정렬 옵션에 따른 정렬 적용
+        applySorting(items, sort);
+
+        // 4) Page 래핑 반환 (전체)
         return new PageImpl<SavingProductListItem>(items, PageRequest.of(0, items.isEmpty() ? 1 : items.size()), items.size());
+    }
+
+    /**
+     * [목록] 인기순 적금 상품 조회
+     * 정렬 기준: 최신 스냅샷 중 subscriberCount 내림차순
+     * 프론트 요구에 따라 전체 리스트를 반환한다.
+     */
+    public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
+        return getSavingProducts("popular", page, size);
+    }
+
+    /**
+     * 정렬 옵션에 따라 리스트를 정렬
+     */
+    private void applySorting(List<SavingProductListItem> items, String sort) {
+        switch (sort.toLowerCase()) {
+            case "name":
+                ProductSortUtil.sortByProductName(items, SavingProductListItem::getProductName);
+                break;
+            case "popular":
+            default:
+                // 기본값은 인기순 (이미 DB에서 정렬되어 있음)
+                break;
+        }
     }
 
     /**
