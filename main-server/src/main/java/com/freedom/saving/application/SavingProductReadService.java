@@ -1,6 +1,7 @@
 package com.freedom.saving.application;
 
 import com.freedom.common.exception.custom.SavingProductNotFoundException;
+import com.freedom.saving.util.ProductSortUtil;
 import com.freedom.saving.application.read.SavingProductDetail;
 import com.freedom.saving.application.read.SavingProductListItem;
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
@@ -15,8 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 읽기 전용 유스케이스: 상품 목록/상세 조회
@@ -36,12 +41,13 @@ public class SavingProductReadService {
     }
 
     /**
-     * [목록] 인기순 적금 상품 조회
-     * 정렬 기준: 최신 스냅샷 중 subscriberCount 내림차순
+     * [목록] 정렬 옵션과 은행사 필터에 따른 적금 상품 조회
+     * 정렬 옵션: popular(인기순), name(상품명 가나다순)
+     * 은행사 필터: 여러 은행사 선택 가능
      * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
-    public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
-        // 1) 최신 스냅샷 전체 조회(가입자수 내림차순)
+    public Page<SavingProductListItem> getSavingProducts(String sort, List<String> bankNames, int page, int size) {
+        // 1) 최신 스냅샷 전체 조회
         List<SavingProductSnapshot> contents = productRepo.findAllLatestOrderBySubscriberCountDesc();
 
         // 2) 엔티티 -> 목록 DTO
@@ -58,8 +64,83 @@ public class SavingProductReadService {
             items.add(item);
         }
 
-        // 3) Page 래핑 반환 (전체)
+        // 3) 은행사 필터링 적용
+        items = applyBankFilter(items, bankNames);
+
+        // 4) 정렬 옵션에 따른 정렬 적용
+        applySorting(items, sort);
+
+        // 5) Page 래핑 반환 (전체)
         return new PageImpl<SavingProductListItem>(items, PageRequest.of(0, items.isEmpty() ? 1 : items.size()), items.size());
+    }
+
+    /**
+     * [목록] 정렬 옵션에 따른 적금 상품 조회
+     * 정렬 옵션: popular(인기순), name(상품명 가나다순)
+     * 프론트 요구에 따라 전체 리스트를 반환한다.
+     */
+    public Page<SavingProductListItem> getSavingProducts(String sort, int page, int size) {
+        return getSavingProducts(sort, Collections.emptyList(), page, size);
+    }
+
+    /**
+     * [목록] 인기순 적금 상품 조회
+     * 정렬 기준: 최신 스냅샷 중 subscriberCount 내림차순
+     * 프론트 요구에 따라 전체 리스트를 반환한다.
+     */
+    public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
+        return getSavingProducts("popular", page, size);
+    }
+
+    /**
+     * [목록] 적금 상품 조회 결과와 은행사명 리스트를 함께 반환
+     * @param sort 정렬 옵션
+     * @param bankNames 은행사 필터
+     * @return 상품 목록과 은행사명 리스트가 포함된 Map
+     */
+    public Map<String, Object> getSavingProductsWithBankNames(String sort, List<String> bankNames) {
+        var products = getSavingProducts(sort, bankNames, 0, Integer.MAX_VALUE);
+        var bankNameList = products.getContent().stream()
+                .map(SavingProductListItem::getBankName)
+                .distinct()
+                .sorted()
+                .toList();
+        
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("content", products.getContent());
+        result.put("bankNames", bankNameList);
+        return result;
+    }
+
+    /**
+     * 은행사 필터링을 적용
+     * @param items 상품 목록
+     * @param bankNames 필터링할 은행사명 리스트 (빈 리스트인 경우 필터링하지 않음)
+     * @return 필터링된 상품 목록
+     */
+    private List<SavingProductListItem> applyBankFilter(List<SavingProductListItem> items, List<String> bankNames) {
+        if (bankNames == null || bankNames.isEmpty()) {
+            return items;
+        }
+        
+        return items.stream()
+                .filter(item -> bankNames.contains(item.getBankName()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 정렬 옵션에 따라 리스트를 정렬
+     */
+    private void applySorting(List<SavingProductListItem> items, String sort) {
+        switch (sort.toLowerCase()) {
+            case "name":
+                ProductSortUtil.sortByProductName(items, SavingProductListItem::getProductName);
+                break;
+            case "popular":
+            default:
+                // 기본값은 인기순 (이미 DB에서 정렬되어 있음)
+                break;
+        }
     }
 
     /**
