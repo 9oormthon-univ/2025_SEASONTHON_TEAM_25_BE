@@ -63,7 +63,11 @@ public enum ErrorCode {
     SAVING_NO_TODAY_PAYABLE("SAV010", "오늘 납입 가능한 회차가 없습니다.", HttpStatus.BAD_REQUEST),
 
     // 스크랩 에러
-    SCRAP_ALREADY_EXISTS("SCRAP001", "이미 스크랩한 뉴스입니다.", HttpStatus.CONFLICT);
+    SCRAP_ALREADY_EXISTS("SCRAP001", "이미 스크랩한 뉴스입니다.", HttpStatus.CONFLICT),
+    
+    // 출석 에러
+    ATTENDANCE_INVALID_YEAR("ATTENDANCE001", "년도는 2000~2100 사이의 값이어야 합니다.", HttpStatus.BAD_REQUEST),
+    ATTENDANCE_INVALID_MONTH("ATTENDANCE002", "월은 1~12 사이의 값이어야 합니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
