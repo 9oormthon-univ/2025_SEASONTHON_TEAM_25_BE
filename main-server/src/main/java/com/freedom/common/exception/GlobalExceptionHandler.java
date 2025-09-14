@@ -297,6 +297,21 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.SCRAP_ALREADY_EXISTS);
     }
 
+    @ExceptionHandler(InvalidAttendanceParameterException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAttendanceParameterException(InvalidAttendanceParameterException e) {
+        log.warn("출석 파라미터 유효성 검증 실패: {}", e.getMessage());
+        
+        if (e.getMessage().contains("년도")) {
+            return createErrorResponse(ErrorCode.ATTENDANCE_INVALID_YEAR);
+        } else if (e.getMessage().contains("월")) {
+            return createErrorResponse(ErrorCode.ATTENDANCE_INVALID_MONTH);
+        }
+        
+        return ResponseEntity
+                .status(ErrorCode.VALIDATION_ERROR.getStatus())
+                .body(ErrorResponse.of(ErrorCode.VALIDATION_ERROR, e.getMessage()));
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
         log.warn("요청 파라미터 유효성 검증 실패: {}", e.getMessage());

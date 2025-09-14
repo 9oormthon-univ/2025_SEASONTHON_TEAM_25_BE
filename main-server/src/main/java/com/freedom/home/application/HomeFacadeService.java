@@ -1,15 +1,13 @@
 package com.freedom.home.application;
 
-import com.freedom.auth.domain.service.AttendanceService;
+import com.freedom.attendance.domain.service.AttendanceReadService;
 import com.freedom.auth.domain.service.CharacterNameService;
-import com.freedom.home.api.response.AttendanceResponse;
 import com.freedom.home.api.response.HomeResponse;
 import com.freedom.quiz.domain.service.FindUserQuizService;
 import com.freedom.wallet.application.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,7 +22,7 @@ public class HomeFacadeService {
 
     private final WalletService walletService;
     private final FindUserQuizService findUserQuizService;
-    private final AttendanceService attendanceService;
+    private final AttendanceReadService attendanceService;
     private final CharacterNameService characterNameService;
     
     public HomeResponse getMainHomeData(Long userId) {
@@ -88,15 +86,5 @@ public class HomeFacadeService {
                 attendance,
                 (int) correctCount
         );
-    }
-
-    @Transactional
-    public AttendanceResponse markAttendance(Long userId) {
-        boolean isSuccess = attendanceService.markAttendance(userId);
-        
-        return isSuccess
-                ? AttendanceResponse.success()
-                : AttendanceResponse.alreadyAttended();
-
     }
 }

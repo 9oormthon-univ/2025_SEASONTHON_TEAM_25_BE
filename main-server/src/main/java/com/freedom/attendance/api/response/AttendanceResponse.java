@@ -1,4 +1,4 @@
-package com.freedom.home.api.response;
+package com.freedom.attendance.api.response;
 
 import lombok.Builder;
 import lombok.Getter;
