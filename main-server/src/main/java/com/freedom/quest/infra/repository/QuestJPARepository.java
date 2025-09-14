@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuestJPARepository extends JpaRepository<Quest, Long> {
-    List<Quest> findAllByIsActiveTrue();
+    List<Quest> findAllByActiveTrue();
 }

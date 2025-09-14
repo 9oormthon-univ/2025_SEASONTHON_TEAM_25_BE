@@ -38,7 +38,7 @@ public class UserQuestCommandService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
-        List<Quest> questList = questRepository.findAllByIsActiveTrue();
+        List<Quest> questList = questRepository.findAllByActiveTrue();
         List<UserQuest> userQuestList = questList.stream()
                 .filter(quest -> {
                     if (quest.getTargetType() != TargetType.SCRAP_NEWS && quest.getTargetType() != TargetType.SCRAP_QUIZ) {

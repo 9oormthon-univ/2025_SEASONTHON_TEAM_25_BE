@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface NewsHistoryRepository extends JpaRepository<NewsReadHistory, Long> {
-    NewsReadHistory findByUserIdAndNewsId(Long userId, Long newsId);
+    NewsReadHistory findByUserIdAndNewsArticleId(Long userId, Long newsArticleId);
 
     int countByUserIdAndReadAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 }
