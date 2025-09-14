@@ -5,9 +5,9 @@ import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
 import com.freedom.saving.application.port.SavingSubscriptionPort;
-import com.freedom.saving.application.signup.exception.InvalidAutoDebitAmountForFixedException;
-import com.freedom.saving.application.signup.exception.ProductSnapshotNotFoundException;
-import com.freedom.saving.application.signup.exception.ProductTermNotSupportedException;
+import com.freedom.common.exception.custom.InvalidAutoDebitAmountForFixedException;
+import com.freedom.common.exception.custom.ProductSnapshotNotFoundException;
+import com.freedom.common.exception.custom.ProductTermNotSupportedException;
 import com.freedom.saving.domain.policy.TickPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -103,7 +103,7 @@ public class SavingSubscriptionService {
     private int validateAndGetTerm(Long snapshotId, Integer requestedTerm) {
         List<Integer> supported = snapshotPort.getSupportedTermMonths(snapshotId);
         if (!supported.contains(requestedTerm)) {
-            throw new ProductTermNotSupportedException(requestedTerm);
+            throw new ProductTermNotSupportedException(requestedTerm, supported);
         }
         return requestedTerm;
     }

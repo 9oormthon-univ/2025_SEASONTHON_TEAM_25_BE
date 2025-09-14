@@ -45,7 +45,8 @@ public class SavingSubscriptionCommandController {
         return new OpenSubscriptionResponse(
                 r.subscriptionId(),
                 r.startDate(),
-                r.maturityDate()
+                r.maturityDate(),
+                "적금 가입이 성공적으로 완료되었습니다."
         );
     }
 

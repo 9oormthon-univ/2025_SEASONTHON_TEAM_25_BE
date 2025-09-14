@@ -42,6 +42,11 @@ public class SavingProductOptionSnapshot {
     @Column(name = "intr_rate_type_nm", length = 50)
     private String intrRateTypeNm;
 
+    @Column(name = "rsrv_type", length = 10)
+    private String rsrvType;
+
+    @Column(name = "rsrv_type_nm", length = 10)
+    private String rsrvTypeNm;
 
     @Column(name = "save_trm_months")
     private Integer saveTrmMonths; // nullable 허용(FSS 값 이상치 대비)
