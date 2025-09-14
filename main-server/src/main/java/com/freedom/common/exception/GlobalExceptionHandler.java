@@ -17,6 +17,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -239,6 +240,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.warn("지원하지 않는 HTTP 메서드: {}", e.getMessage());
         return createErrorResponse(ErrorCode.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e, HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
+        String method = request.getMethod();
+        
+        log.warn("API 경로를 찾을 수 없음: {} {}", method, requestUri);
+        
+        // API 경로인지 확인하여 더 구체적인 메시지 제공
+        if (requestUri.startsWith("/api/")) {
+            return ResponseEntity
+                    .status(ErrorCode.API_NOT_FOUND.getStatus())
+                    .body(ErrorResponse.of(ErrorCode.API_NOT_FOUND, 
+                            String.format("요청하신 API 경로 '%s'를 찾을 수 없습니다. 올바른 API 경로를 확인해주세요.", requestUri)));
+        } else {
+            return createErrorResponse(ErrorCode.API_NOT_FOUND);
+        }
     }
 
     @ExceptionHandler(DataAccessException.class)
