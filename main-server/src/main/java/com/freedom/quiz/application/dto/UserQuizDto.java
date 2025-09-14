@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Builder
 public class UserQuizDto {
     private final Long userQuizId;
+    private final Long userId;
     private final Long quizId;
     private final QuizType type;
     private final String category;  // 퀴즈 카테고리 (news, quiz)
@@ -41,6 +42,7 @@ public class UserQuizDto {
     public static UserQuizDto from(UserQuiz userQuiz, Quiz quiz, String newsUrl) {
         return UserQuizDto.builder()
                 .userQuizId(userQuiz.getId())
+                .userId(userQuiz.getUserId())
                 .quizId(quiz.getId())
                 .type(quiz.getType())
                 .category(quiz.getCategory())

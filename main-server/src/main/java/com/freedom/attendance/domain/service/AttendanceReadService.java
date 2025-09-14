@@ -37,4 +37,10 @@ public class AttendanceReadService {
                 .forEach(a -> map[a.getCheckDate().getDayOfMonth() - 1] = true);
         return map;
     }
+
+    @Transactional(readOnly = true)
+    public boolean wasAttendedYesterday(Long userId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return attendanceRepository.existsByUserIdAndCheckDate(userId, yesterday);
+    }
 }

@@ -20,6 +20,7 @@ public class QuizFacade {
     private final FindUserQuizService findUserQuizService;
     private final CreateDailyQuizService createDailyQuizService;
     private final UpdateUserQuizService updateUserQuizService;
+    private final QuizHistorySaveService quizHistorySaveService;
 
     @Transactional
     public DailyQuizDto getDailyQuizzes(Long userId) {
@@ -53,7 +54,15 @@ public class QuizFacade {
                 : userQuizDto.getMcqCorrectIndex() != null &&
                   userQuizDto.getMcqCorrectIndex().toString().equals(userAnswer);
 
+        quizHistorySave(userQuizDto, isCorrect);
+
         updateUserQuizService.updateAnswer(userQuizId, userAnswer, isCorrect);
         return QuizAnswerResultResponse.from(isCorrect, userQuizDto);
+    }
+
+    private void quizHistorySave(UserQuizDto userQuizDto, boolean isCorrect) {
+        if(userQuizDto.getUserAnswer() == null && isCorrect) { // 최초 시도 정답 제출 시에만 히스토리 저장
+            quizHistorySaveService.quizHistorySave(userQuizDto.getUserId(), userQuizDto.getQuizId());
+        }
     }
 }
