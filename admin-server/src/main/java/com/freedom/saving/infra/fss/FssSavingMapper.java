@@ -73,6 +73,8 @@ public class FssSavingMapper {
                     safeTrim(o.finPrdtCd),
                     safeTrim(o.intrRateType),
                     safeTrim(o.intrRateTypeNm),
+                    safeTrim(o.rsrvType),
+                    safeTrim(o.rsrvTypeNm),
                     saveTrmMonths,
                     intrRate,
                     intrRate2

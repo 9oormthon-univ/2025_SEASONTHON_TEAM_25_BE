@@ -64,6 +64,8 @@ public class SavingProductOptionSnapshot {
         e.dclsMonth = d.getDclsMonth();
         e.intrRateType = d.getIntrRateType();
         e.intrRateTypeNm = d.getIntrRateTypeNm();
+        e.rsrvType = d.getRsrvType();
+        e.rsrvTypeNm = d.getRsrvTypeNm();
         e.saveTrmMonths = d.getSaveTrmMonths();
         e.intrRate = d.getIntrRate();
         e.intrRate2 = d.getIntrRate2();
