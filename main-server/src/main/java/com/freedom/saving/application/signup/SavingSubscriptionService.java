@@ -103,7 +103,7 @@ public class SavingSubscriptionService {
     private int validateAndGetTerm(Long snapshotId, Integer requestedTerm) {
         List<Integer> supported = snapshotPort.getSupportedTermMonths(snapshotId);
         if (!supported.contains(requestedTerm)) {
-            throw new ProductTermNotSupportedException(requestedTerm);
+            throw new ProductTermNotSupportedException(requestedTerm, supported);
         }
         return requestedTerm;
     }
