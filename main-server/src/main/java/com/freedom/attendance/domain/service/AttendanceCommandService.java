@@ -30,4 +30,9 @@ public class AttendanceCommandService {
         attendanceRepository.save(attendance);
         return userJpaRepository.save(user).getAttendance();
     }
+
+    @Transactional
+    public void resetAllAttendanceStatus() {
+        userJpaRepository.resetAllAttendanceStatus();
+    }
 }
