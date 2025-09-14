@@ -71,7 +71,11 @@ public class User extends BaseEntity {
     public boolean isSuspended() {
         return UserStatus.SUSPENDED.equals(this.status);
     }
-    
+
+    public void completeAttendance() {
+        this.attendance = true;
+    }
+
     public boolean hasCharacterCreated() {
         return this.characterCreated;
     }

@@ -1,29 +1,25 @@
-package com.freedom.home.api.dto;
+package com.freedom.home.api.response;
 
+import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.math.BigDecimal;
 
 @Getter
+@Builder
 public class HomeResponse {
 
-    private String nickname;
-
+    private String characterName;
     private BigDecimal balance;
-
-    private LocalDate today;
-    
+    private boolean attendance;
     private int quizCount;
     
-    private HomeResponse(String nickname, BigDecimal balance, LocalDate today, int quizCount) {
-        this.nickname = nickname;
-        this.balance = balance;
-        this.today = today;
-        this.quizCount = quizCount;
-    }
-    
-    public static HomeResponse of(String nickname, BigDecimal balance, LocalDate today, int quizCount) {
-        return new HomeResponse(nickname, balance, today, quizCount);
+    public static HomeResponse of(String characterName, BigDecimal balance,boolean attendance, int quizCount) {
+        return HomeResponse.builder()
+                .characterName(characterName)
+                .balance(balance)
+                .attendance(attendance)
+                .quizCount(quizCount)
+                .build();
     }
 }

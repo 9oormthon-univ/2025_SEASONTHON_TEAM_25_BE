@@ -28,4 +28,11 @@ public class CharacterNameService {
         user.setCharacterNameAndMarkCreated(characterName);
         return userJpaRepository.save(user).getCharacterName();
     }
+
+    @Transactional(readOnly = true)
+    public String getCharacterName(Long userId) {
+        User user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다. userId: " + userId));
+        return user.getCharacterName();
+    }
 }

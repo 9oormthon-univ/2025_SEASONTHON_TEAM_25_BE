@@ -1,9 +1,9 @@
 package com.freedom.home.application;
 
-import com.freedom.auth.domain.User;
-import com.freedom.auth.domain.service.FindUserService;
-import com.freedom.home.api.dto.HomeResponse;
-import com.freedom.quiz.application.dto.UserQuizDto;
+import com.freedom.auth.domain.service.AttendanceService;
+import com.freedom.auth.domain.service.CharacterNameService;
+import com.freedom.home.api.response.AttendanceResponse;
+import com.freedom.home.api.response.HomeResponse;
 import com.freedom.quiz.domain.service.FindUserQuizService;
 import com.freedom.wallet.application.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -12,27 +12,40 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class HomeAppService {
+public class HomeFacadeService {
 
-    private final FindUserService findUserService;
     private final WalletService walletService;
     private final FindUserQuizService findUserQuizService;
+    private final AttendanceService attendanceService;
+    private final CharacterNameService characterNameService;
 
-    public HomeResponse getHome(Long userId) {
-        boolean attendance = findUserService.findById(userId).getAttendance();
+    @Transactional(readOnly = true)
+    public HomeResponse getMainHomeData(Long userId) {
+        String characterName = characterNameService.getCharacterName(userId);
+        boolean attendance = attendanceService.isAttendanceCompleted(userId);
         BigDecimal balance = walletService.getWalletByUserId(userId).getBalance();
-        
-        LocalDate today = LocalDate.now();
-        List<UserQuizDto> todays = findUserQuizService.findDailyQuizzes(userId, today);
+        long correctCount = findUserQuizService.findDailyQuizzes(userId, LocalDate.now()).stream()
+                .filter(q -> Boolean.TRUE.equals(q.getIsCorrect()))
+                .count();
 
-        return null;
+        return HomeResponse.of(
+                characterName,
+                balance,
+                attendance,
+                (int) correctCount
+        );
+    }
+
+    @Transactional
+    public AttendanceResponse markAttendance(Long userId) {
+        boolean isSuccess = attendanceService.markAttendance(userId);
+        
+        return isSuccess
+                ? AttendanceResponse.success()
+                : AttendanceResponse.alreadyAttended();
+
     }
 }
-
-
-
