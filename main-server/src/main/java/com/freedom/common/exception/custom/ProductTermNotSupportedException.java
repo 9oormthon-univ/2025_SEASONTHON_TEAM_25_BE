@@ -1,4 +1,4 @@
-package com.freedom.saving.application.signup.exception;
+package com.freedom.common.exception.custom;
 
 public class ProductTermNotSupportedException extends RuntimeException {
     public ProductTermNotSupportedException(int termMonths) {

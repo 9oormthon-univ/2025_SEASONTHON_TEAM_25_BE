@@ -1,4 +1,4 @@
-package com.freedom.saving.application.signup.exception;
+package com.freedom.common.exception.custom;
 
 import java.math.BigDecimal;
 

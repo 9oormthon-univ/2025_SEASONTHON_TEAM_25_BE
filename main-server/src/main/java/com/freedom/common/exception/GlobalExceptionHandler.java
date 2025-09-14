@@ -129,8 +129,8 @@ public class GlobalExceptionHandler {
 
     // ===== saving mapping =====
 
-    @ExceptionHandler(com.freedom.saving.application.signup.exception.ProductTermNotSupportedException.class)
-    public ResponseEntity<ErrorResponse> handleProductTermNotSupported(com.freedom.saving.application.signup.exception.ProductTermNotSupportedException e) {
+    @ExceptionHandler(ProductTermNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleProductTermNotSupported(ProductTermNotSupportedException e) {
         log.warn("기간 미지원: {}", e.getMessage());
         return ResponseEntity
                 .status(ErrorCode.SAVING_POLICY_INVALID.getStatus())
