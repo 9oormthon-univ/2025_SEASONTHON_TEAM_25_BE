@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findAllByUserIdAndCheckDateBetween(Long userId, LocalDate start, LocalDate end);
+
+    boolean existsByUserIdAndCheckDate(Long userId, LocalDate yesterday);
 }

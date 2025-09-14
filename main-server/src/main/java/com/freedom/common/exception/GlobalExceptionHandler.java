@@ -28,6 +28,36 @@ public class GlobalExceptionHandler {
 
     private final DiscordWebhookClient discordWebhookClient;
 
+    @ExceptionHandler(UserQuestNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserQuestNotFoundException(UserQuestNotFoundException e) {
+        return createErrorResponse(ErrorCode.USER_QUEST_NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserWalletNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserWalletNotFoundException(UserWalletNotFoundException e) {
+        return createErrorResponse(ErrorCode.USER_WALLET_NOT_FOUND);
+    }
+
+    @ExceptionHandler(QuestAlreadyCompletedException.class)
+    public ResponseEntity<ErrorResponse> handleQuestAlreadyCompletedException(QuestAlreadyCompletedException e) {
+        return createErrorResponse(ErrorCode.QUEST_ALREADY_COMPLETED);
+    }
+
+    @ExceptionHandler(QuestRewardAlreadyClaimedException.class)
+    public ResponseEntity<ErrorResponse> handleQuestRewardAlreadyClaimedException(QuestRewardAlreadyClaimedException e) {
+        return createErrorResponse(ErrorCode.QUEST_REWARD_ALREADY_CLAIMED);
+    }
+
+    @ExceptionHandler(QuestAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleQuestAccessDeniedException(QuestAccessDeniedException e) {
+        return createErrorResponse(ErrorCode.QUEST_ACCESS_DENIED);
+    }
+
+    @ExceptionHandler(UnsupportedQuestTypeException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedQuestTypeException(UnsupportedQuestTypeException e) {
+        return createErrorResponse(ErrorCode.UNSUPPORTED_QUEST_TYPE);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
         log.warn("사용자를 찾을 수 없음: {}", e.getMessage());

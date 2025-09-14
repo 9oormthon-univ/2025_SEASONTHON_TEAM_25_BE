@@ -1,10 +1,8 @@
 package com.freedom.auth.domain;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum UserStatus {
     
     ACTIVE("활성", "정상적으로 서비스를 이용할 수 있는 상태"),
@@ -13,4 +11,9 @@ public enum UserStatus {
     
     private final String displayName;
     private final String description;
+    
+    UserStatus(String displayName, String description) {
+        this.displayName = displayName;
+        this.description = description;
+    }
 }

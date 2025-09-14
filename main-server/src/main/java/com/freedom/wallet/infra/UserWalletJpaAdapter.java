@@ -40,4 +40,9 @@ public class UserWalletJpaAdapter implements UserWalletRepository {
     public void delete(UserWallet wallet) {
         jpaRepository.delete(wallet);
     }
+
+    @Override
+    public Optional<UserWallet> findByUserIdForUpdate(Long userId) {
+        return jpaRepository.findByUserIdForUpdate(userId);
+    }
 }

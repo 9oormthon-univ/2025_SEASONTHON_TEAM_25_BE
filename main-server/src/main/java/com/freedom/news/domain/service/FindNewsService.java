@@ -5,6 +5,7 @@ import com.freedom.news.application.dto.NewsDetailDto;
 import com.freedom.news.application.dto.NewsDto;
 import com.freedom.news.domain.entity.NewsArticle;
 import com.freedom.news.infra.repository.NewsArticleRepository;
+import com.freedom.news.infra.repository.NewsHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 public class FindNewsService {
     
     private final NewsArticleRepository newsArticleRepository;
+    private final NewsHistoryRepository newsHistoryRepository;
 
     @Transactional(readOnly = true)
     public Page<NewsDto> findRecentNews(Pageable pageable) {
@@ -53,5 +55,13 @@ public class FindNewsService {
     public NewsDetailDto findNewsById(Long newsId) {
         NewsArticle newsArticle = newsArticleRepository.findById(newsId).orElseThrow(() -> new NewsNotFoundException("존재하지 않는 뉴스 입니다." + newsId));
         return NewsDetailDto.from(newsArticle, newsArticle.getContentBlocks());
+    }
+
+    public int findNewsHistoryCountByUserId(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDate thisWeekMonday = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDateTime start = thisWeekMonday.atStartOfDay();
+        LocalDateTime end = LocalDateTime.now();
+        return newsHistoryRepository.countByUserIdAndReadAtBetween(userId, start, end);
     }
 }

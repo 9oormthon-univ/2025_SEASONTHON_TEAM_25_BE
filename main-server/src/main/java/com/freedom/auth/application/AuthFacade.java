@@ -8,6 +8,7 @@ import com.freedom.auth.domain.User;
 import com.freedom.auth.domain.service.*;
 import com.freedom.common.logging.Loggable;
 import com.freedom.common.security.JwtProvider;
+import com.freedom.wallet.application.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AuthFacade {
     private final ValidateUserService validateUserService;
     private final RefreshTokenService refreshTokenService;
     private final CharacterNameService characterNameService;
+    private final WalletService walletService;
     private final JwtProvider jwtProvider;
     
     @Value("${jwt.access-token.expiration}")
@@ -71,7 +73,9 @@ public class AuthFacade {
     @Loggable("캐릭터 이름 생성 처리")
     @Transactional
     public String createCharacterName(Long userId, String characterName) {
-        return characterNameService.createCharacterName(userId, characterName);
+        String chracterName = characterNameService.createCharacterName(userId, characterName);
+        walletService.createWallet(userId);
+        return chracterName;
     }
 
     private TokenDto createTokenResponse(User user) {
