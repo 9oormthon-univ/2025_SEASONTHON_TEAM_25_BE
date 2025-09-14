@@ -40,7 +40,8 @@ public class AttendanceReadService {
 
     @Transactional(readOnly = true)
     public boolean wasAttendedYesterday(Long userId) {
+        LocalDate today = LocalDate.now();
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        return attendanceRepository.existsByUserIdAndCheckDate(userId, yesterday);
+        return attendanceRepository.existsByUserIdAndCheckDate(userId, yesterday) && !attendanceRepository.existsByUserIdAndCheckDate(userId, today);
     }
 }
