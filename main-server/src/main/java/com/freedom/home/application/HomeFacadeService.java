@@ -8,6 +8,7 @@ import com.freedom.wallet.application.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,7 +25,8 @@ public class HomeFacadeService {
     private final FindUserQuizService findUserQuizService;
     private final AttendanceReadService attendanceService;
     private final CharacterNameService characterNameService;
-    
+
+    @Transactional(readOnly = true)
     public HomeResponse getMainHomeData(Long userId) {
         CompletableFuture<String> characterNameFuture = CompletableFuture
             .supplyAsync(() -> {
