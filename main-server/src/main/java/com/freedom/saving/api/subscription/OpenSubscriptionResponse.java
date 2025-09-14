@@ -7,5 +7,6 @@ import java.time.LocalDate;
 public record OpenSubscriptionResponse(
         Long subscriptionId,
         @JsonFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-        @JsonFormat(pattern = "yyyy-MM-dd") LocalDate maturityDate
+        @JsonFormat(pattern = "yyyy-MM-dd") LocalDate maturityDate,
+        String message
 ) { }
