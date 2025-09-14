@@ -111,4 +111,47 @@ class CharacterNameServiceTest {
                 .isInstanceOf(DuplicateCharacterNameException.class)
                 .hasMessage("이미 사용 중인 캐릭터 이름입니다.");
     }
+
+    @Test
+    @DisplayName("캐릭터 이름 조회 성공")
+    void getCharacterName_Success() {
+        // given
+        testUser.setCharacterNameAndMarkCreated(TEST_CHARACTER_NAME);
+        given(userJpaRepository.findById(TEST_USER_ID)).willReturn(Optional.of(testUser));
+
+        // when
+        String result = characterNameService.getCharacterName(TEST_USER_ID);
+
+        // then
+        assertThat(result).isEqualTo(TEST_CHARACTER_NAME);
+        then(userJpaRepository).should().findById(TEST_USER_ID);
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 조회 성공 - 캐릭터 이름이 null인 경우")
+    void getCharacterName_Success_NullCharacterName() {
+        // given
+        given(userJpaRepository.findById(TEST_USER_ID)).willReturn(Optional.of(testUser));
+
+        // when
+        String result = characterNameService.getCharacterName(TEST_USER_ID);
+
+        // then
+        assertThat(result).isNull();
+        then(userJpaRepository).should().findById(TEST_USER_ID);
+    }
+
+    @Test
+    @DisplayName("캐릭터 이름 조회 실패 - 사용자를 찾을 수 없음")
+    void getCharacterName_Fail_UserNotFound() {
+        // given
+        given(userJpaRepository.findById(TEST_USER_ID)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> characterNameService.getCharacterName(TEST_USER_ID))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("사용자를 찾을 수 없습니다. userId: " + TEST_USER_ID);
+
+        then(userJpaRepository).should().findById(TEST_USER_ID);
+    }
 }
