@@ -14,7 +14,7 @@ public class NewsHistorySaveService {
     private final NewsHistoryRepository newsHistoryRepository;
 
     public void saveNewsHistory(Long userId, Long newsId) {
-        NewsReadHistory history = newsHistoryRepository.findByUserIdAndNewsId(userId, newsId);
+        NewsReadHistory history = newsHistoryRepository.findByUserIdAndNewsArticleId(userId, newsId);
         if(history == null) {
             NewsReadHistory newHistory = NewsReadHistory.builder()
                     .userId(userId)
