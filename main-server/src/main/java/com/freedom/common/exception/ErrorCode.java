@@ -12,6 +12,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("COMMON001", "서버 내부 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     METHOD_NOT_ALLOWED("COMMON002", "허용되지 않은 HTTP 메서드입니다.", HttpStatus.METHOD_NOT_ALLOWED),
     API_NOT_FOUND("COMMON003", "요청하신 API 경로를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    RESOURCE_NOT_FOUND("COMMON004", "요청하신 리소스를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     
     // Validation 에러
     VALIDATION_ERROR("VALIDATION001", "", HttpStatus.BAD_REQUEST),
