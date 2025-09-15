@@ -11,4 +11,6 @@ public interface NewsHistoryRepository extends JpaRepository<NewsReadHistory, Lo
     NewsReadHistory findByUserIdAndNewsArticleId(Long userId, Long newsArticleId);
 
     int countByUserIdAndReadAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+    
+    int countByUserId(Long userId);
 }
