@@ -20,4 +20,7 @@ public interface SavingProductSnapshotPort {
 
     /** 가입 발생 시 인기 집계 증가 */
     void incrementSubscriberCount(Long productSnapshotId);
+
+    /** 상품의 최고한도 조회 */
+    Integer getMaxLimit(Long productSnapshotId);
 }

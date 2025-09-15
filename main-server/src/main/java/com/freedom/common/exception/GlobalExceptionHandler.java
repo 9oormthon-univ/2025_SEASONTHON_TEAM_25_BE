@@ -228,6 +228,12 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.SAVING_DUPLICATE_SUBSCRIPTION);
     }
 
+    @ExceptionHandler(ExceedsMaxLimitException.class)
+    public ResponseEntity<ErrorResponse> handleExceedsMaxLimitException(ExceedsMaxLimitException e) {
+        log.warn("최고 한도 초과: 요청 금액={}, 최고 한도={}", e.getRequestedAmount(), e.getMaxLimit());
+        return createErrorResponse(ErrorCode.SAVING_EXCEEDS_MAX_LIMIT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.warn("유효성 검증 실패: {}", e.getBindingResult().getAllErrors());

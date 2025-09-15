@@ -6,6 +6,7 @@ import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
 import com.freedom.saving.application.port.SavingSubscriptionPort;
+import com.freedom.common.exception.custom.ExceedsMaxLimitException;
 import com.freedom.common.exception.custom.InvalidAutoDebitAmountForFixedException;
 import com.freedom.common.exception.custom.ProductSnapshotNotFoundException;
 import com.freedom.common.exception.custom.ProductTermNotSupportedException;
@@ -61,7 +62,10 @@ public class SavingSubscriptionService {
         // 4) 정액식이므로 금액 필수
         validateAutoDebitAmountForFixed(cmd.getAutoDebitAmount());
 
-        // 5) 서비스 달력 날짜 계산
+        // 5) 최고한도 검증
+        validateMaxLimit(cmd.getProductSnapshotId(), cmd.getAutoDebitAmount());
+
+        // 6) 서비스 달력 날짜 계산
         ZonedDateTime now = timeProvider.now();
         LocalDate startServiceDate = serviceToday(now);
         LocalDate maturityServiceDate = tickPolicy.calcMaturityDate(startServiceDate, chosenTerm);
@@ -114,6 +118,24 @@ public class SavingSubscriptionService {
     private void validateAutoDebitAmountForFixed(BigDecimal amount) {
         if (amount == null || amount.signum() <= 0) {
             throw new InvalidAutoDebitAmountForFixedException(amount);
+        }
+    }
+
+    /**
+     * 최고한도 검증:
+     * - 요청 금액이 상품의 최고한도를 초과하는지 확인
+     */
+    private void validateMaxLimit(Long productSnapshotId, BigDecimal requestedAmount) {
+        Integer maxLimit = snapshotPort.getMaxLimit(productSnapshotId);
+        
+        // maxLimit가 null이면 한도 제한 없음
+        if (maxLimit == null) {
+            return;
+        }
+        
+        // 요청 금액이 최고한도를 초과하는지 확인
+        if (requestedAmount.compareTo(BigDecimal.valueOf(maxLimit)) > 0) {
+            throw new ExceedsMaxLimitException(requestedAmount, BigDecimal.valueOf(maxLimit));
         }
     }
 }

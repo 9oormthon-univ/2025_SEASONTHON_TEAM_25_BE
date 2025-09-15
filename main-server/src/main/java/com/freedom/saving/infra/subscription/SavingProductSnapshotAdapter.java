@@ -49,4 +49,12 @@ public class SavingProductSnapshotAdapter implements SavingProductSnapshotPort {
             productRepo.save(s);
         });
     }
+
+    /** 상품의 최고 한도 조회 */
+    @Override
+    public Integer getMaxLimit(Long productSnapshotId) {
+        return productRepo.findById(productSnapshotId)
+                .map(s -> s.getMaxLimit())
+                .orElse(null);
+    }
 }
