@@ -72,6 +72,9 @@ public enum ErrorCode {
     QUEST_ACCESS_DENIED("QUEST005", "해당 퀘스트에 접근할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     UNSUPPORTED_QUEST_TYPE("QUEST006", "지원하지 않는 퀘스트 타입입니다.", HttpStatus.BAD_REQUEST),
 
+    // 지갑 에러
+    INSUFFICIENT_BALANCE("WALLET001", "잔액이 부족합니다.", HttpStatus.BAD_REQUEST),
+
     // 스크랩 에러
     SCRAP_ALREADY_EXISTS("SCRAP001", "이미 스크랩한 뉴스입니다.", HttpStatus.CONFLICT),
     

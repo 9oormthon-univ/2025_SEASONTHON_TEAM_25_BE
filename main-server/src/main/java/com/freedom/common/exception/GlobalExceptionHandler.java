@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.USER_WALLET_NOT_FOUND);
     }
 
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientBalanceException(InsufficientBalanceException e) {
+        log.warn("잔액 부족: 현재 잔액={}, 요청 금액={}", e.getCurrentBalance(), e.getRequestedAmount());
+        return createErrorResponse(ErrorCode.INSUFFICIENT_BALANCE);
+    }
+
     @ExceptionHandler(QuestAlreadyCompletedException.class)
     public ResponseEntity<ErrorResponse> handleQuestAlreadyCompletedException(QuestAlreadyCompletedException e) {
         return createErrorResponse(ErrorCode.QUEST_ALREADY_COMPLETED);

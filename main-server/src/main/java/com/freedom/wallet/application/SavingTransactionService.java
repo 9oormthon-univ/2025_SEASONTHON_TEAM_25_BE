@@ -1,5 +1,6 @@
 package com.freedom.wallet.application;
 
+import com.freedom.common.exception.custom.InsufficientBalanceException;
 import com.freedom.wallet.domain.UserWallet;
 import com.freedom.wallet.domain.WalletTransaction;
 import com.freedom.wallet.domain.WalletTransactionRepository;
@@ -42,7 +43,11 @@ public class SavingTransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("지갑을 찾을 수 없습니다. ID: " + userWallet.getId()));
         
         // 4. 도메인 로직 실행
-        wallet.withdraw(amount);
+        try {
+            wallet.withdraw(amount);
+        } catch (IllegalArgumentException e) {
+            throw new InsufficientBalanceException(wallet.getBalance(), amount);
+        }
         walletRepository.save(wallet);
         
         // 5. 거래 이력 저장
@@ -156,7 +161,11 @@ public class SavingTransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("지갑을 찾을 수 없습니다. ID: " + userWallet.getId()));
 
         // 출금(잔액 부족 시 도메인에서 예외 발생)
-        wallet.withdraw(amount);
+        try {
+            wallet.withdraw(amount);
+        } catch (IllegalArgumentException e) {
+            throw new InsufficientBalanceException(wallet.getBalance(), amount);
+        }
         walletRepository.save(wallet);
 
         WalletTransaction transaction = WalletTransaction.createSavingAutoDebit(wallet, requestId, amount, subscriptionId);
