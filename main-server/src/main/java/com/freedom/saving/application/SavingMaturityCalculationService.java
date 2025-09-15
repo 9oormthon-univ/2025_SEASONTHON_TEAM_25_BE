@@ -2,7 +2,6 @@ package com.freedom.saving.application;
 
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,7 +10,6 @@ import java.math.RoundingMode;
 /**
  * 적금 만기 금액 계산 서비스
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SavingMaturityCalculationService {
@@ -42,9 +40,6 @@ public class SavingMaturityCalculationService {
             BigDecimal interestRate,
             boolean isCompoundInterest) {
         
-        log.info("적금 만기 금액 계산 시작: 월납입={}, 기간={}개월, 금리={}%, 계산방식={}", 
-                monthlyAmount, termMonths, interestRate, isCompoundInterest ? "복리" : "단리");
-        
         // 원금 계산
         BigDecimal principal = monthlyAmount.multiply(BigDecimal.valueOf(termMonths));
         
@@ -73,8 +68,6 @@ public class SavingMaturityCalculationService {
                 interestRate
         );
         
-        log.info("적금 만기 금액 계산 완료: 원금={}, 이자={}, 세금={}, 총액={}", 
-                result.principal(), result.interest(), result.tax(), result.totalAmount());
         
         return result;
     }

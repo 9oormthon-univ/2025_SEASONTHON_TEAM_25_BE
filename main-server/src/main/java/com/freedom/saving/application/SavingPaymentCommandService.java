@@ -1,6 +1,7 @@
 package com.freedom.saving.application;
 
 import com.freedom.common.exception.custom.SavingExceptions;
+import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.subscription.SavingSubscription;
@@ -10,14 +11,12 @@ import com.freedom.common.time.TimeProvider;
 import com.freedom.wallet.application.SavingTransactionService;
 import com.freedom.saving.domain.policy.TickPolicy;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class SavingPaymentCommandService {
 
@@ -31,6 +30,7 @@ public class SavingPaymentCommandService {
      * 다음 예정 회차(PLANNED)에 대해 납입 처리
      * amount가 null이면 expectedAmount로 처리
      */
+    @Loggable("적금 납입 처리")
     @Transactional
     public void depositNext(Long userId, Long subscriptionId, BigDecimal amount) {
         SavingSubscription sub = subscriptionRepo.findByIdAndUserId(subscriptionId, userId)
@@ -64,8 +64,6 @@ public class SavingPaymentCommandService {
         String requestId = "MANUAL_" + subscriptionId + "_" + today.toString();
         var txn = savingTxnService.processSavingAutoDebit(userId, requestId, payAmount, subscriptionId);
 
-        log.info("[SavingDeposit] userId={}, subscriptionId={}, cycleNo={}, expectedAmount={}, requestAmount={}, finalPayAmount={}, walletTxnId={}",
-                userId, subscriptionId, planned.getCycleNo(), planned.getExpectedAmount(), amount, payAmount, txn.getId());
 
         planned.markPaid(payAmount, txn.getId(), null);
         paymentRepo.save(planned);

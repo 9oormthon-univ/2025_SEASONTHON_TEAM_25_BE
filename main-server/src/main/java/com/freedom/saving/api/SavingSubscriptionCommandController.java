@@ -1,5 +1,6 @@
 package com.freedom.saving.api;
 
+import com.freedom.common.logging.Loggable;
 import com.freedom.common.security.CustomUserPrincipal;
 import com.freedom.saving.api.subscription.OpenSubscriptionRequest;
 import com.freedom.saving.api.subscription.OpenSubscriptionResponse;
@@ -29,6 +30,7 @@ public class SavingSubscriptionCommandController {
 
     public record MaturityQuoteResponse(BigDecimal principal, BigDecimal rate, BigDecimal interest, BigDecimal total) {}
 
+    @Loggable("적금 가입 API")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OpenSubscriptionResponse open(
@@ -50,6 +52,7 @@ public class SavingSubscriptionCommandController {
         );
     }
 
+    @Loggable("적금 해지 API")
     @DeleteMapping("/{subscriptionId}")
     public org.springframework.http.ResponseEntity<?> cancel(
             @AuthenticationPrincipal CustomUserPrincipal principal,
@@ -66,6 +69,7 @@ public class SavingSubscriptionCommandController {
         return maturitySettlementService.listPendingMaturities(principal.getId());
     }
 
+    @Loggable("만기 정산 API")
     @PostMapping("/{subscriptionId}/maturity/settlement")
     @ResponseStatus(HttpStatus.OK)
     public MaturityQuoteResponse claim(

@@ -1,5 +1,6 @@
 package com.freedom.saving.application.signup;
 
+import com.freedom.common.logging.Loggable;
 import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
@@ -43,6 +44,7 @@ public class SavingSubscriptionService {
         return now.toLocalDate();
     }
 
+    @Loggable("적금 가입")
     @Transactional
     public OpenSubscriptionResult open(OpenSubscriptionCommand cmd) {
         // 1) 스냅샷 존재
