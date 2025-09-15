@@ -55,16 +55,16 @@ public class SavingMaturityCalculationService {
         
         // 이자소득세 계산 (15.4%)
         BigDecimal taxRate = new BigDecimal("0.154");
-        BigDecimal tax = interest.multiply(taxRate).setScale(0, RoundingMode.HALF_UP);
+        BigDecimal tax = interest.multiply(taxRate).setScale(0, RoundingMode.DOWN);
         
         // 총 만기 금액
         BigDecimal totalMaturityAmount = principal.add(interest).subtract(tax);
         
         MaturityCalculationResult result = new MaturityCalculationResult(
                 principal,
-                interest.setScale(0, RoundingMode.HALF_UP),
+                interest.setScale(0, RoundingMode.DOWN),
                 tax,
-                totalMaturityAmount,
+                totalMaturityAmount.setScale(0, RoundingMode.DOWN),
                 interestRate
         );
         
