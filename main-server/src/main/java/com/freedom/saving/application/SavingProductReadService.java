@@ -1,8 +1,10 @@
 package com.freedom.saving.application;
 
+import com.freedom.common.exception.custom.SavingExceptions;
 import com.freedom.common.exception.custom.SavingProductNotFoundException;
 import com.freedom.saving.util.JoinDenyConverter;
 import com.freedom.saving.util.ProductSortUtil;
+import com.freedom.saving.util.SavingProductQueryUtil;
 import com.freedom.saving.application.read.SavingProductDetail;
 import com.freedom.saving.application.read.SavingProductListItem;
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
@@ -95,11 +97,23 @@ public class SavingProductReadService {
 
     /**
      * [목록] 적금 상품 조회 결과와 은행사명 리스트를 함께 반환
+     * @param type 상품 타입 (현재 SAVING만 지원)
      * @param sort 정렬 옵션
      * @param bankNames 은행사 필터
      * @return 상품 목록과 은행사명 리스트가 포함된 Map
      */
-    public Map<String, Object> getSavingProductsWithBankNames(String sort, List<String> bankNames) {
+    public Map<String, Object> getSavingProductsWithBankNames(String type, String sort, List<String> bankNames) {
+
+        if (!"SAVING".equalsIgnoreCase(type)) {
+            throw new SavingExceptions.SavingPolicyInvalidException("지원하지 않는 type 값입니다. (허용: SAVING)");
+        }
+        
+        // 지원하는 정렬 옵션 검증
+        if (!SavingProductQueryUtil.isValidSortOption(sort)) {
+            throw new SavingExceptions.SavingPolicyInvalidException(
+                "지원하지 않는 sort 값입니다. (허용: popular, name)");
+        }
+        
         var products = getSavingProducts(sort, bankNames, 0, Integer.MAX_VALUE);
         var bankNameList = products.getContent().stream()
                 .map(SavingProductListItem::getBankName)
