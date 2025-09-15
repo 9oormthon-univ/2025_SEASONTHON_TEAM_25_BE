@@ -44,4 +44,23 @@ public class AttendanceReadService {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         return attendanceRepository.existsByUserIdAndCheckDate(userId, yesterday) && !attendanceRepository.existsByUserIdAndCheckDate(userId, today);
     }
+
+    @Transactional(readOnly = true)
+    public int getCurrentMonthConsecutiveAttendanceDays(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+
+        int consecutiveDays = 0;
+        LocalDate checkDate = today;
+
+        while (!checkDate.isBefore(startOfMonth)) {
+            if (attendanceRepository.existsByUserIdAndCheckDate(userId, checkDate)) {
+                consecutiveDays++;
+                checkDate = checkDate.minusDays(1);
+            } else {
+                break;
+            }
+        }
+        return consecutiveDays;
+    }
 }
