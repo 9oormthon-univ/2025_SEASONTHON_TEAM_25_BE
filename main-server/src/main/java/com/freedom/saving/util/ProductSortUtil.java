@@ -1,7 +1,9 @@
 package com.freedom.saving.util;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 금융 상품 정렬을 위한 공통 유틸리티 클래스
@@ -13,9 +15,9 @@ public class ProductSortUtil {
      * 상품 이름을 가나다순으로 정렬하는 Comparator
      * 한글 정렬을 위해 Collator를 사용하여 자연스러운 정렬을 제공
      */
-    public static <T> Comparator<T> getProductNameComparator(java.util.function.Function<T, String> nameExtractor) {
-        java.text.Collator collator = java.text.Collator.getInstance(java.util.Locale.KOREAN);
-        collator.setStrength(java.text.Collator.PRIMARY); // 대소문자 구분하지 않음
+    public static <T> Comparator<T> getProductNameComparator(Function<T, String> nameExtractor) {
+        Collator collator = Collator.getInstance(java.util.Locale.KOREAN);
+        collator.setStrength(Collator.PRIMARY); // 대소문자 구분하지 않음
         
         return (o1, o2) -> {
             String name1 = nameExtractor.apply(o1);
@@ -32,7 +34,7 @@ public class ProductSortUtil {
     /**
      * 리스트를 상품 이름 가나다순으로 정렬
      */
-    public static <T> void sortByProductName(List<T> list, java.util.function.Function<T, String> nameExtractor) {
+    public static <T> void sortByProductName(List<T> list, Function<T, String> nameExtractor) {
         list.sort(getProductNameComparator(nameExtractor));
     }
 }

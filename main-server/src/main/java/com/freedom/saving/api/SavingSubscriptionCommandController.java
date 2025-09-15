@@ -1,5 +1,6 @@
 package com.freedom.saving.api;
 
+import com.freedom.common.exception.SuccessResponse;
 import com.freedom.common.logging.Loggable;
 import com.freedom.common.security.CustomUserPrincipal;
 import com.freedom.saving.api.subscription.OpenSubscriptionRequest;
@@ -11,6 +12,7 @@ import com.freedom.saving.application.signup.SavingSubscriptionService;
 import com.freedom.saving.application.MaturitySettlementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,12 +56,12 @@ public class SavingSubscriptionCommandController {
 
     @Loggable("적금 해지 API")
     @DeleteMapping("/{subscriptionId}")
-    public org.springframework.http.ResponseEntity<?> cancel(
+    public ResponseEntity<?> cancel(
             @AuthenticationPrincipal CustomUserPrincipal principal,
             @PathVariable Long subscriptionId
     ) {
         commandService.cancelByUser(principal.getId(), subscriptionId);
-        return org.springframework.http.ResponseEntity.ok(com.freedom.common.exception.SuccessResponse.ok("적금 해지가 완료되었습니다."));
+        return ResponseEntity.ok(SuccessResponse.ok("적금 해지가 완료되었습니다."));
     }
 
     @GetMapping("/maturity/pending")

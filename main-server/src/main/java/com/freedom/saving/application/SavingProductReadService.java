@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.freedom.common.exception.custom.SavingExceptions.*;
+import static com.freedom.saving.util.JoinDenyConverter.*;
+
 /**
  * 읽기 전용 유스케이스: 상품 목록/상세 조회
  * 도메인 엔티티를 외부로 직접 노출하지 않고, application DTO(SavingProductListItem/Detail)로 매핑해 반환
@@ -105,12 +108,12 @@ public class SavingProductReadService {
     public Map<String, Object> getSavingProductsWithBankNames(String type, String sort, List<String> bankNames) {
 
         if (!"SAVING".equalsIgnoreCase(type)) {
-            throw new SavingExceptions.SavingPolicyInvalidException("지원하지 않는 type 값입니다. (허용: SAVING)");
+            throw new SavingPolicyInvalidException("지원하지 않는 type 값입니다. (허용: SAVING)");
         }
         
         // 지원하는 정렬 옵션 검증
         if (!SavingProductQueryUtil.isValidSortOption(sort)) {
-            throw new SavingExceptions.SavingPolicyInvalidException(
+            throw new SavingPolicyInvalidException(
                 "지원하지 않는 sort 값입니다. (허용: popular, name)");
         }
         
@@ -179,7 +182,7 @@ public class SavingProductReadService {
         detail.setBankName(s.getKorCoNm());
         detail.setMaturityInterest(s.getMtrtInt()); // 만기 후 이자율
         detail.setSpecialCondition(s.getSpclCnd()); // 우대조건
-        detail.setJoinDeny(JoinDenyConverter.convertJoinDeny(s.getJoinDeny())); // 가입제한
+        detail.setJoinDeny(convertJoinDeny(s.getJoinDeny())); // 가입제한
         detail.setJoinMember(s.getJoinMember()); // 가입대상
         detail.setMaxLimit(s.getMaxLimit()); // 최고한도
 

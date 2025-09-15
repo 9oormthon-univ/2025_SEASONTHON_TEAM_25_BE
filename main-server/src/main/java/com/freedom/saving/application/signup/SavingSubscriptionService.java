@@ -84,10 +84,10 @@ public class SavingSubscriptionService {
         // 정액적립식(S): 가입과 동시에 전체 납입 스케줄(PLANNED) 생성
         if (RESERVE_S.equals(chosenReserve)) {
             // 첫 납입 예정일 = 가입일 + 1 서비스일
-            java.time.LocalDate firstDue = tickPolicy.calcFirstTransferDate(startServiceDate);
-            java.math.BigDecimal expected = cmd.getAutoDebitAmount();
+            LocalDate firstDue = tickPolicy.calcFirstTransferDate(startServiceDate);
+            BigDecimal expected = cmd.getAutoDebitAmount();
             for (int i = 1; i <= chosenTerm; i++) {
-                java.time.LocalDate due = firstDue.plusDays(i - 1L);
+                LocalDate due = firstDue.plusDays(i - 1L);
                 SavingPaymentHistory planned = SavingPaymentHistory.planned(
                         subscriptionId,
                         i,
