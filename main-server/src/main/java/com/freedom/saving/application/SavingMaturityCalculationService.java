@@ -52,7 +52,6 @@ public class SavingMaturityCalculationService {
                 calculateCompoundInterest(monthlyAmount, termMonths, interestRate) :
                 calculateSimpleInterest(monthlyAmount, termMonths, interestRate);
 
-        // 상수를 사용하여 세금 계산
         BigDecimal tax = interest.multiply(TAX_RATE).setScale(0, RoundingMode.DOWN);
 
         BigDecimal totalMaturityAmount = principal.add(interest).subtract(tax);
@@ -70,7 +69,7 @@ public class SavingMaturityCalculationService {
      * 복리 계산
      */
     private BigDecimal calculateCompoundInterest(BigDecimal monthlyAmount, int termMonths, BigDecimal annualRate) {
-        // 상수를 사용하여 월이율 계산
+
         BigDecimal monthlyRate = annualRate.divide(PERCENTAGE_DIVISOR, CALCULATION_SCALE, RoundingMode.HALF_UP)
                 .divide(MONTHS_OF_YEAR, CALCULATION_SCALE, RoundingMode.HALF_UP);
 
@@ -89,7 +88,7 @@ public class SavingMaturityCalculationService {
      * 단리 계산
      */
     private BigDecimal calculateSimpleInterest(BigDecimal monthlyAmount, int termMonths, BigDecimal annualRate) {
-        // [수정] 상수를 사용하여 월이율 계산
+
         BigDecimal monthlyRate = annualRate.divide(PERCENTAGE_DIVISOR, CALCULATION_SCALE, RoundingMode.HALF_UP)
                 .divide(MONTHS_OF_YEAR, CALCULATION_SCALE, RoundingMode.HALF_UP);
 
@@ -159,7 +158,7 @@ public class SavingMaturityCalculationService {
      * 금리 타입명으로 단리/복리 구분
      */
     private boolean isSimpleInterest(String rateTypeName) {
-        // [수정] 상수를 사용하여 비교
+
         if (rateTypeName == null) {
             return true; // 기본값 단리
         }
