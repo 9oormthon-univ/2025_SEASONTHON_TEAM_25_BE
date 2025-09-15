@@ -304,6 +304,14 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.CHARACTER_NAME_DUPLICATE));
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
+        log.warn("리소스를 찾을 수 없음: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.RESOURCE_NOT_FOUND.getStatus())
+                .body(ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND, e.getMessage()));
+    }
+
     @ExceptionHandler(NewsScrapAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleNewsScrapAlreadyExistsException(NewsScrapAlreadyExistsException e) {
         log.warn("이미 스크랩한 뉴스: userId={}, newsArticleId={}", e.getUserId(), e.getNewsArticleId());
