@@ -54,10 +54,12 @@ public class FssSavingMapper {
     public List<SavingProductOptionSnapshotDraft> toOptionDrafts(FssSavingResponseDto dto) {
         List<SavingProductOptionSnapshotDraft> result = new ArrayList<SavingProductOptionSnapshotDraft>();
         if (dto == null || dto.result == null || dto.result.optionList == null) {
+            System.out.println("[FSS MAPPER] optionList가 null이거나 비어있음");
             return result;
         }
 
         List<FssSavingResponseDto.Option> optionList = dto.result.optionList;
+        System.out.println("[FSS MAPPER] 원본 optionList 크기: " + optionList.size());
         for (FssSavingResponseDto.Option o : optionList) {
             if (dto.result.prdtDiv != null && !"S".equalsIgnoreCase(dto.result.prdtDiv)) {
                 continue;
@@ -81,6 +83,7 @@ public class FssSavingMapper {
             );
             result.add(draft);
         }
+        System.out.println("[FSS MAPPER] 변환된 옵션 드래프트 크기: " + result.size());
         return result;
     }
 
