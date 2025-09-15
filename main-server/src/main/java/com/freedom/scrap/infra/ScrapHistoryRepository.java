@@ -12,4 +12,6 @@ public interface ScrapHistoryRepository extends JpaRepository<ScrapHistory, Long
     ScrapHistory findByUserIdAndScrapIdAndType(Long userId, Long scrapId, ScrapHistory.ScrapType scrapType);
 
     int countByUserIdAndTypeAndScrapAtBetween(Long userId, ScrapHistory.ScrapType scrapType, LocalDateTime start, LocalDateTime end);
+
+    int countByUserIdAndType(Long userId, ScrapHistory.ScrapType scrapType);
 }

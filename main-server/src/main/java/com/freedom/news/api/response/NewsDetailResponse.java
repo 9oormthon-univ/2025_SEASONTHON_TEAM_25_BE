@@ -1,5 +1,6 @@
 package com.freedom.news.api.response;
 
+import com.freedom.achievement.application.dto.AchievementDto;
 import com.freedom.news.application.dto.NewsDetailDto;
 import com.freedom.scrap.application.dto.NewsScrapDto;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,10 @@ public class NewsDetailResponse {
     private String plainTextContent;
     private String ministerCode;
     private List<NewsContentBlockResponse> contentBlocks;
+    private String achievementType;
+    private boolean achievementCreated;
     
-    public static NewsDetailResponse from(NewsDetailDto newsDetailDto, NewsScrapDto newsScrapDto) {
+    public static NewsDetailResponse of(NewsDetailDto newsDetailDto, NewsScrapDto newsScrapDto, AchievementDto achievementDto) {
         return NewsDetailResponse.builder()
                 .id(newsDetailDto.getId())
                 .newsItemId(newsDetailDto.getNewsItemId())
@@ -42,6 +45,8 @@ public class NewsDetailResponse {
                         .stream()
                         .map(NewsContentBlockResponse::from)
                         .toList())
+                .achievementType(achievementDto != null ? achievementDto.getType() : null)
+                .achievementCreated(achievementDto != null)
                 .build();
     }
 }

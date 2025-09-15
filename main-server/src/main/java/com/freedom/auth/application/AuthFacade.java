@@ -1,5 +1,9 @@
 package com.freedom.auth.application;
 
+import com.freedom.achievement.application.dto.AchievementDto;
+import com.freedom.achievement.domain.entity.Achievement;
+import com.freedom.achievement.domain.service.AchievementCommandService;
+import com.freedom.auth.api.response.CharacterNameResponse;
 import com.freedom.auth.application.dto.LoginDto;
 import com.freedom.auth.application.dto.SignUpDto;
 import com.freedom.auth.application.dto.TokenDto;
@@ -25,6 +29,7 @@ public class AuthFacade {
     private final ValidateUserService validateUserService;
     private final RefreshTokenService refreshTokenService;
     private final CharacterNameService characterNameService;
+    private final AchievementCommandService achievementService;
     private final WalletService walletService;
     private final JwtProvider jwtProvider;
     
@@ -72,10 +77,11 @@ public class AuthFacade {
 
     @Loggable("캐릭터 이름 생성 처리")
     @Transactional
-    public String createCharacterName(Long userId, String characterName) {
-        String chracterName = characterNameService.createCharacterName(userId, characterName);
+    public CharacterNameResponse createCharacterName(Long userId, String characterName) {
+        characterName = characterNameService.createCharacterName(userId, characterName);
         walletService.createWallet(userId);
-        return chracterName;
+        AchievementDto achievementDto = achievementService.grantAchievement(userId, Achievement.AchievementType.BEGINNERS_LUCK);
+        return CharacterNameResponse.success(characterName, achievementDto);
     }
 
     private TokenDto createTokenResponse(User user) {

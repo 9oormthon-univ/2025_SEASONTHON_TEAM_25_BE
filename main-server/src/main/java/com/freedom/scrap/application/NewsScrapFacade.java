@@ -1,5 +1,8 @@
 package com.freedom.scrap.application;
 
+import com.freedom.achievement.application.dto.AchievementDto;
+import com.freedom.achievement.domain.entity.Achievement;
+import com.freedom.achievement.domain.service.AchievementCommandService;
 import com.freedom.auth.domain.User;
 import com.freedom.auth.domain.service.FindUserService;
 import com.freedom.common.dto.PageResponse;
@@ -9,7 +12,9 @@ import com.freedom.news.domain.service.FindNewsService;
 import com.freedom.scrap.application.dto.NewsScrapDto;
 import com.freedom.scrap.application.dto.NewsScrapToggleResult;
 import com.freedom.scrap.domain.entity.NewsScrap;
+import com.freedom.scrap.domain.entity.ScrapHistory;
 import com.freedom.scrap.domain.service.FindNewsScrapService;
+import com.freedom.scrap.domain.service.FindScrapHistoryService;
 import com.freedom.scrap.domain.service.NewsScrapToggleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,8 @@ public class NewsScrapFacade {
     private final FindNewsScrapService findNewsScrapService;
     private final FindNewsService findNewsService;
     private final FindUserService findUserService;
+    private final FindScrapHistoryService findScrapHistoryService;
+    private final AchievementCommandService achievementCommandService;
 
     @Loggable("뉴스 스크랩 토글")
     @Transactional
@@ -33,7 +40,14 @@ public class NewsScrapFacade {
         User user = findUserService.findById(userId);
         NewsDetailDto newsArticle = findNewsService.findNewsById(newsArticleId);
         boolean isScraped = newsScrapToggleService.toggleNewsScrap(user, newsArticle.getId());
-        return NewsScrapToggleResult.of(newsArticleId, isScraped);
+        AchievementDto achievementDto = null;
+        if(isScraped){
+            int count = findScrapHistoryService.getTotalScrapCountByType(userId, ScrapHistory.ScrapType.NEWS);
+            if(count == 50){
+                achievementDto = achievementCommandService.grantAchievement(userId, Achievement.AchievementType.NEWS_COLLECTOR);
+            }
+        }
+        return NewsScrapToggleResult.of(newsArticleId, isScraped , achievementDto);
     }
     
     @Loggable("사용자 뉴스 스크랩 목록 조회")

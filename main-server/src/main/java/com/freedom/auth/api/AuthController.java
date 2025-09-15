@@ -67,8 +67,7 @@ public class AuthController {
             @AuthenticationPrincipal CustomUserPrincipal principal,
             @Valid @RequestBody CharacterNameRequest request) {
         
-        String characterName = authFacade.createCharacterName(principal.getId(), request.getCharacterName());
-        CharacterNameResponse response = CharacterNameResponse.success(characterName);
+        CharacterNameResponse response = authFacade.createCharacterName(principal.getId(), request.getCharacterName());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
