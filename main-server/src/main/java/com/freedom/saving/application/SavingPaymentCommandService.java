@@ -62,7 +62,7 @@ public class SavingPaymentCommandService {
 
         // 지갑 출금 + 멱등 처리 (requestId = MANUAL_subId_yyyy-MM-dd)
         String requestId = "MANUAL_" + subscriptionId + "_" + today.toString();
-        var txn = savingTxnService.processSavingAutoDebit(userId, requestId, payAmount, subscriptionId);
+        var txn = savingTxnService.processSavingManualPayment(userId, requestId, payAmount, subscriptionId);
 
 
         planned.markPaid(payAmount, txn.getId(), null);

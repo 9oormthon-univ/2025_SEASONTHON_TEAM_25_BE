@@ -117,6 +117,15 @@ public class WalletTransaction extends BaseEntity {
     }
 
     /**
+     * 거래 생성 팩토리 - 적금 수동 납입
+     */
+    public static WalletTransaction createSavingManualPayment(UserWallet wallet, String requestId, BigDecimal amount,
+                                                              Long subscriptionId) {
+        return create(wallet, requestId, TransactionDirection.WITHDRAW, TransactionReasonCode.SAVING_MANUAL_PAYMENT,
+                amount, "적금 수동 납입", "SAVING_SUBSCRIPTION", subscriptionId);
+    }
+
+    /**
      * 공통 거래 생성 메서드
      */
     private static WalletTransaction create(UserWallet wallet, String requestId, TransactionDirection direction, 
