@@ -59,6 +59,12 @@ public class ProductSnapshotSyncService {
                 break;
             }
 
+            // API 응답 구조 확인을 위한 디버깅 로그
+            log.info("[FSS SYNC] API 응답 확인 - group={}, page={}, baseList={}, optionList={}", 
+                    topFinGrpNo, pageNo, 
+                    dto.result.baseList != null ? dto.result.baseList.size() : "null",
+                    dto.result.optionList != null ? dto.result.optionList.size() : "null");
+
             // 에러 코드 처리
             if (dto.result.errCd != null && !"000".equals(dto.result.errCd)) {
                 log.warn("[FSS SYNC] error from FSS: group={}, page={}, err_cd={}, err_msg={}",
@@ -105,8 +111,10 @@ public class ProductSnapshotSyncService {
 
         // 미리 option 드래프트를 전부 변환해두고, 제품별로 매칭
         List<SavingProductOptionSnapshotDraft> allOptionDrafts = mapper.toOptionDrafts(dto);
+        log.info("[FSS SYNC] 옵션 드래프트 변환 완료: {} 개", allOptionDrafts.size());
 
         List<SavingProductSnapshotDraft> productDrafts = mapper.toProductDrafts(dto);
+        log.info("[FSS SYNC] 제품 드래프트 변환 완료: {} 개", productDrafts.size());
         for (int i = 0; i < productDrafts.size(); i++) {
             SavingProductSnapshotDraft pd = productDrafts.get(i);
 
@@ -127,10 +135,15 @@ public class ProductSnapshotSyncService {
 
             // 해당 제품에 속하는 옵션만 매칭해서 저장
             List<SavingProductOptionSnapshotDraft> matched = matchOptions(allOptionDrafts, pd);
+            log.info("[FSS SYNC] 제품 {} ({} {})에 매칭된 옵션: {} 개", 
+                    pd.getFinPrdtCd(), pd.getFinCoNo(), pd.getDclsMonth(), matched.size());
+            
             for (SavingProductOptionSnapshotDraft od : matched) {
                 SavingProductOptionSnapshot option = SavingProductOptionSnapshot.from(od, saved.getId());
                 optionRepository.save(option);
                 result.optionsSaved += 1;
+                log.debug("[FSS SYNC] 옵션 저장 완료: 제품={}, 기간={}, 금리={}", 
+                        od.getFinPrdtCd(), od.getSaveTrmMonths(), od.getIntrRate());
             }
         }
         return result;
@@ -144,14 +157,21 @@ public class ProductSnapshotSyncService {
             SavingProductSnapshotDraft pd) {
 
         List<SavingProductOptionSnapshotDraft> list = new ArrayList<SavingProductOptionSnapshotDraft>();
+        log.debug("[FSS SYNC] 매칭 시작 - 전체 옵션: {} 개, 제품: {} {} {}", 
+                all.size(), pd.getDclsMonth(), pd.getFinCoNo(), pd.getFinPrdtCd());
+        
         for (SavingProductOptionSnapshotDraft od : all) {
             boolean sameMonth = pd.getDclsMonth().equals(od.getDclsMonth());
             boolean sameCo = pd.getFinCoNo().equals(od.getFinCoNo());
             boolean samePrdt = pd.getFinPrdtCd().equals(od.getFinPrdtCd());
             if (sameMonth && sameCo && samePrdt) {
                 list.add(od);
+                log.debug("[FSS SYNC] 옵션 매칭됨: {} {} {} - 기간: {}, 금리: {}", 
+                        od.getDclsMonth(), od.getFinCoNo(), od.getFinPrdtCd(), 
+                        od.getSaveTrmMonths(), od.getIntrRate());
             }
         }
+        log.debug("[FSS SYNC] 매칭 완료 - 매칭된 옵션: {} 개", list.size());
         return list;
     }
 
