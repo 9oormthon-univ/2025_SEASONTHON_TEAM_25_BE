@@ -1,5 +1,6 @@
 package com.freedom.wallet.application;
 
+import com.freedom.common.exception.custom.InsufficientBalanceException;
 import com.freedom.wallet.domain.UserWallet;
 import com.freedom.wallet.domain.WalletTransaction;
 import com.freedom.wallet.domain.WalletTransactionRepository;
@@ -42,7 +43,11 @@ public class SavingTransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("지갑을 찾을 수 없습니다. ID: " + userWallet.getId()));
         
         // 4. 도메인 로직 실행
-        wallet.withdraw(amount);
+        try {
+            wallet.withdraw(amount);
+        } catch (IllegalArgumentException e) {
+            throw new InsufficientBalanceException(wallet.getBalance(), amount);
+        }
         walletRepository.save(wallet);
         
         // 5. 거래 이력 저장
@@ -156,10 +161,44 @@ public class SavingTransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("지갑을 찾을 수 없습니다. ID: " + userWallet.getId()));
 
         // 출금(잔액 부족 시 도메인에서 예외 발생)
-        wallet.withdraw(amount);
+        try {
+            wallet.withdraw(amount);
+        } catch (IllegalArgumentException e) {
+            throw new InsufficientBalanceException(wallet.getBalance(), amount);
+        }
         walletRepository.save(wallet);
 
         WalletTransaction transaction = WalletTransaction.createSavingAutoDebit(wallet, requestId, amount, subscriptionId);
+        return transactionRepository.save(transaction);
+    }
+
+    /**
+     * 적금 수동 납입 처리 (멱등성 보장)
+     */
+    public WalletTransaction processSavingManualPayment(Long userId, String requestId, BigDecimal amount, Long subscriptionId) {
+        // 1. 멱등성 확인
+        if (transactionRepository.findByRequestId(requestId).isPresent()) {
+            throw new IllegalArgumentException("이미 처리된 요청입니다. requestId: " + requestId);
+        }
+
+        // 2. 사용자 지갑 조회
+        UserWallet userWallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 지갑을 찾을 수 없습니다. userId: " + userId));
+
+        // 3. 비관적 락으로 지갑 조회
+        UserWallet wallet = transactionJpaAdapter.findWalletByIdWithLock(userWallet.getId())
+                .orElseThrow(() -> new IllegalArgumentException("지갑을 찾을 수 없습니다. ID: " + userWallet.getId()));
+        
+        // 4. 도메인 로직 실행
+        try {
+            wallet.withdraw(amount);
+        } catch (IllegalArgumentException e) {
+            throw new InsufficientBalanceException(wallet.getBalance(), amount);
+        }
+        walletRepository.save(wallet);
+        
+        // 5. 거래 이력 저장
+        WalletTransaction transaction = WalletTransaction.createSavingManualPayment(wallet, requestId, amount, subscriptionId);
         return transactionRepository.save(transaction);
     }
 

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static com.freedom.common.exception.custom.SavingExceptions.*;
+
 /**
  * 서비스 달력 기준의 시작/만기 일자.
  * 계산은 Application 레이어(SavingsDateService)에서 수행하고 도메인은 결과값만 보관
@@ -26,7 +28,7 @@ public class ServiceDates {
 
     public ServiceDates(LocalDate startDate, LocalDate maturityDate) {
         if (startDate == null || maturityDate == null || maturityDate.isBefore(startDate)) {
-            throw new SavingExceptions.SavingInvalidDatesException();
+            throw new SavingInvalidDatesException();
         }
         this.startDate = startDate;
         this.maturityDate = maturityDate;

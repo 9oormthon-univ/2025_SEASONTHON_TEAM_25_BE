@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static com.freedom.common.exception.custom.SavingExceptions.*;
+
 @Service
 @RequiredArgsConstructor
 public class MaturitySettlementService {
@@ -45,11 +47,11 @@ public class MaturitySettlementService {
     @Transactional
     public PayoutQuote settleMaturity(Long userId, Long subscriptionId) {
         SavingSubscription sub = subscriptionRepo.findByIdAndUserId(subscriptionId, userId)
-                .orElseThrow(SavingExceptions.SavingSubscriptionNotFoundException::new);
+                .orElseThrow(SavingSubscriptionNotFoundException::new);
         // 만기일 경과 여부 확인
         ensureMaturedByDate(sub);
         if (sub.getStatus() != SubscriptionStatus.ACTIVE) {
-            throw new SavingExceptions.SavingSubscriptionInvalidStateException(sub.getStatus().name());
+            throw new SavingSubscriptionInvalidStateException(sub.getStatus().name());
         }
 
         PayoutQuote quote = computeQuote(sub);
@@ -91,7 +93,7 @@ public class MaturitySettlementService {
     private void ensureMaturedByDate(SavingSubscription sub) {
         LocalDate today = timeProvider.today();
         if (today.isBefore(sub.getDates().getMaturityDate())) {
-            throw new SavingExceptions.SavingSubscriptionInvalidStateException("NOT_MATURED_YET");
+            throw new SavingSubscriptionInvalidStateException("NOT_MATURED_YET");
         }
     }
 

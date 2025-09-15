@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.freedom.common.exception.custom.SavingExceptions.*;
+
 /**
  * 가입 애그리거트 루트
  * 외부 연관은 모두 식별자(Long)로 보관
@@ -58,7 +60,7 @@ public class SavingSubscription {
                                           TermMonths term,
                                           ServiceDates dates) {
         if (userId == null || productSnapshotId == null) {
-            throw new SavingExceptions.SavingSnapshotIdentifiersInvalidException();
+            throw new SavingSnapshotIdentifiersInvalidException();
         }
         SavingSubscription s = new SavingSubscription();
         s.userId = userId;
@@ -90,7 +92,7 @@ public class SavingSubscription {
 
     private void ensureActive() {
         if (this.status != SubscriptionStatus.ACTIVE) {
-            throw new SavingExceptions.SavingSubscriptionInvalidStateException(this.status.name());
+            throw new SavingSubscriptionInvalidStateException(this.status.name());
         }
     }
 }

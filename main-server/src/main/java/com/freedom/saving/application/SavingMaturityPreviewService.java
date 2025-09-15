@@ -5,7 +5,6 @@ import com.freedom.saving.api.dto.MaturityPreviewResponse;
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
 import com.freedom.saving.infra.snapshot.SavingProductOptionSnapshotJpaRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * 적금 만기 금액 미리보기 서비스
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,8 +29,6 @@ public class SavingMaturityPreviewService {
      * @return 만기 금액 미리보기 결과
      */
     public MaturityPreviewResponse previewMaturity(Long productId, MaturityPreviewRequest request) {
-        log.info("적금 만기 금액 미리보기 요청: 상품ID={}, 월납입={}, 기간={}개월", 
-                productId, request.getMonthlyAmount(), request.getTermMonths());
 
         // 1. 해당 기간의 옵션 조회
         List<SavingProductOptionSnapshot> options = optionRepository
@@ -64,8 +60,6 @@ public class SavingMaturityPreviewService {
                 MaturityPreviewResponse.MaturityInfo.from(preferentialResult)
         );
 
-        log.info("적금 만기 금액 미리보기 완료: 우리서비스={}, 우대금리={}",
-                ourServiceResult.totalAmount(), preferentialResult.totalAmount());
 
         return response;
     }

@@ -63,6 +63,7 @@ public enum ErrorCode {
     SAVING_SNAPSHOT_IDENTIFIERS_INVALID("SAV008", "스냅샷 식별자가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     SAVING_DUPLICATE_SUBSCRIPTION("SAV009", "이미 가입한 적금에 또 가입할 수 없습니다.", HttpStatus.BAD_REQUEST),
     SAVING_NO_TODAY_PAYABLE("SAV010", "오늘 납입 가능한 회차가 없습니다.", HttpStatus.BAD_REQUEST),
+    SAVING_EXCEEDS_MAX_LIMIT("SAV011", "요청 금액이 최고 한도를 초과합니다.", HttpStatus.BAD_REQUEST),
 
     // 퀘스트 에러
     USER_QUEST_NOT_FOUND("QUEST001", "사용자 퀘스트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
@@ -71,6 +72,9 @@ public enum ErrorCode {
     QUEST_REWARD_ALREADY_CLAIMED("QUEST004", "이미 보상을 수령한 퀘스트입니다.", HttpStatus.BAD_REQUEST),
     QUEST_ACCESS_DENIED("QUEST005", "해당 퀘스트에 접근할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     UNSUPPORTED_QUEST_TYPE("QUEST006", "지원하지 않는 퀘스트 타입입니다.", HttpStatus.BAD_REQUEST),
+
+    // 지갑 에러
+    INSUFFICIENT_BALANCE("WALLET001", "잔액이 부족합니다.", HttpStatus.BAD_REQUEST),
 
     // 스크랩 에러
     SCRAP_ALREADY_EXISTS("SCRAP001", "이미 스크랩한 뉴스입니다.", HttpStatus.CONFLICT),

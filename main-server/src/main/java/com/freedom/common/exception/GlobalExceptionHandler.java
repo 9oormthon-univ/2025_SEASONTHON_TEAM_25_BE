@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.USER_WALLET_NOT_FOUND);
     }
 
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientBalanceException(InsufficientBalanceException e) {
+        log.warn("잔액 부족: 현재 잔액={}, 요청 금액={}", e.getCurrentBalance(), e.getRequestedAmount());
+        return createErrorResponse(ErrorCode.INSUFFICIENT_BALANCE);
+    }
+
     @ExceptionHandler(QuestAlreadyCompletedException.class)
     public ResponseEntity<ErrorResponse> handleQuestAlreadyCompletedException(QuestAlreadyCompletedException e) {
         return createErrorResponse(ErrorCode.QUEST_ALREADY_COMPLETED);
@@ -220,6 +226,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SavingExceptions.SavingDuplicateSubscriptionException.class)
     public ResponseEntity<ErrorResponse> handleSavingDuplicateSubscription() {
         return createErrorResponse(ErrorCode.SAVING_DUPLICATE_SUBSCRIPTION);
+    }
+
+    @ExceptionHandler(ExceedsMaxLimitException.class)
+    public ResponseEntity<ErrorResponse> handleExceedsMaxLimitException(ExceedsMaxLimitException e) {
+        log.warn("최고 한도 초과: 요청 금액={}, 최고 한도={}", e.getRequestedAmount(), e.getMaxLimit());
+        return createErrorResponse(ErrorCode.SAVING_EXCEEDS_MAX_LIMIT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
