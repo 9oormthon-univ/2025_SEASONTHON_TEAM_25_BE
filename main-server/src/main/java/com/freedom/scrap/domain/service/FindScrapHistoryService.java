@@ -25,4 +25,8 @@ public class FindScrapHistoryService {
             return scrapHistoryRepository.countByUserIdAndTypeAndScrapAtBetween(userId, ScrapHistory.ScrapType.QUIZ, start, end);
         }
     }
+
+    public int getTotalScrapCountByType(Long userId, ScrapHistory.ScrapType scrapType) {
+        return scrapHistoryRepository.countByUserIdAndType(userId, scrapType);
+    }
 }
