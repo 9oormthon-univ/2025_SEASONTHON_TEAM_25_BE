@@ -1,6 +1,7 @@
 package com.freedom.saving.application;
 
 import com.freedom.common.exception.custom.SavingProductNotFoundException;
+import com.freedom.saving.util.JoinDenyConverter;
 import com.freedom.saving.util.ProductSortUtil;
 import com.freedom.saving.application.read.SavingProductDetail;
 import com.freedom.saving.application.read.SavingProductListItem;
@@ -164,7 +165,7 @@ public class SavingProductReadService {
         detail.setBankName(s.getKorCoNm());
         detail.setMaturityInterest(s.getMtrtInt()); // 만기 후 이자율
         detail.setSpecialCondition(s.getSpclCnd()); // 우대조건
-        detail.setJoinDeny(s.getJoinDeny()); // 가입제한
+        detail.setJoinDeny(JoinDenyConverter.convertJoinDeny(s.getJoinDeny())); // 가입제한
         detail.setJoinMember(s.getJoinMember()); // 가입대상
         detail.setMaxLimit(s.getMaxLimit()); // 최고한도
 
