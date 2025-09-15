@@ -131,8 +131,8 @@ public class SavingMaturityCalculationService {
         }
         
         // 단리/복리 구분
-        boolean isCompoundInterest = isCompoundInterest(option.getIntrRateTypeNm());
-        
+        boolean isCompoundInterest = !isSimpleInterest(option.getIntrRateTypeNm());
+
         return calculateMaturity(monthlyAmount, option.getSaveTrmMonths(), interestRate, isCompoundInterest);
     }
 
@@ -157,23 +157,19 @@ public class SavingMaturityCalculationService {
         }
         
         // 단리/복리 구분
-        boolean isCompoundInterest = isCompoundInterest(option.getIntrRateTypeNm());
-        
+        boolean isCompoundInterest = !isSimpleInterest(option.getIntrRateTypeNm());
+
         return calculateMaturity(monthlyAmount, option.getSaveTrmMonths(), preferentialRate, isCompoundInterest);
     }
 
     /**
      * 금리 타입명으로 단리/복리 구분
-     * 
-     * @param rateTypeName 금리 타입명
-     * @return true: 복리, false: 단리
      */
-    private boolean isCompoundInterest(String rateTypeName) {
+    private boolean isSimpleInterest(String rateTypeName) {
+        // "복리" 라는 말이 있을 때만 false를 반환
         if (rateTypeName == null) {
-            return true; // 기본값은 복리
+            return true; // 기본값 단리
         }
-        
-        // "단리"가 포함되어 있으면 단리, 그 외에는 복리
-        return !rateTypeName.contains("단리");
+        return !rateTypeName.contains("복리");
     }
 }
