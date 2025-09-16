@@ -13,16 +13,12 @@ import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
 import com.freedom.wallet.application.SavingTransactionService;
 import com.freedom.wallet.domain.UserWallet;
 import com.freedom.wallet.domain.WalletTransaction;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -46,8 +42,6 @@ class AutoDebitServiceTest {
     @Mock private SavingSubscriptionJpaRepository subscriptionRepo;
     @Mock private SavingPaymentHistoryRepository paymentRepo;
     @Mock private SavingTransactionService savingTxnService;
-    @Mock private PlatformTransactionManager txManager;
-    @Mock private TransactionStatus transactionStatus;
 
     @InjectMocks
     private AutoDebitService autoDebitService;
@@ -72,8 +66,6 @@ class AutoDebitServiceTest {
                 .password("password")
                 .characterName("테스트캐릭터")
                 .build();
-        // 어제 처리된 상태로 세팅 -> 오늘은 처리 대상
-        testUser.updateLastAutoPaymentDate(today.minusDays(1));
 
         testSubscription = SavingSubscription.open(
                 1L, // userId
@@ -142,14 +134,7 @@ class AutoDebitServiceTest {
                 .as("납입 금액은 계획 금액과 동일해야 한다")
                 .isEqualByComparingTo(new BigDecimal("100000"));
 
-        // 2) 유저의 '오늘 처리 일자' 업데이트 확인
-        verify(userRepo, times(1)).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-        assertThat(savedUser.getLastAutoPaymentDate())
-                .as("성공 시 오늘 날짜로 최종 자동납입 처리 일자가 갱신되어야 한다")
-                .isEqualTo(today);
-
-        // 3) 부가적 행위 검증(필요 최소한)
+        // 2) 부가적 행위 검증(필요 최소한)
         verify(savingTxnService, times(1))
                 .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("100000")), eq(1L));
     }
@@ -179,36 +164,11 @@ class AutoDebitServiceTest {
                 .as("잔액 부족 시 PaymentStatus는 MISSED 여야 한다")
                 .isEqualTo(SavingPaymentHistory.PaymentStatus.MISSED);
 
-        // 2) 유저의 마지막 처리 일자도 오늘로 업데이트되어 재시도 루프를 막아야 함
-        verify(userRepo, times(1)).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getLastAutoPaymentDate()).isEqualTo(today);
-
-        // 3) 미납 카운트 조회가 수행되었는지 확인(강제해지 판단 로직)
+        // 2) 미납 카운트 조회가 수행되었는지 확인(강제해지 판단 로직)
         verify(paymentRepo, times(1))
                 .countBySubscriptionIdAndStatus(1L, SavingPaymentHistory.PaymentStatus.MISSED);
     }
 
-    @Test
-    @DisplayName("이미 오늘 자동납입이 처리된 경우 - 스킵되어야 한다")
-    void runOncePerDay_AlreadyProcessedToday_Skip() {
-        // Given
-        testUser.updateLastAutoPaymentDate(today); // 이미 오늘 처리됨
-        when(userRepo.findById(1L)).thenReturn(Optional.of(testUser));
-
-        // When
-        autoDebitService.runOncePerDay(1L);
-
-        // Then
-        // 1) 추가 처리(결제/히스토리 저장)가 없어야 함
-        verify(subscriptionRepo, never()).findByUserIdAndStatus(anyLong(), any(SubscriptionStatus.class));
-        verify(savingTxnService, never()).processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong());
-        verify(paymentRepo, never()).save(any(SavingPaymentHistory.class));
-
-        // 2) 여전히 오늘로 표시되어 있어야 함
-        assertThat(testUser.getLastAutoPaymentDate())
-                .as("이미 처리된 경우 상태 변화 없어야 한다")
-                .isEqualTo(today);
-    }
 
     @Test
     @DisplayName("활성 구독이 없는 경우 - 아무것도 처리되지 않아야 한다")
@@ -225,12 +185,6 @@ class AutoDebitServiceTest {
         // 1) 결제/히스토리 저장 호출 없음
         verify(savingTxnService, never()).processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong());
         verify(paymentRepo, never()).save(any(SavingPaymentHistory.class));
-
-        // 2) 오늘 처리로 마킹(다시 호출되는 것을 방지)
-        verify(userRepo, times(1)).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getLastAutoPaymentDate())
-                .as("활성 구독이 없어도 '오늘 확인 완료' 상태로 마킹해 중복 호출 방지")
-                .isEqualTo(today);
     }
 
     @Test
@@ -250,10 +204,6 @@ class AutoDebitServiceTest {
         // 1) 결제/히스토리 저장 호출 없음
         verify(savingTxnService, never()).processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong());
         verify(paymentRepo, never()).save(any(SavingPaymentHistory.class));
-
-        // 2) 오늘 처리로 마킹
-        verify(userRepo, times(1)).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getLastAutoPaymentDate()).isEqualTo(today);
     }
 
     @Test
@@ -285,9 +235,135 @@ class AutoDebitServiceTest {
         assertThat(canceled.getStatus())
                 .as("미납 3회 시 구독은 더 이상 ACTIVE가 아니어야 한다(강제 해지)")
                 .isNotEqualTo(SubscriptionStatus.ACTIVE);
+    }
 
-        // 3) 오늘 처리로 마킹
-        verify(userRepo, times(1)).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getLastAutoPaymentDate()).isEqualTo(today);
+    @Test
+    @DisplayName("여러 상품 가입 시 각각의 납입일 처리 - 오늘 납입 예정인 상품만 처리되어야 한다")
+    void runOncePerDay_MultipleProducts_ProcessOnlyTodayDue() {
+        // Given
+        // 상품 1: 오늘 납입 예정
+        SavingSubscription subscription1 = createTestSubscription(1L, 1L, today);
+        SavingPaymentHistory payment1 = createTestPaymentHistory(1L, 1, today, new BigDecimal("100000"));
+        
+        // 상품 2: 내일 납입 예정 (스킵되어야 함)
+        SavingSubscription subscription2 = createTestSubscription(1L, 2L, today.plusDays(1));
+        SavingPaymentHistory payment2 = createTestPaymentHistory(2L, 1, today.plusDays(1), new BigDecimal("200000"));
+        
+        // 상품 3: 어제 납입 예정 (스킵되어야 함)
+        SavingSubscription subscription3 = createTestSubscription(1L, 3L, today.minusDays(1));
+        SavingPaymentHistory payment3 = createTestPaymentHistory(3L, 1, today.minusDays(1), new BigDecimal("300000"));
+
+        when(userRepo.findById(1L)).thenReturn(Optional.of(testUser));
+        when(subscriptionRepo.findByUserIdAndStatus(1L, SubscriptionStatus.ACTIVE))
+                .thenReturn(List.of(subscription1, subscription2, subscription3));
+        
+        // 각 구독별로 다른 납입 계획 반환
+        when(paymentRepo.findNextPlannedPayment(1L)).thenReturn(Optional.of(payment1));
+        when(paymentRepo.findNextPlannedPayment(2L)).thenReturn(Optional.of(payment2));
+        when(paymentRepo.findNextPlannedPayment(3L)).thenReturn(Optional.of(payment3));
+        
+        when(savingTxnService.processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong()))
+                .thenReturn(testWalletTransaction);
+
+        // When
+        autoDebitService.runOncePerDay(1L);
+
+        // Then
+        // 1) 상품 1만 처리되어야 함 (오늘 납입 예정)
+        verify(savingTxnService, times(1))
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("100000")), eq(1L));
+        
+        // 2) 상품 2, 3은 처리되지 않아야 함
+        verify(savingTxnService, never())
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("200000")), eq(2L));
+        verify(savingTxnService, never())
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("300000")), eq(3L));
+        
+        // 3) 상품 1의 납입 이력만 저장되어야 함
+        verify(paymentRepo, times(1)).save(paymentCaptor.capture());
+        SavingPaymentHistory savedPayment = paymentCaptor.getValue();
+        assertThat(savedPayment.getSubscriptionId()).isEqualTo(1L);
+        assertThat(savedPayment.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.PAID);
+    }
+
+    @Test
+    @DisplayName("여러 상품 가입 시 일부 실패 - 성공한 상품은 처리되고 실패한 상품은 미납 처리되어야 한다")
+    void runOncePerDay_MultipleProducts_PartialFailure() {
+        // Given
+        // 상품 1: 성공
+        SavingSubscription subscription1 = createTestSubscription(1L, 1L, today);
+        SavingPaymentHistory payment1 = createTestPaymentHistory(1L, 1, today, new BigDecimal("100000"));
+        
+        // 상품 2: 실패 (잔액 부족)
+        SavingSubscription subscription2 = createTestSubscription(1L, 2L, today);
+        SavingPaymentHistory payment2 = createTestPaymentHistory(2L, 1, today, new BigDecimal("200000"));
+
+        when(userRepo.findById(1L)).thenReturn(Optional.of(testUser));
+        when(subscriptionRepo.findByUserIdAndStatus(1L, SubscriptionStatus.ACTIVE))
+                .thenReturn(List.of(subscription1, subscription2));
+        
+        when(paymentRepo.findNextPlannedPayment(1L)).thenReturn(Optional.of(payment1));
+        when(paymentRepo.findNextPlannedPayment(2L)).thenReturn(Optional.of(payment2));
+        
+        // 상품 1은 성공, 상품 2는 실패
+        when(savingTxnService.processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("100000")), eq(1L)))
+                .thenReturn(testWalletTransaction);
+        when(savingTxnService.processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("200000")), eq(2L)))
+                .thenThrow(new RuntimeException("잔액이 부족합니다"));
+        
+        when(paymentRepo.countBySubscriptionIdAndStatus(2L, SavingPaymentHistory.PaymentStatus.MISSED))
+                .thenReturn(1L);
+
+        // When
+        autoDebitService.runOncePerDay(1L);
+
+        // Then
+        // 1) 두 상품 모두 처리 시도
+        verify(savingTxnService, times(1))
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("100000")), eq(1L));
+        verify(savingTxnService, times(1))
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("200000")), eq(2L));
+        
+        // 2) 두 상품 모두 저장 (성공: PAID, 실패: MISSED)
+        verify(paymentRepo, times(2)).save(paymentCaptor.capture());
+        List<SavingPaymentHistory> savedPayments = paymentCaptor.getAllValues();
+        
+        // 성공한 상품 (PAID)
+        SavingPaymentHistory successPayment = savedPayments.stream()
+                .filter(p -> p.getSubscriptionId().equals(1L))
+                .findFirst().orElseThrow();
+        assertThat(successPayment.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.PAID);
+        
+        // 실패한 상품 (MISSED)
+        SavingPaymentHistory failedPayment = savedPayments.stream()
+                .filter(p -> p.getSubscriptionId().equals(2L))
+                .findFirst().orElseThrow();
+        assertThat(failedPayment.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.MISSED);
+    }
+
+    // 테스트 헬퍼 메서드들
+    private SavingSubscription createTestSubscription(Long userId, Long productId, LocalDate startDate) {
+        SavingSubscription subscription = SavingSubscription.open(
+                userId,
+                productId,
+                new AutoDebitAmount(new BigDecimal("100000")),
+                new TermMonths(12),
+                new ServiceDates(startDate, startDate.plusDays(11))
+        );
+        
+        // 리플렉션으로 ID 세팅
+        try {
+            Field idField = SavingSubscription.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(subscription, productId);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set subscription ID", e);
+        }
+        
+        return subscription;
+    }
+    
+    private SavingPaymentHistory createTestPaymentHistory(Long subscriptionId, Integer cycleNo, LocalDate dueDate, BigDecimal amount) {
+        return SavingPaymentHistory.planned(subscriptionId, cycleNo, dueDate, amount);
     }
 }
