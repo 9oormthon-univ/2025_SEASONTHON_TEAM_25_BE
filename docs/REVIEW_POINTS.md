@@ -65,7 +65,7 @@
 * 최대 응답시간 **78% 개선** (54.14ms → 11.95ms)
 * 기존 동기식 조회 구조를 고도화하여 **UX와 서버 처리량 동시 개선**
 
-[`HomePerformanceTest`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/test/java/com/freedom/performance/HomePerformanceTest.java) - 테스트 컨테이너/더미데이터 기반 성능 테스트 (100회 실행)
+[`HomePerformanceTest`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/test/java/com/freedom/performance/HomeFacadePerformanceTest.java) - 테스트 컨테이너/더미데이터 기반 성능 테스트 (100회 실행)
 > 2025-09-16 20:14:26.323 [Test worker] INFO  c.f.p.HomeFacadePerformanceTest - ⚡ Async : avg=6.52ms | min=3.78ms | max=11.95ms (n=100)  
 > 2025-09-16 20:14:26.323 [Test worker] INFO  c.f.p.HomeFacadePerformanceTest - 🐢 Sync  : avg=10.89ms | min=6.35ms | max=54.14ms (n=100)  
 > 2025-09-16 20:14:26.323 [Test worker] INFO  c.f.p.HomeFacadePerformanceTest - 🚀 Result: 평균 40.10% 개선 (Sync→Async)
