@@ -1,4 +1,4 @@
-# 🎯 Financial Freedom Project
+# Financial Freedom Project
 
 [![Java](https://img.shields.io/badge/Java-21-red.svg)](https://openjdk.java.net/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green.svg)](https://spring.io/projects/spring-boot)
@@ -44,7 +44,8 @@
 
 ## 🏗️ 시스템 아키텍처
 
-### - 추가 예정
+### <img width="1090" height="562" alt="파프 아키텍처" src="https://github.com/user-attachments/assets/6046e837-92f0-43b5-92ae-dc9ec8abdaef" />
+
 
 
 ## 👥 팀 정보
