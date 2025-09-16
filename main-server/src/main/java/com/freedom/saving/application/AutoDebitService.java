@@ -2,6 +2,7 @@ package com.freedom.saving.application;
 
 import com.freedom.auth.domain.User;
 import com.freedom.auth.infra.UserJpaRepository;
+import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.subscription.SavingSubscription;
@@ -36,6 +37,7 @@ public class AutoDebitService {
      * - User.lastAutoPaymentDate 와 오늘 비교해 이미 처리되었으면 즉시 종료
      * - 처리 후 lastAutoPaymentDate = today 업데이트
      */
+    @Loggable("자동 납입 처리")
     public void runOncePerDay(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user == null) return;
