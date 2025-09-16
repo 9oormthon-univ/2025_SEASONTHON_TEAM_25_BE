@@ -124,7 +124,6 @@ class AutoDebitServiceTest {
                 .thenReturn(Optional.of(testPaymentHistory));
         when(savingTxnService.processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong()))
                 .thenReturn(testWalletTransaction);
-        when(txManager.getTransaction(any(TransactionDefinition.class))).thenReturn(transactionStatus);
 
         // When
         autoDebitService.runOncePerDay(1L);
@@ -166,7 +165,6 @@ class AutoDebitServiceTest {
                 .thenReturn(Optional.of(testPaymentHistory));
         when(savingTxnService.processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong()))
                 .thenThrow(new RuntimeException("잔액이 부족합니다"));
-        when(txManager.getTransaction(any(TransactionDefinition.class))).thenReturn(transactionStatus);
         when(paymentRepo.countBySubscriptionIdAndStatus(1L, SavingPaymentHistory.PaymentStatus.MISSED))
                 .thenReturn(1L); // 미납 1회
 
@@ -269,7 +267,6 @@ class AutoDebitServiceTest {
                 .thenReturn(Optional.of(testPaymentHistory));
         when(savingTxnService.processSavingAutoDebit(anyLong(), anyString(), any(BigDecimal.class), anyLong()))
                 .thenThrow(new RuntimeException("잔액이 부족합니다"));
-        when(txManager.getTransaction(any(TransactionDefinition.class))).thenReturn(transactionStatus);
         when(paymentRepo.countBySubscriptionIdAndStatus(1L, SavingPaymentHistory.PaymentStatus.MISSED))
                 .thenReturn(3L); // 누적 3회
 
