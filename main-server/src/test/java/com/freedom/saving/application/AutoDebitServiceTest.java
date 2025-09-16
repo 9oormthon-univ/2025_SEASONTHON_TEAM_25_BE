@@ -4,8 +4,11 @@ import com.freedom.auth.domain.User;
 import com.freedom.auth.infra.UserJpaRepository;
 import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
+import com.freedom.saving.domain.subscription.AutoDebitAmount;
 import com.freedom.saving.domain.subscription.SavingSubscription;
+import com.freedom.saving.domain.subscription.ServiceDates;
 import com.freedom.saving.domain.subscription.SubscriptionStatus;
+import com.freedom.saving.domain.subscription.TermMonths;
 import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
 import com.freedom.wallet.application.SavingTransactionService;
 import com.freedom.wallet.domain.UserWallet;
@@ -21,6 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -74,9 +78,9 @@ class AutoDebitServiceTest {
         testSubscription = SavingSubscription.open(
                 1L, // userId
                 1L, // productSnapshotId
-                new com.freedom.saving.domain.subscription.AutoDebitAmount(new BigDecimal("100000")),
-                new com.freedom.saving.domain.subscription.TermMonths(12),
-                new com.freedom.saving.domain.subscription.ServiceDates(
+                new AutoDebitAmount(new BigDecimal("100000")),
+                new TermMonths(12),
+                new ServiceDates(
                         today.minusDays(1), // startDate
                         today.plusDays(11)  // maturityDate
                 )
@@ -84,7 +88,7 @@ class AutoDebitServiceTest {
 
         // 리플렉션으로 ID 세팅 (테스트 용도: 도메인 규칙엔 영향 없음)
         try {
-            java.lang.reflect.Field idField = SavingSubscription.class.getDeclaredField("id");
+            Field idField = SavingSubscription.class.getDeclaredField("id");
             idField.setAccessible(true);
             idField.set(testSubscription, 1L);
         } catch (Exception e) {

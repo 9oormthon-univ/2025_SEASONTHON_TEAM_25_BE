@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,7 +142,7 @@ class FindUserServiceTest {
         
         // ID는 리플렉션으로 설정 (테스트용)
         try {
-            java.lang.reflect.Field idField = User.class.getDeclaredField("id");
+            Field idField = User.class.getDeclaredField("id");
             idField.setAccessible(true);
             idField.set(user, id);
         } catch (Exception e) {
