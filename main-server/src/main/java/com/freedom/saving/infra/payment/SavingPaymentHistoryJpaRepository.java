@@ -18,8 +18,7 @@ public interface SavingPaymentHistoryJpaRepository extends JpaRepository<SavingP
 
     long countBySubscriptionIdAndStatus(Long subscriptionId, SavingPaymentHistory.PaymentStatus status);
 
-    @Query("select p from SavingPaymentHistory p where p.subscriptionId = :subscriptionId and p.status = 'PLANNED' order by p.dueServiceDate asc")
-    Optional<SavingPaymentHistory> findNextPlannedPayment(@Param("subscriptionId") Long subscriptionId);
+    Optional<SavingPaymentHistory> findFirstBySubscriptionIdAndStatusOrderByDueServiceDateAsc(Long subscriptionId, SavingPaymentHistory.PaymentStatus status);
 
     Optional<SavingPaymentHistory> findBySubscriptionIdAndCycleNo(Long subscriptionId, Integer cycleNo);
 

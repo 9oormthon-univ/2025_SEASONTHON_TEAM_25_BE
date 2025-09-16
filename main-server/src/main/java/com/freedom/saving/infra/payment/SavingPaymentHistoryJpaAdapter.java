@@ -32,7 +32,7 @@ public class SavingPaymentHistoryJpaAdapter implements SavingPaymentHistoryRepos
 
     @Override
     public Optional<SavingPaymentHistory> findNextPlannedPayment(Long subscriptionId) {
-        return jpaRepository.findNextPlannedPayment(subscriptionId);
+        return jpaRepository.findFirstBySubscriptionIdAndStatusOrderByDueServiceDateAsc(subscriptionId, SavingPaymentHistory.PaymentStatus.PLANNED);
     }
 
     @Override
