@@ -132,7 +132,7 @@ public class AutoDebitService {
             return AutoDebitResult.SKIPPED;
         }
         
-        // 2. 납입 예정일이 오늘 이전인지 확인 (과거 납입 예정일도 처리)
+        // 2. 납입 예정일이 오늘 이전인지 확인
         if (today.isBefore(plannedPayment.getDueServiceDate())) {
             log.debug("납입 예정일이 미래임 - 구독 ID: {}, 예정일: {}, 오늘: {}", 
                      subscription.getId(), plannedPayment.getDueServiceDate(), today);

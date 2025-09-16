@@ -11,16 +11,16 @@ public interface TickPolicy {
     // 총 필요 tick 수
     int toTotalTicks(int termMonths);
 
-    // 첫 납입일 = 가입일 + 1일
+    // 첫 납입일 = 가입일 (가입 당일부터 납입)
     LocalDate calcFirstTransferDate(LocalDate joinDate);
 
     // 만기일 = 가입일 + termMonths 일
     LocalDate calcMaturityDate(LocalDate joinDate, int termMonths);
 
     /**
-     * 다음 납입일 = 가입일 + 1일 + currentTick
+     * 다음 납입일 = 가입일 + currentTick
      *  - currentTick: 이미 처리 완료된 회차 수(0부터 시작)
-     *  - 예) 가입 9/1, currentTick=0 -> next=9/2
+     *  - 예) 가입 9/1, currentTick=0 -> next=9/1, currentTick=1 -> next=9/2
      */
     LocalDate calcNextTransferDate(LocalDate joinDate, int currentTick);
 

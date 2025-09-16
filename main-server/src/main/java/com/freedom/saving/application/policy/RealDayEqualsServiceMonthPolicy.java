@@ -8,18 +8,14 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import com.freedom.common.exception.custom.SavingExceptions;
-
 import static com.freedom.common.exception.custom.SavingExceptions.*;
 
 public class RealDayEqualsServiceMonthPolicy implements TickPolicy {
 
-    private final TimeProvider timeProvider; // 추후 today() 의존 계산 시 사용
-
     // TimeProvider 주입 이유:
     // - 오늘 날짜(today) 계산의 일관성과 테스트 용이성 확보
     public RealDayEqualsServiceMonthPolicy(TimeProvider timeProvider) {
-        this.timeProvider = timeProvider;
+        // 현재는 사용하지 않지만 향후 확장성을 위해 유지
     }
 
     @Override
@@ -33,7 +29,7 @@ public class RealDayEqualsServiceMonthPolicy implements TickPolicy {
     @Override
     public LocalDate calcFirstTransferDate(LocalDate joinDate) {
         requireNonNull(joinDate);
-        // 가입 당일부터 납입 가능
+        // 가입 당일부터 납입 (1일 = 1개월 정책)
         return joinDate;
     }
 
@@ -50,7 +46,7 @@ public class RealDayEqualsServiceMonthPolicy implements TickPolicy {
         if (currentTick < 0) {
             throw new SavingPolicyInvalidException("currentTick은 0 이상이어야 합니다.");
         }
-        // next = 가입일 + 지금까지 처리된 회차 수
+        // next = 가입일 + 지금까지 처리된 회차 수 (가입일부터 시작)
         return joinDate.plusDays(currentTick);
     }
 
