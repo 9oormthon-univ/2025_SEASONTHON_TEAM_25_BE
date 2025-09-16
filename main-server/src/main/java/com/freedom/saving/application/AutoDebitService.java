@@ -26,7 +26,7 @@ import java.util.UUID;
  * 주요 개선사항:
  * 1. 접속한 사용자만 하루에 1회 자동납입
  * 2. 단순화된 트랜잭션 관리 (@Transactional 활용)
- * 3. 명확한 날짜 검증 (오늘 납입 예정인지 확인)
+ * 3. 명확한 날짜 검증 (오늘 이전 납입 예정일도 처리)
  * 4. 개선된 에러 처리 및 로깅
  * 5. 성능 최적화 (조건부 실행)
  */
@@ -110,6 +110,10 @@ public class AutoDebitService {
      * - 조건부 로깅으로 성능 향상
      * - 명확한 에러 처리
      * 
+     * 날짜 처리:
+     * - 오늘 이전의 납입 예정일도 처리 (과거 납입 예정일 포함)
+     * - 미래 납입 예정일은 스킵
+     * 
      * @param userId 사용자 ID
      * @param subscription 구독 정보
      * @param today 오늘 날짜
@@ -128,9 +132,9 @@ public class AutoDebitService {
             return AutoDebitResult.SKIPPED;
         }
         
-        // 2. 오늘 납입 예정인지 확인
-        if (!today.equals(plannedPayment.getDueServiceDate())) {
-            log.debug("오늘 납입 예정이 아님 - 구독 ID: {}, 예정일: {}, 오늘: {}", 
+        // 2. 납입 예정일이 오늘 이전인지 확인 (과거 납입 예정일도 처리)
+        if (today.isBefore(plannedPayment.getDueServiceDate())) {
+            log.debug("납입 예정일이 미래임 - 구독 ID: {}, 예정일: {}, 오늘: {}", 
                      subscription.getId(), plannedPayment.getDueServiceDate(), today);
             return AutoDebitResult.SKIPPED;
         }
