@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static com.freedom.common.exception.custom.SavingExceptions.*;
+
 @Getter
 @Entity
 @Table(
@@ -46,13 +48,13 @@ public class SavingPaymentHistory extends BaseEntity {
     private Long subscriptionId;
 
     @Column(name = "cycle_no")
-    private Integer cycleNo; // 정액식 1..term
+    private Integer cycleNo;
 
     @Column(name = "due_service_date")
-    private LocalDate dueServiceDate; // 정액식 필수
+    private LocalDate dueServiceDate;
 
     @Column(name = "expected_amount", precision = 15, scale = 0)
-    private BigDecimal expectedAmount; // 정액식 기대액
+    private BigDecimal expectedAmount;
 
     public enum PaymentStatus { PLANNED, PAID, PARTIAL, MISSED }
 
@@ -79,10 +81,10 @@ public class SavingPaymentHistory extends BaseEntity {
     private String description;
 
     public static SavingPaymentHistory planned(Long subscriptionId, Integer cycleNo, LocalDate dueDate, BigDecimal expectedAmount) {
-        if (subscriptionId == null) throw new SavingExceptions.SavingPaymentInvalidParamsException("subscriptionId is required");
-        if (cycleNo == null || cycleNo <= 0) throw new SavingExceptions.SavingPaymentInvalidParamsException("cycleNo must be >= 1");
-        if (dueDate == null) throw new SavingExceptions.SavingPaymentInvalidParamsException("dueServiceDate is required");
-        if (expectedAmount == null || expectedAmount.signum() <= 0) throw new SavingExceptions.SavingPaymentInvalidParamsException("expectedAmount must be > 0");
+        if (subscriptionId == null) throw new SavingPaymentInvalidParamsException("subscriptionId is required");
+        if (cycleNo == null || cycleNo <= 0) throw new SavingPaymentInvalidParamsException("cycleNo must be >= 1");
+        if (dueDate == null) throw new SavingPaymentInvalidParamsException("dueServiceDate is required");
+        if (expectedAmount == null || expectedAmount.signum() <= 0) throw new SavingPaymentInvalidParamsException("expectedAmount must be > 0");
         SavingPaymentHistory h = new SavingPaymentHistory();
         h.subscriptionId = subscriptionId;
         h.cycleNo = cycleNo;
@@ -95,7 +97,7 @@ public class SavingPaymentHistory extends BaseEntity {
     }
 
     public void markPaid(BigDecimal amount, Long walletTxnId, LocalDateTime paidAt) {
-        if (amount == null || amount.signum() <= 0) throw new SavingExceptions.SavingInvalidPaymentAmountException();
+        if (amount == null || amount.signum() <= 0) throw new SavingInvalidPaymentAmountException();
         this.paidAmount = amount;
         this.paidAt = paidAt != null ? paidAt : LocalDateTime.now();
         this.walletTxnId = walletTxnId;
