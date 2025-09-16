@@ -1,14 +1,11 @@
 package com.freedom.saving.application;
 
-import com.freedom.common.exception.custom.SavingExceptions;
 import com.freedom.common.time.TimeProvider;
-import com.freedom.saving.domain.SavingProductOptionSnapshot;
 import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.payment.SavingPaymentHistory;
 import com.freedom.saving.domain.subscription.SavingSubscription;
 import com.freedom.saving.domain.subscription.SubscriptionStatus;
 import com.freedom.saving.infra.snapshot.SavingProductOptionSnapshotJpaRepository;
-import com.freedom.saving.infra.snapshot.SavingProductSnapshotJpaRepository;
 import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
 import com.freedom.wallet.application.SavingTransactionService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 import static com.freedom.common.exception.custom.SavingExceptions.*;
@@ -30,15 +26,11 @@ public class MaturitySettlementService {
     private final SavingSubscriptionJpaRepository subscriptionRepo;
     private final SavingPaymentHistoryRepository paymentRepo;
     private final SavingProductOptionSnapshotJpaRepository optionRepo;
-    private final SavingProductSnapshotJpaRepository productSnapshotRepo;
     private final SavingTransactionService savingTxnService;
     private final TimeProvider timeProvider;
 
     public record PayoutQuote(BigDecimal principal, BigDecimal rate, BigDecimal interest, BigDecimal total) {}
 
-    public record PendingMaturityDto(Long subscriptionId, String productName,
-                                     BigDecimal principal, BigDecimal interest, BigDecimal total,
-                                     String joinDate, String maturityDate) {}
 
 
     /**
@@ -66,29 +58,6 @@ public class MaturitySettlementService {
         return quote;
     }
 
-    /**
-     * 오늘 기준 만기일이 지난 ACTIVE 구독들의 모달 표시용 정보
-     */
-    @Transactional(readOnly = true)
-    public List<PendingMaturityDto> listPendingMaturities(Long userId) {
-        LocalDate today = timeProvider.today();
-        List<SavingSubscription> actives = subscriptionRepo.findByUserIdAndStatus(userId, SubscriptionStatus.ACTIVE);
-        return actives.stream()
-                .filter(sub -> !today.isBefore(sub.getDates().getMaturityDate()))
-                .map(sub -> {
-                    PayoutQuote q = computeQuote(sub);
-                    String productName = productSnapshotRepo.findById(sub.getProductSnapshotId())
-                            .map(s -> s.getFinPrdtNm()).orElse("");
-                    return new PendingMaturityDto(
-                            sub.getId(),
-                            productName,
-                            q.principal(), q.interest(), q.total(),
-                            sub.getDates().getStartDate().toString(),
-                            sub.getDates().getMaturityDate().toString()
-                    );
-                })
-                .toList();
-    }
 
     private void ensureMaturedByDate(SavingSubscription sub) {
         LocalDate today = timeProvider.today();

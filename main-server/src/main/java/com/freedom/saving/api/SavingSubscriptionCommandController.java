@@ -18,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/savings/subscriptions")
@@ -64,12 +63,6 @@ public class SavingSubscriptionCommandController {
         return ResponseEntity.ok(SuccessResponse.ok("적금 해지가 완료되었습니다."));
     }
 
-    @GetMapping("/maturity/pending")
-    public List<MaturitySettlementService.PendingMaturityDto> pendingMaturities(
-            @AuthenticationPrincipal CustomUserPrincipal principal
-    ) {
-        return maturitySettlementService.listPendingMaturities(principal.getId());
-    }
 
     @Loggable("만기 정산 API")
     @PostMapping("/{subscriptionId}/maturity/settlement")
