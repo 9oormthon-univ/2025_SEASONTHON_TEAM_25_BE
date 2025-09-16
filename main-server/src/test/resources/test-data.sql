@@ -1,39 +1,231 @@
--- 테스트용 사용자 데이터
+-- 테스트용 사용자 데이터 (20명의 사용자)
 INSERT INTO users (
-    id, email, password, role, status, character_created, created_at, updated_at
+    id, email, password, role, status, character_name, character_created, attendance, created_at, updated_at
 ) VALUES
-(1, 'test@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', false, NOW(), NOW());
+(1, 'test@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕1', true, false, NOW(), NOW()),
+(2, 'test2@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕2', true, false, NOW(), NOW()),
+(3, 'test3@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕3', true, false, NOW(), NOW()),
+(4, 'test4@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕4', true, false, NOW(), NOW()),
+(5, 'test5@xexample.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕5', true, false, NOW(), NOW()),
+(6, 'test6@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕6', true, false, NOW(), NOW()),
+(7, 'test7@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕7', true, false, NOW(), NOW()),
+(8, 'test8@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕8', true, false, NOW(), NOW()),
+(9, 'test9@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕9', true, false, NOW(), NOW()),
+(10, 'test10@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕10', true, false, NOW(), NOW()),
+(11, 'test11@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕11', true, false, NOW(), NOW()),
+(12, 'test12@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕12', true, false, NOW(), NOW()),
+(13, 'test13@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕13', true, false, NOW(), NOW()),
+(14, 'test14@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕14', true, false, NOW(), NOW()),
+(15, 'test15@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕15', true, false, NOW(), NOW()),
+(16, 'test16@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕16', true, false, NOW(), NOW()),
+(17, 'test17@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕17', true, false, NOW(), NOW()),
+(18, 'test18@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕18', true, false, NOW(), NOW()),
+(19, 'test19@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕19', true, false, NOW(), NOW()),
+(20, 'test20@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕20', true, false, NOW(), NOW()),
+(21, 'test21@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕21', true, false, NOW(), NOW()),
+(22, 'test22@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕22', true, false, NOW(), NOW()),
+(23, 'test23@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕23', true, false, NOW(), NOW()),
+(24, 'test24@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕24', true, false, NOW(), NOW()),
+(25, 'test25@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕25', true, false, NOW(), NOW()),
+(26, 'test26@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕26', true, false, NOW(), NOW()),
+(27, 'test27@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕27', true, false, NOW(), NOW()),
+(28, 'test28@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕28', true, false, NOW(), NOW()),
+(29, 'test29@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕29', true, false, NOW(), NOW()),
+(30, 'test30@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕30', true, false, NOW(), NOW()),
+(31, 'test31@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕31', true, false, NOW(), NOW()),
+(32, 'test32@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕32', true, false, NOW(), NOW()),
+(33, 'test33@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕33', true, false, NOW(), NOW()),
+(34, 'test34@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕34', true, false, NOW(), NOW()),
+(35, 'test35@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕35', true, false, NOW(), NOW()),
+(36, 'test36@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕36', true, false, NOW(), NOW()),
+(37, 'test37@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕37', true, false, NOW(), NOW()),
+(38, 'test38@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕38', true, false, NOW(), NOW()),
+(39, 'test39@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕39', true, false, NOW(), NOW()),
+(40, 'test40@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕40', true, false, NOW(), NOW()),
+(41, 'test41@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕41', true, false, NOW(), NOW()),
+(42, 'test42@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕42', true, false, NOW(), NOW()),
+(43, 'test43@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕43', true, false, NOW(), NOW()),
+(44, 'test44@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕44', true, false, NOW(), NOW()),
+(45, 'test45@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕45', true, false, NOW(), NOW()),
+(46, 'test46@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕46', true, false, NOW(), NOW()),
+(47, 'test47@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕47', true, false, NOW(), NOW()),
+(48, 'test48@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕48', true, false, NOW(), NOW()),
+(49, 'test49@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕49', true, false, NOW(), NOW()),
+(50, 'test50@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnOmTOPSwz5WJQGYM/cR5lRhXRHGkDTcmK', 'USER', 'ACTIVE', '테스트왕50', true, false, NOW(), NOW());
 
--- 테스트용 뉴스 데이터
-INSERT INTO news_article (
-    id, news_item_id, contents_status, modify_id, modify_date, approve_date, approver_name,
-    grouping_code, title, sub_title1, contents_type, data_contents, plain_text_content,
-    content_hash, thumbnail_url, ai_summary, created_at, updated_at
-) VALUES
--- 어제 뉴스 (ID: 1)
-(1, 'news001', 'U', 1, 
- DATE_SUB(NOW(), INTERVAL 1 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), '테스트승인자1',
- 'policy', '어제 정책 뉴스 제목', '어제 부제목1',
- 'H', '<p>어제 뉴스 내용입니다.</p>', '어제 뉴스 내용입니다.',
- 'hash001', 'https://example.com/thumb1.jpg', 'AI 요약: 어제 중요한 정책 발표', NOW(), NOW()),
 
--- 오늘 뉴스 (ID: 2) 
-(2, 'news002', 'U', 1,
- NOW(), NOW(), '테스트승인자2',
- 'policy', '오늘 정책 뉴스 제목', '오늘 부제목1',
- 'H', '<p>오늘 뉴스 내용입니다.</p>', '오늘 뉴스 내용입니다.',
- 'hash002', 'https://example.com/thumb2.jpg', 'AI 요약: 오늘 새로운 정책 방향', NOW(), NOW()),
+-- 지갑 생성 (각 사용자마다 다른 잔액)
+INSERT INTO user_wallet (id, user_id, balance, version, created_at, updated_at) VALUES
+(1, 1, 250000, 0, NOW(), NOW()),
+(2, 2, 250000, 0, NOW(), NOW()),
+(3, 3, 380000, 0, NOW(), NOW()),
+(4, 4, 420000, 0, NOW(), NOW()),
+(5, 5, 150000, 0, NOW(), NOW()),
+(6, 6, 320000, 0, NOW(), NOW()),
+(7, 7, 180000, 0, NOW(), NOW()),
+(8, 8, 450000, 0, NOW(), NOW()),
+(9, 9, 275000, 0, NOW(), NOW()),
+(10, 10, 395000, 0, NOW(), NOW()),
+(11, 11, 220000, 0, NOW(), NOW()),
+(12, 12, 340000, 0, NOW(), NOW()),
+(13, 13, 165000, 0, NOW(), NOW()),
+(14, 14, 480000, 0, NOW(), NOW()),
+(15, 15, 290000, 0, NOW(), NOW()),
+(16, 16, 375000, 0, NOW(), NOW()),
+(17, 17, 210000, 0, NOW(), NOW()),
+(18, 18, 425000, 0, NOW(), NOW()),
+(19, 19, 185000, 0, NOW(), NOW()),
+(20, 20, 350000, 0, NOW(), NOW()),
+(21, 21, 360000, 0, NOW(), NOW()),
+(22, 22, 370000, 0, NOW(), NOW()),
+(23, 23, 380000, 0, NOW(), NOW()),
+(24, 24, 390000, 0, NOW(), NOW()),
+(25, 25, 400000, 0, NOW(), NOW()),
+(26, 26, 410000, 0, NOW(), NOW()),
+(27, 27, 420000, 0, NOW(), NOW()),
+(28, 28, 430000, 0, NOW(), NOW()),
+(29, 29, 440000, 0, NOW(), NOW()),
+(30, 30, 450000, 0, NOW(), NOW()),
+(31, 31, 460000, 0, NOW(), NOW()),
+(32, 32, 470000, 0, NOW(), NOW()),
+(33, 33, 480000, 0, NOW(), NOW()),
+(34, 34, 490000, 0, NOW(), NOW()),
+(35, 35, 500000, 0, NOW(), NOW()),
+(36, 36, 200000, 0, NOW(), NOW()),
+(37, 37, 210000, 0, NOW(), NOW()),
+(38, 38, 220000, 0, NOW(), NOW()),
+(39, 39, 230000, 0, NOW(), NOW()),
+(40, 40, 240000, 0, NOW(), NOW()),
+(41, 41, 250000, 0, NOW(), NOW()),
+(42, 42, 260000, 0, NOW(), NOW()),
+(43, 43, 270000, 0, NOW(), NOW()),
+(44, 44, 280000, 0, NOW(), NOW()),
+(45, 45, 290000, 0, NOW(), NOW()),
+(46, 46, 300000, 0, NOW(), NOW()),
+(47, 47, 310000, 0, NOW(), NOW()),
+(48, 48, 320000, 0, NOW(), NOW()),
+(49, 49, 330000, 0, NOW(), NOW()),
+(50, 50, 340000, 0, NOW(), NOW());
 
--- 일주일 전 뉴스 (조회되면 안됨)
-(3, 'news003', 'U', 1,
- DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), '테스트승인자3',
- 'policy', '일주일 전 뉴스', '오래된 부제목',
- 'H', '<p>일주일 전 뉴스</p>', '일주일 전 뉴스',
- 'hash003', 'https://example.com/thumb3.jpg', 'AI 요약: 오래된 뉴스', NOW(), NOW());
 
--- 뉴스 컨텐츠 블록 (첫 번째 뉴스용)
-INSERT INTO news_content_block (
-    id, news_article_id, block_type, original_content, plain_content, url, alt_text, block_order, created_at, updated_at
-) VALUES
-(1, 1, 'TEXT', '<p>첫 번째 텍스트 블록</p>', '첫 번째 텍스트 블록', NULL, NULL, 1, NOW(), NOW()),
-(2, 1, 'IMAGE', '<img src="test.jpg" alt="테스트 이미지">', '', 'https://example.com/test.jpg', '테스트 이미지', 2, NOW(), NOW());
+-- 출석 데이터 (일부 사용자는 오늘 출석, 일부는 미출석)
+INSERT INTO attendance (id, user_id, check_date, created_at, updated_at) VALUES
+(1, 1, CURDATE(), NOW(), NOW()),
+(2, 2, CURDATE(), NOW(), NOW()),
+(3, 3, CURDATE(), NOW(), NOW()),
+(4, 4, CURDATE(), NOW(), NOW()),
+(5, 5, CURDATE(), NOW(), NOW()),
+(6, 6, CURDATE(), NOW(), NOW()),
+(7, 7, CURDATE(), NOW(), NOW()),
+(8, 8, CURDATE(), NOW(), NOW()),
+(9, 9, CURDATE(), NOW(), NOW()),
+(10, 10, CURDATE(), NOW(), NOW()),
+-- 11-20번 사용자는 오늘 출석 안함 (성능 테스트에서 다양한 케이스)
+(11, 11, DATE_SUB(CURDATE(), INTERVAL 1 DAY), NOW(), NOW()),
+(12, 12, DATE_SUB(CURDATE(), INTERVAL 1 DAY), NOW(), NOW()),
+(13, 13, DATE_SUB(CURDATE(), INTERVAL 2 DAY), NOW(), NOW()),
+(14, 14, DATE_SUB(CURDATE(), INTERVAL 2 DAY), NOW(), NOW()),
+(15, 15, DATE_SUB(CURDATE(), INTERVAL 3 DAY), NOW(), NOW()),
+(16, 16, DATE_SUB(CURDATE(), INTERVAL 3 DAY), NOW(), NOW()),
+(17, 17, DATE_SUB(CURDATE(), INTERVAL 4 DAY), NOW(), NOW()),
+(18, 18, DATE_SUB(CURDATE(), INTERVAL 4 DAY), NOW(), NOW()),
+(19, 19, DATE_SUB(CURDATE(), INTERVAL 5 DAY), NOW(), NOW()),
+(20, 20, DATE_SUB(CURDATE(), INTERVAL 5 DAY), NOW(), NOW());
+
+-- 퀴즈 데이터 (각 사용자마다 여러 퀴즈 기록)
+INSERT INTO quiz (id, type, difficulty, category, question, explanation,
+                  mcq_opt1, mcq_opt2, mcq_opt3, mcq_opt4, mcq_correct_index, created_at, updated_at) VALUES
+(1, 'MCQ', 'EASY', 'SAVING', '적금의 주요 특징은?', '적금은 정기적으로 일정 금액을 납입하는 저축 상품입니다.',
+   '높은 수익률', '정기적인 납입', '원금 손실 가능', '즉시 환급', 2, NOW(), NOW()),
+(2, 'MCQ', 'MEDIUM', 'INVESTMENT', '주식 투자의 기본 원칙은?', '분산 투자를 통해 위험을 줄일 수 있습니다.',
+   '하루만에 큰 수익', '분산 투자', '빚내서 투자', '감정적 거래', 2, NOW(), NOW()),
+(3, 'MCQ', 'EASY', 'ECONOMY', '인플레이션의 의미는?', '인플레이션은 전반적인 물가 수준이 지속적으로 상승하는 현상입니다.',
+   '물가 하락', '물가 상승', '금리 하락', '환율 하락', 2, NOW(), NOW()),
+(4, 'MCQ', 'MEDIUM', 'SAVING', '복리 이자의 특징은?', '복리는 원금과 이자를 합한 금액에 다시 이자가 붙는 방식입니다.',
+   '원금에만 이자', '이자에도 이자', '매년 동일한 이자', '세금이 없음', 2, NOW(), NOW()),
+(5, 'MCQ', 'HARD', 'INVESTMENT', '펀드 투자 시 고려사항은?', '펀드 투자 시에는 위험도와 기대 수익률을 모두 고려해야 합니다.',
+   '수수료만 확인', '과거 수익률만 확인', '위험도와 수익률 모두 확인', '브랜드만 확인', 3, NOW(), NOW());
+
+-- 사용자별 퀴즈 응답 기록 (각 사용자마다 여러 퀴즈 기록)
+INSERT INTO user_quiz (id, user_id, quiz_id, user_answer, is_correct, quiz_date, assigned_date, created_at, updated_at) VALUES
+-- 사용자 1의 퀴즈 기록 (오늘)
+(1, 1, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(2, 1, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(3, 1, 3, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 2의 퀴즈 기록 (오늘)
+(4, 2, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(5, 2, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(6, 2, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 3의 퀴즈 기록 (오늘)
+(7, 3, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(8, 3, 3, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 4의 퀴즈 기록 (오늘)
+(9, 4, 1, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(10, 4, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(11, 4, 5, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 5의 퀴즈 기록 (오늘)
+(12, 5, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(13, 5, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(14, 5, 3, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(15, 5, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 6의 퀴즈 기록 (오늘)
+(16, 6, 2, '4', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(17, 6, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 7의 퀴즈 기록 (오늘)
+(18, 7, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 8의 퀴즈 기록 (오늘)
+(19, 8, 3, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(20, 8, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(21, 8, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 9의 퀴즈 기록 (오늘)
+(22, 9, 1, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(23, 9, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 10의 퀴즈 기록 (오늘)
+(24, 10, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(25, 10, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+-- 사용자 11-20의 퀴즈 기록 (다양한 정답/오답)
+(26, 11, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(27, 11, 2, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(28, 12, 3, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(29, 13, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(30, 13, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(31, 14, 1, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(32, 15, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(33, 15, 3, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(34, 16, 4, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(35, 17, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(36, 18, 1, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(37, 18, 2, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(38, 19, 3, '1', false, CURDATE(), CURDATE(), NOW(), NOW()),
+(39, 20, 4, '2', true, CURDATE(), CURDATE(), NOW(), NOW()),
+(40, 20, 5, '3', true, CURDATE(), CURDATE(), NOW(), NOW());
+
+-- 간단한 지갑 거래 이력 (성능 테스트용) - 정확한 구조로
+INSERT INTO wallet_transaction (id, wallet_id, request_id, direction, reason_code, amount, balance_after, description, created_at, updated_at) VALUES
+(1, 1, 'TEST_DEPOSIT_1_1', 'DEPOSIT', 'QUIZ_REWARD', 10000, 110000, '퀴즈 보상', NOW(), NOW()),
+(2, 1, 'TEST_WITHDRAW_1_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 5000, 105000, '적금 납입', NOW(), NOW()),
+(3, 2, 'TEST_DEPOSIT_2_1', 'DEPOSIT', 'QUIZ_REWARD', 25000, 275000, '퀴즈 보상', NOW(), NOW()),
+(4, 3, 'TEST_WITHDRAW_3_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 20000, 360000, '적금 납입', NOW(), NOW()),
+(5, 4, 'TEST_DEPOSIT_4_1', 'DEPOSIT', 'QUIZ_REWARD', 15000, 435000, '퀴즈 보상', NOW(), NOW()),
+(6, 5, 'TEST_WITHDRAW_5_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 10000, 140000, '적금 납입', NOW(), NOW()),
+(7, 6, 'TEST_DEPOSIT_6_1', 'DEPOSIT', 'QUIZ_REWARD', 30000, 350000, '퀴즈 보상', NOW(), NOW()),
+(8, 7, 'TEST_WITHDRAW_7_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 8000, 172000, '적금 납입', NOW(), NOW()),
+(9, 8, 'TEST_DEPOSIT_8_1', 'DEPOSIT', 'QUIZ_REWARD', 45000, 495000, '퀴즈 보상', NOW(), NOW()),
+(10, 9, 'TEST_WITHDRAW_9_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 12000, 263000, '적금 납입', NOW(), NOW()),
+(11, 10, 'TEST_DEPOSIT_10_1', 'DEPOSIT', 'QUIZ_REWARD', 35000, 430000, '퀴즈 보상', NOW(), NOW()),
+(12, 11, 'TEST_WITHDRAW_11_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 15000, 205000, '적금 납입', NOW(), NOW()),
+(13, 12, 'TEST_DEPOSIT_12_1', 'DEPOSIT', 'QUIZ_REWARD', 28000, 368000, '퀴즈 보상', NOW(), NOW()),
+(14, 13, 'TEST_WITHDRAW_13_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 7000, 158000, '적금 납입', NOW(), NOW()),
+(15, 14, 'TEST_DEPOSIT_14_1', 'DEPOSIT', 'QUIZ_REWARD', 48000, 528000, '퀴즈 보상', NOW(), NOW()),
+(16, 15, 'TEST_WITHDRAW_15_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 18000, 272000, '적금 납입', NOW(), NOW()),
+(17, 16, 'TEST_DEPOSIT_16_1', 'DEPOSIT', 'QUIZ_REWARD', 32000, 407000, '퀴즈 보상', NOW(), NOW()),
+(18, 17, 'TEST_WITHDRAW_17_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 9000, 201000, '적금 납입', NOW(), NOW()),
+(19, 18, 'TEST_DEPOSIT_18_1', 'DEPOSIT', 'QUIZ_REWARD', 42000, 467000, '퀴즈 보상', NOW(), NOW()),
+(20, 20, 'TEST_WITHDRAW_20_1', 'WITHDRAW', 'SAVING_MANUAL_PAYMENT', 22000, 328000, '적금 납입', NOW(), NOW());
+
+INSERT INTO achievements (type, title, description, icon_url, requirement_count, is_active, created_at, updated_at) VALUES
+('BEGINNERS_LUCK', '초심자의 행운', '최초 가입 완료시 획득 가능', 'https://storage.cloud.google.com/financial-freedom/achievement/image/Icon_Clover.jpg?authuser=1', 1, true, NOW(), NOW()),
+('MORNING_SUNSHINE', '아침 햇살', '30일 연속 출석시 획득 가능', 'https://storage.cloud.google.com/financial-freedom/achievement/image/Icon_Sunrise.jpg?authuser=1', 30, true, NOW(), NOW()),
+('NEWS_ADDICT', '속보 중독', '상세 뉴스 50회 열람시 획득 가능', 'https://storage.cloud.google.com/financial-freedom/achievement/image/Icon_NewsAddicted.jpg?authuser=1', 50, true, NOW(), NOW()),
+('NEWS_COLLECTOR', '소식좌', '뉴스 50회 스크랩시 획득 가능', 'https://storage.cloud.google.com/financial-freedom/achievement/image/Icon_Archiver.jpg?authuser=1', 50, true, NOW(), NOW()),
+('QUIZ_CURATOR', '퀴즈 큐레이터', '퀴즈 50회 스크랩시 획득 가능', 'https://storage.cloud.google.com/financial-freedom/achievement/image/Icon_QuizKing.jpg?authuser=1', 50, true, NOW(), NOW());
