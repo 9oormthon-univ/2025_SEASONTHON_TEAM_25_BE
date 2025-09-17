@@ -21,6 +21,7 @@ public class NewsDetailResponse {
     private LocalDateTime approveDate;
     private LocalDateTime modifyDate;
     private boolean isScraped;
+    private String originalImgUrl;
     private String thumbnailUrl;
     private String aiSummary;
     private String plainTextContent;
@@ -37,6 +38,7 @@ public class NewsDetailResponse {
                 .approveDate(newsDetailDto.getApproveDate())
                 .modifyDate(newsDetailDto.getModifyDate())
                 .isScraped(newsScrapDto != null)
+                .originalImgUrl(newsDetailDto.getOriginalImgUrl())
                 .thumbnailUrl(newsDetailDto.getThumbnailUrl())
                 .aiSummary(newsDetailDto.getAiSummary())
                 .plainTextContent(newsDetailDto.getPlainTextContent())
