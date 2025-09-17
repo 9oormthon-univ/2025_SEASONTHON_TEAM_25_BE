@@ -1,4 +1,4 @@
-package com.freedom.saving.domain;
+package com.freedom.saving.domain.repository;
 
 import com.freedom.saving.domain.entities.SavingPaymentHistory;
 

@@ -1,6 +1,5 @@
-package com.freedom.saving.domain.subscription;
+package com.freedom.saving.domain;
 
-import com.freedom.common.exception.custom.SavingExceptions;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

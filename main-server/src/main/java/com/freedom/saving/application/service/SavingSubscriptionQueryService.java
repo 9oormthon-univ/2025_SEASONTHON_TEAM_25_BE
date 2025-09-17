@@ -2,12 +2,12 @@ package com.freedom.saving.application.service;
 
 import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.entities.SavingPaymentHistory;
-import com.freedom.saving.domain.SavingPaymentHistoryRepository;
+import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.entities.SavingSubscription;
-import com.freedom.saving.domain.subscription.SubscriptionStatus;
+import com.freedom.saving.domain.SubscriptionStatus;
 import com.freedom.saving.domain.policy.TickPolicy;
-import com.freedom.saving.infra.snapshot.SavingProductSnapshotJpaRepository;
-import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
+import com.freedom.saving.infra.SavingProductSnapshotJpaRepository;
+import com.freedom.saving.infra.SavingSubscriptionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.freedom.saving.infra.snapshot;
+package com.freedom.saving.infra;
 
 import com.freedom.saving.domain.SavingProductSnapshot;
 import org.springframework.data.domain.Page;

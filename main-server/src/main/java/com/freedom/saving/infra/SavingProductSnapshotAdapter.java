@@ -1,8 +1,6 @@
-package com.freedom.saving.infra.subscription;
+package com.freedom.saving.infra;
 
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
-import com.freedom.saving.infra.snapshot.SavingProductOptionSnapshotJpaRepository;
-import com.freedom.saving.infra.snapshot.SavingProductSnapshotJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

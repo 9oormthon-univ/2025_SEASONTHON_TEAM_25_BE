@@ -1,15 +1,14 @@
-package com.freedom.saving.infra.subscription;
+package com.freedom.saving.infra;
 
 import com.freedom.saving.application.port.SavingSubscriptionPort;
-import com.freedom.saving.domain.subscription.AutoDebitAmount;
+import com.freedom.saving.domain.vo.AutoDebitAmount;
 import com.freedom.saving.domain.entities.SavingSubscription;
-import com.freedom.saving.domain.subscription.ServiceDates;
-import com.freedom.saving.domain.subscription.TermMonths;
-import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
+import com.freedom.saving.domain.ServiceDates;
+import com.freedom.saving.domain.vo.TermMonths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.freedom.saving.domain.subscription.SubscriptionStatus;
+import com.freedom.saving.domain.SubscriptionStatus;
 import com.freedom.common.exception.custom.SavingExceptions;
 
 import java.math.BigDecimal;

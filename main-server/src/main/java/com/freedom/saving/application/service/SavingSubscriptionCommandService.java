@@ -2,8 +2,8 @@ package com.freedom.saving.application.service;
 
 import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.entities.SavingSubscription;
-import com.freedom.saving.domain.subscription.SubscriptionStatus;
-import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
+import com.freedom.saving.domain.SubscriptionStatus;
+import com.freedom.saving.infra.SavingSubscriptionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

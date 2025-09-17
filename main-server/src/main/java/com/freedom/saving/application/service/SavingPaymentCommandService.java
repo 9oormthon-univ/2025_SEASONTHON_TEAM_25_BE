@@ -2,10 +2,10 @@ package com.freedom.saving.application.service;
 
 import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.entities.SavingPaymentHistory;
-import com.freedom.saving.domain.SavingPaymentHistoryRepository;
+import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.entities.SavingSubscription;
-import com.freedom.saving.domain.subscription.SubscriptionStatus;
-import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
+import com.freedom.saving.domain.SubscriptionStatus;
+import com.freedom.saving.infra.SavingSubscriptionJpaRepository;
 import com.freedom.common.time.TimeProvider;
 import com.freedom.wallet.application.SavingTransactionService;
 import com.freedom.saving.domain.policy.TickPolicy;

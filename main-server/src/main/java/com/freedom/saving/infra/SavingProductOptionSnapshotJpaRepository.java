@@ -1,4 +1,4 @@
-package com.freedom.saving.infra.snapshot;
+package com.freedom.saving.infra;
 
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;

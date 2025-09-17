@@ -1,4 +1,4 @@
-package com.freedom.saving.domain.subscription;
+package com.freedom.saving.domain.vo;
 
 
 import com.freedom.common.exception.custom.InvalidAmountException;

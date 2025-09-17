@@ -1,4 +1,4 @@
-package com.freedom.saving.domain.subscription;
+package com.freedom.saving.domain.repository;
 
 import com.freedom.saving.domain.entities.SavingSubscription;
 

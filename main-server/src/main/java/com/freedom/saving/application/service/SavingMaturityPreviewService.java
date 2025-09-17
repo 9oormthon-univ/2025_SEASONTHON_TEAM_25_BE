@@ -3,7 +3,7 @@ package com.freedom.saving.application.service;
 import com.freedom.saving.api.dto.MaturityPreviewRequest;
 import com.freedom.saving.api.dto.MaturityPreviewResponse;
 import com.freedom.saving.domain.SavingProductOptionSnapshot;
-import com.freedom.saving.infra.snapshot.SavingProductOptionSnapshotJpaRepository;
+import com.freedom.saving.infra.SavingProductOptionSnapshotJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

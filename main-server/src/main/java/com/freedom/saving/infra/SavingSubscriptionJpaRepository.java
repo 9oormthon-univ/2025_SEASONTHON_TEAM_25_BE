@@ -1,7 +1,7 @@
-package com.freedom.saving.infra.snapshot;
+package com.freedom.saving.infra;
 
 import com.freedom.saving.domain.entities.SavingSubscription;
-import com.freedom.saving.domain.subscription.SubscriptionStatus;
+import com.freedom.saving.domain.SubscriptionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

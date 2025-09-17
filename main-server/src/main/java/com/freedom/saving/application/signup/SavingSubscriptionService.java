@@ -3,7 +3,7 @@ package com.freedom.saving.application.signup;
 import com.freedom.common.logging.Loggable;
 import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.entities.SavingPaymentHistory;
-import com.freedom.saving.domain.SavingPaymentHistoryRepository;
+import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
 import com.freedom.saving.application.port.SavingSubscriptionPort;
 import com.freedom.common.exception.custom.ExceedsMaxLimitException;
