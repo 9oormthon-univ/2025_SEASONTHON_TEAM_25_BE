@@ -1,6 +1,7 @@
 package com.freedom.quest.domain.entity;
 
 import com.freedom.auth.domain.User;
+import com.freedom.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ import java.time.LocalDate;
                         columnNames = {"user_id", "quest_id", "period_start_date"})
         }
 )
-public class UserQuest {
+public class UserQuest extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
