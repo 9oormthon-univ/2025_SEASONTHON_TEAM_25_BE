@@ -55,12 +55,9 @@ public class SavingMaturityPreviewService {
                         request.getMonthlyAmount(), targetOption);
 
         // 4. 응답 생성
-        MaturityPreviewResponse response = new MaturityPreviewResponse(
+        return new MaturityPreviewResponse(
                 MaturityPreviewResponse.MaturityInfo.from(ourServiceResult),
                 MaturityPreviewResponse.MaturityInfo.from(preferentialResult)
         );
-
-
-        return response;
     }
 }

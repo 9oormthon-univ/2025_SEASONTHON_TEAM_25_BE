@@ -48,7 +48,6 @@ public class SavingProductQueryService {
      * [목록] 정렬 옵션과 은행사 필터에 따른 적금 상품 조회
      * 정렬 옵션: popular(인기순), name(상품명 가나다순)
      * 은행사 필터: 여러 은행사 선택 가능
-     * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
     public Page<SavingProductListItem> getSavingProducts(String sort, List<String> bankNames, int page, int size) {
         // 1) 최신 스냅샷 전체 조회
@@ -81,7 +80,6 @@ public class SavingProductQueryService {
     /**
      * [목록] 정렬 옵션에 따른 적금 상품 조회
      * 정렬 옵션: popular(인기순), name(상품명 가나다순)
-     * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
     public Page<SavingProductListItem> getSavingProducts(String sort, int page, int size) {
         return getSavingProducts(sort, Collections.emptyList(), page, size);
@@ -90,7 +88,6 @@ public class SavingProductQueryService {
     /**
      * [목록] 인기순 적금 상품 조회
      * 정렬 기준: 최신 스냅샷 중 subscriberCount 내림차순
-     * 프론트 요구에 따라 전체 리스트를 반환한다.
      */
     public Page<SavingProductListItem> getPopularSavingProducts(int page, int size) {
         return getSavingProducts("popular", page, size);

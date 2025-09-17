@@ -121,36 +121,29 @@ public class AutoDebitService {
      */
     @Transactional
     public AutoDebitResult processSubscriptionAutoDebit(Long userId, SavingSubscription subscription, LocalDate today) {
-        log.debug("구독 자동납입 처리 시작 - 구독 ID: {}, 사용자 ID: {}", subscription.getId(), userId);
         
         // 1. 다음 납입 계획 조회 (조기 반환)
         SavingPaymentHistory plannedPayment = paymentRepo.findNextPlannedPayment(subscription.getId())
                 .orElse(null);
         
         if (plannedPayment == null) {
-            log.debug("다음 납입 계획이 없음 - 구독 ID: {}", subscription.getId());
             return AutoDebitResult.SKIPPED;
         }
         
         // 2. 납입 예정일이 오늘 이전인지 확인
         if (today.isBefore(plannedPayment.getDueServiceDate())) {
-            log.debug("납입 예정일이 미래임 - 구독 ID: {}, 예정일: {}, 오늘: {}", 
-                     subscription.getId(), plannedPayment.getDueServiceDate(), today);
             return AutoDebitResult.SKIPPED;
         }
         
         // 3. 납입 금액 유효성 확인 (조기 반환)
         BigDecimal amount = plannedPayment.getExpectedAmount();
         if (amount == null || amount.signum() <= 0) {
-            log.warn("유효하지 않은 납입 금액 - 구독 ID: {}, 금액: {}", subscription.getId(), amount);
             return AutoDebitResult.SKIPPED;
         }
         
         // 4. 자동 납입 실행
         try {
             String requestId = "AUTO_" + UUID.randomUUID();
-            log.info("자동납입 실행 - 구독 ID: {}, 금액: {}, 요청 ID: {}", 
-                    subscription.getId(), amount, requestId);
             
             WalletTransaction transaction = savingTxnService.processSavingAutoDebit(
                     userId, requestId, amount, subscription.getId());
@@ -159,15 +152,9 @@ public class AutoDebitService {
             plannedPayment.markPaid(amount, transaction.getId(), null);
             paymentRepo.save(plannedPayment);
             
-            log.info("자동납입 성공 - 구독 ID: {}, 금액: {}, 거래 ID: {}", 
-                    subscription.getId(), amount, transaction.getId());
-            
             return AutoDebitResult.SUCCESS;
             
         } catch (Exception e) {
-            log.error("자동납입 실패 - 구독 ID: {}, 금액: {}, 오류: {}", 
-                     subscription.getId(), amount, e.getMessage(), e);
-            
             // 6. 실패 시 미납 처리 (트랜잭션 내에서)
             handlePaymentFailure(subscription, plannedPayment);
             
@@ -183,8 +170,6 @@ public class AutoDebitService {
      */
     @Transactional
     public void handlePaymentFailure(SavingSubscription subscription, SavingPaymentHistory plannedPayment) {
-        log.info("납입 실패 처리 시작 - 구독 ID: {}", subscription.getId());
-        
         try {
             // 1. 미납으로 마킹
             plannedPayment.markMissed();
@@ -193,18 +178,15 @@ public class AutoDebitService {
             // 2. 미납 횟수 확인
             long missedCount = paymentRepo.countBySubscriptionIdAndStatus(
                     subscription.getId(), SavingPaymentHistory.PaymentStatus.MISSED);
-            
-            log.info("미납 횟수: {} - 구독 ID: {}", missedCount, subscription.getId());
-            
+
             // 3. 3회 이상 미납 시 강제 해지
             if (missedCount >= 3 && subscription.getStatus() == SubscriptionStatus.ACTIVE) {
-                log.warn("미납 3회 누적으로 강제 해지 - 구독 ID: {}", subscription.getId());
                 subscription.forceCancel();
                 subscriptionRepo.save(subscription);
             }
             
         } catch (Exception e) {
-            log.error("납입 실패 처리 중 오류 발생 - 구독 ID: {}, 오류: {}", 
+            log.error("납입 실패 처리 중 오류 발생 - 구독 ID: {}, 오류: {}",
                      subscription.getId(), e.getMessage(), e);
         }
     }

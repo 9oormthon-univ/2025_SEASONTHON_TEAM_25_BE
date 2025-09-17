@@ -1,7 +1,7 @@
 package com.freedom.saving.application.subscription;
 
 import com.freedom.common.time.TimeProvider;
-import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
+import com.freedom.saving.domain.model.SavingProductSnapshot;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.model.entity.SavingSubscription;
 import com.freedom.saving.domain.SubscriptionStatus;
@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.freedom.saving.domain.model.entity.SavingPaymentHistory.*;
+import static java.math.RoundingMode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,15 +51,15 @@ public class SavingStatusQueryService {
         BigDecimal target = s.getAutoDebitAmount().getValue().multiply(BigDecimal.valueOf(s.getTerm().getValue()));
         BigDecimal paid = paymentRepo.calculateTotalPaidAmount(s.getId());
 
-        int progress = target.signum() == 0 ? 0 : paid.multiply(BigDecimal.valueOf(100)).divide(target, 0, java.math.RoundingMode.HALF_UP).intValue();
+        int progress = target.signum() == 0 ? 0 : paid.multiply(BigDecimal.valueOf(100)).divide(target, 0, HALF_UP).intValue();
 
-        long paidOrPartial = paymentRepo.countBySubscriptionIdAndStatus(s.getId(), SavingPaymentHistory.PaymentStatus.PAID)
-                + paymentRepo.countBySubscriptionIdAndStatus(s.getId(), SavingPaymentHistory.PaymentStatus.PARTIAL);
+        long paidOrPartial = paymentRepo.countBySubscriptionIdAndStatus(s.getId(), PaymentStatus.PAID)
+                + paymentRepo.countBySubscriptionIdAndStatus(s.getId(), PaymentStatus.PARTIAL);
 
         int remaining = Math.max(0, s.getTerm().getValue() - (int) paidOrPartial);
 
         String productName = productSnapshotRepo.findById(s.getProductSnapshotId())
-                .map(snapshot -> snapshot.getFinPrdtNm())
+                .map(SavingProductSnapshot::getFinPrdtNm)
                 .orElse("");
 
         LocalDate join = s.getDates().getStartDate();
@@ -76,7 +79,7 @@ public class SavingStatusQueryService {
     private CompletedDto toCompleted(SavingSubscription s) {
         BigDecimal finalAmount = paymentRepo.calculateTotalPaidAmount(s.getId());
         String productName = productSnapshotRepo.findById(s.getProductSnapshotId())
-                .map(snapshot -> snapshot.getFinPrdtNm())
+                .map(SavingProductSnapshot::getFinPrdtNm)
                 .orElse("");
 
         LocalDate join = s.getDates().getStartDate();
