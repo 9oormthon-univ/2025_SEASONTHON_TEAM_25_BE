@@ -1,4 +1,4 @@
-package com.freedom.saving.application.signup;
+package com.freedom.saving.application;
 
 import com.freedom.common.exception.custom.SavingExceptions;
 

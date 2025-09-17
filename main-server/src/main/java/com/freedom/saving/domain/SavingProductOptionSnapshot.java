@@ -1,6 +1,6 @@
 package com.freedom.saving.domain;
 
-import com.freedom.saving.domain.shapshot.SavingProductOptionSnapshotDraft;
+import com.freedom.saving.domain.model.vo.SavingProductOptionSnapshotDraft;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

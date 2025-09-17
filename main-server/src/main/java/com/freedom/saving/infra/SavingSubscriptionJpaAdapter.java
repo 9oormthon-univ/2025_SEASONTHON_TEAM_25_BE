@@ -1,10 +1,10 @@
 package com.freedom.saving.infra;
 
 import com.freedom.saving.application.port.SavingSubscriptionPort;
-import com.freedom.saving.domain.vo.AutoDebitAmount;
-import com.freedom.saving.domain.entities.SavingSubscription;
+import com.freedom.saving.domain.model.vo.AutoDebitAmount;
+import com.freedom.saving.domain.model.entity.SavingSubscription;
 import com.freedom.saving.domain.ServiceDates;
-import com.freedom.saving.domain.vo.TermMonths;
+import com.freedom.saving.domain.model.vo.TermMonths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

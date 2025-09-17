@@ -1,7 +1,7 @@
 package com.freedom.saving.application.service;
 
 import com.freedom.common.logging.Loggable;
-import com.freedom.saving.domain.entities.SavingSubscription;
+import com.freedom.saving.domain.model.entity.SavingSubscription;
 import com.freedom.saving.domain.SubscriptionStatus;
 import com.freedom.saving.infra.SavingSubscriptionJpaRepository;
 import lombok.RequiredArgsConstructor;

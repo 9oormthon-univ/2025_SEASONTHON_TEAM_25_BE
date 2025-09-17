@@ -1,4 +1,4 @@
-package com.freedom.saving.domain.entities;
+package com.freedom.saving.domain.model.entity;
 
 import com.freedom.common.entity.BaseEntity;
 import jakarta.persistence.Column;

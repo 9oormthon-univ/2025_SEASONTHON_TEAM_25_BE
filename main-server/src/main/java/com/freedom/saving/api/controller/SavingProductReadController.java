@@ -4,7 +4,7 @@ import com.freedom.saving.api.dto.MaturityPreviewRequest;
 import com.freedom.saving.api.dto.MaturityPreviewResponse;
 import com.freedom.saving.application.service.SavingMaturityPreviewService;
 import com.freedom.saving.application.service.SavingProductReadService;
-import com.freedom.saving.application.query.SavingProductDetail;
+import com.freedom.saving.application.dto.SavingProductDetail;
 import com.freedom.saving.util.SavingProductQueryUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

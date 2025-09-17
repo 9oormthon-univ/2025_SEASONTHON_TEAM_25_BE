@@ -1,4 +1,4 @@
-package com.freedom.saving.application.policy;
+package com.freedom.saving;
 
 import com.freedom.saving.domain.policy.TickPolicy;
 

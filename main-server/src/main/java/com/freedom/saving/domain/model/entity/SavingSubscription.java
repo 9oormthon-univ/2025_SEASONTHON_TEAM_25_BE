@@ -1,9 +1,9 @@
-package com.freedom.saving.domain.entities;
+package com.freedom.saving.domain.model.entity;
 
-import com.freedom.saving.domain.vo.AutoDebitAmount;
+import com.freedom.saving.domain.model.vo.AutoDebitAmount;
 import com.freedom.saving.domain.ServiceDates;
 import com.freedom.saving.domain.SubscriptionStatus;
-import com.freedom.saving.domain.vo.TermMonths;
+import com.freedom.saving.domain.model.vo.TermMonths;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

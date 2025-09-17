@@ -1,6 +1,6 @@
 package com.freedom.saving.infra;
 
-import com.freedom.saving.domain.entities.SavingPaymentHistory;
+import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

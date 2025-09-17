@@ -1,4 +1,4 @@
-package com.freedom.saving.domain.vo;
+package com.freedom.saving.domain.model.vo;
 
 import com.freedom.common.exception.custom.InvalidTermException;
 import jakarta.persistence.Column;

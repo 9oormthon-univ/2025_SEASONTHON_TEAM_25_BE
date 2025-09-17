@@ -1,6 +1,6 @@
 package com.freedom.saving.domain.repository;
 
-import com.freedom.saving.domain.entities.SavingPaymentHistory;
+import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

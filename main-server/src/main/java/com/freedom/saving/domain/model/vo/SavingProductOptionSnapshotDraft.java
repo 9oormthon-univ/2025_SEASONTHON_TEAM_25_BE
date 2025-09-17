@@ -1,4 +1,4 @@
-package com.freedom.saving.domain.shapshot;
+package com.freedom.saving.domain.model.vo;
 
 import com.freedom.common.exception.custom.SavingExceptions;
 import lombok.Getter;

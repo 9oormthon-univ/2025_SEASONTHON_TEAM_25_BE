@@ -1,6 +1,6 @@
 package com.freedom.saving.domain.repository;
 
-import com.freedom.saving.domain.entities.SavingSubscription;
+import com.freedom.saving.domain.model.entity.SavingSubscription;
 
 import java.util.Optional;
 
