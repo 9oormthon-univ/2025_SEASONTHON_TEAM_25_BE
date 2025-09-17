@@ -5,9 +5,15 @@ import com.freedom.achievement.domain.entity.Achievement;
 import com.freedom.achievement.domain.entity.UserAchievement;
 import com.freedom.achievement.infra.AchievementRepository;
 import com.freedom.achievement.infra.UserAchievementRepository;
+import com.freedom.common.exception.custom.UserWalletNotFoundException;
+import com.freedom.wallet.domain.UserWallet;
+import com.freedom.wallet.infra.UserWalletJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -16,6 +22,7 @@ public class AchievementCommandService {
 
     private final AchievementRepository achievementRepository;
     private final UserAchievementRepository userAchievementRepository;
+    private final UserWalletJpaRepository userWalletRepository;
 
     public AchievementDto grantAchievement(Long userId, Achievement.AchievementType achievementType) {
         if(userAchievementRepository.existsByUserIdAndAchievement_Type(userId, achievementType)){
@@ -27,11 +34,18 @@ public class AchievementCommandService {
         Achievement saveAchievement = userAchievementRepository.save(userAchievement).getAchievement();
         return AchievementDto.toDto(saveAchievement);
     }
-    
+
+    @Transactional
     public AchievementDto claimAchievement(Long userId, Long achievementId) {
         UserAchievement userAchievement = userAchievementRepository.findByUserIdAndAchievement_Id(userId, achievementId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 업적을 보유하고 있지 않습니다."));
-        
+
+        if(userAchievement.getAchievement().getType() == Achievement.AchievementType.BEGINNERS_LUCK) {
+            UserWallet userWallet = userWalletRepository.findByUserIdForUpdate(userId).orElseThrow(() -> new UserWalletNotFoundException(userId));
+            userWallet.deposit(BigDecimal.valueOf(300000));
+            userWalletRepository.save(userWallet);
+        }
+
         if (userAchievement.isClaimed()) {
             throw new IllegalArgumentException("이미 확인한 업적입니다.");
         }

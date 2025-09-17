@@ -19,7 +19,7 @@ public class AchievementAppService {
     
     private final AchievementReadService achievementReadService;
     private final AchievementCommandService achievementCommandService;
-    
+
     @Loggable("사용자 업적 목록 조회")
     public AchievementListResponse getUserAchievements(Long userId) {
         List<AchievementDto> achievements = achievementReadService.getUserAchievements(userId);
@@ -27,7 +27,6 @@ public class AchievementAppService {
     }
     
     @Loggable("업적 확인 처리")
-    @Transactional
     public ClaimAchievementResponse claimAchievement(Long userId, Long achievementId) {
         AchievementDto achievementDto = achievementCommandService.claimAchievement(userId, achievementId);
         return ClaimAchievementResponse.from(achievementDto);
