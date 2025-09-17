@@ -1,7 +1,7 @@
 package com.freedom.common.config;
 
 import com.freedom.common.security.CustomUserPrincipal;
-import com.freedom.saving.application.AutoDebitService;
+import com.freedom.saving.application.payment.AutoDebitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
