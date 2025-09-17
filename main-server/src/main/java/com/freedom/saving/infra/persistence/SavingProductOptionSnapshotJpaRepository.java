@@ -1,6 +1,6 @@
-package com.freedom.saving.infra;
+package com.freedom.saving.infra.persistence;
 
-import com.freedom.saving.domain.SavingProductOptionSnapshot;
+import com.freedom.saving.domain.model.SavingProductOptionSnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

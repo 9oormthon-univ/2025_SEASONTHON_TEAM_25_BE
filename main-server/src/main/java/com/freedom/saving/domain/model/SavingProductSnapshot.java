@@ -1,4 +1,4 @@
-package com.freedom.saving.domain;
+package com.freedom.saving.domain.model;
 
 import com.freedom.saving.domain.model.vo.SavingProductSnapshotDraft;
 import jakarta.persistence.*;

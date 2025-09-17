@@ -1,4 +1,4 @@
-package com.freedom.saving.infra;
+package com.freedom.saving.infra.persistence;
 
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;

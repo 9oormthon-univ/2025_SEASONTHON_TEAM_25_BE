@@ -1,6 +1,6 @@
-package com.freedom.saving.infra;
+package com.freedom.saving.infra.persistence;
 
-import com.freedom.saving.domain.SavingProductSnapshot;
+import com.freedom.saving.domain.model.SavingProductSnapshot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.freedom.saving.application.port;
+package com.freedom.saving.application.usecase;
 
 import java.util.List;
 

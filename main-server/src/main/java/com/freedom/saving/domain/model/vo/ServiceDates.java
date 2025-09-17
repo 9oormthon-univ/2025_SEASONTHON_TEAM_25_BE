@@ -1,4 +1,4 @@
-package com.freedom.saving.domain;
+package com.freedom.saving.domain.model.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

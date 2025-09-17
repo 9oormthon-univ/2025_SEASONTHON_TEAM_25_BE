@@ -1,4 +1,4 @@
-package com.freedom.saving.domain;
+package com.freedom.saving.domain.model.vo;
 
 public enum SubscriptionStatus {
     ACTIVE,           // 정상 진행

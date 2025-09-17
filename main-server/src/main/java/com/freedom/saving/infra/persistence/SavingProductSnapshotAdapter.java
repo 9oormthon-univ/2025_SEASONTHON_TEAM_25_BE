@@ -1,6 +1,6 @@
-package com.freedom.saving.infra;
+package com.freedom.saving.infra.persistence;
 
-import com.freedom.saving.application.port.SavingProductSnapshotPort;
+import com.freedom.saving.application.usecase.SavingProductSnapshotPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

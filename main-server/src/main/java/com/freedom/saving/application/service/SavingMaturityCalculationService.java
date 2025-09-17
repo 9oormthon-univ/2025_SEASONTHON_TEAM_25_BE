@@ -1,6 +1,6 @@
 package com.freedom.saving.application.service;
 
-import com.freedom.saving.domain.SavingProductOptionSnapshot;
+import com.freedom.saving.domain.model.SavingProductOptionSnapshot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

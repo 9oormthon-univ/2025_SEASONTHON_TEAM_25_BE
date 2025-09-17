@@ -1,7 +1,7 @@
-package com.freedom.saving.infra;
+package com.freedom.saving.infra.persistence;
 
 import com.freedom.saving.domain.model.entity.SavingSubscription;
-import com.freedom.saving.domain.SubscriptionStatus;
+import com.freedom.saving.domain.model.vo.SubscriptionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

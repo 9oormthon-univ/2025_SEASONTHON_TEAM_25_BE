@@ -1,6 +1,4 @@
-package com.freedom.saving;
-
-import com.freedom.saving.domain.policy.TickPolicy;
+package com.freedom.saving.domain.policy;
 
 import com.freedom.common.time.TimeProvider;
 
