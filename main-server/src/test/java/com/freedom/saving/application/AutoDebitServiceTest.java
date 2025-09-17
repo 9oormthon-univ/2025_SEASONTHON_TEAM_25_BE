@@ -239,18 +239,18 @@ class AutoDebitServiceTest {
     }
 
     @Test
-    @DisplayName("여러 상품 가입 시 각각의 납입일 처리 - 오늘 납입 예정인 상품만 처리되어야 한다")
-    void runOncePerDay_MultipleProducts_ProcessOnlyTodayDue() {
+    @DisplayName("여러 상품 가입 시 각각의 납입일 처리 - 오늘 이전 납입 예정인 상품들이 처리되어야 한다")
+    void runOncePerDay_MultipleProducts_ProcessTodayAndPastDue() {
         // Given
         // 상품 1: 오늘 납입 예정
         SavingSubscription subscription1 = createTestSubscription(1L, 1L, today);
         SavingPaymentHistory payment1 = createTestPaymentHistory(1L, 1, today, new BigDecimal("100000"));
         
-        // 상품 2: 내일 납입 예정 (스킵되어야 함)
+        // 상품 2: 내일 납입 예정 (스킵되어야 함 - 미래)
         SavingSubscription subscription2 = createTestSubscription(1L, 2L, today.plusDays(1));
         SavingPaymentHistory payment2 = createTestPaymentHistory(2L, 1, today.plusDays(1), new BigDecimal("200000"));
         
-        // 상품 3: 어제 납입 예정 (스킵되어야 함)
+        // 상품 3: 어제 납입 예정 (처리되어야 함 - 과거)
         SavingSubscription subscription3 = createTestSubscription(1L, 3L, today.minusDays(1));
         SavingPaymentHistory payment3 = createTestPaymentHistory(3L, 1, today.minusDays(1), new BigDecimal("300000"));
 
@@ -270,21 +270,31 @@ class AutoDebitServiceTest {
         autoDebitService.runOncePerDay(1L);
 
         // Then
-        // 1) 상품 1만 처리되어야 함 (오늘 납입 예정)
+        // 1) 상품 1, 3이 처리되어야 함 (오늘 + 과거 납입 예정)
         verify(savingTxnService, times(1))
                 .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("100000")), eq(1L));
-        
-        // 2) 상품 2, 3은 처리되지 않아야 함
-        verify(savingTxnService, never())
-                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("200000")), eq(2L));
-        verify(savingTxnService, never())
+        verify(savingTxnService, times(1))
                 .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("300000")), eq(3L));
         
-        // 3) 상품 1의 납입 이력만 저장되어야 함
-        verify(paymentRepo, times(1)).save(paymentCaptor.capture());
-        SavingPaymentHistory savedPayment = paymentCaptor.getValue();
-        assertThat(savedPayment.getSubscriptionId()).isEqualTo(1L);
-        assertThat(savedPayment.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.PAID);
+        // 2) 상품 2는 처리되지 않아야 함 (미래 납입 예정)
+        verify(savingTxnService, never())
+                .processSavingAutoDebit(eq(1L), anyString(), eq(new BigDecimal("200000")), eq(2L));
+        
+        // 3) 상품 1, 3의 납입 이력이 저장되어야 함
+        verify(paymentRepo, times(2)).save(paymentCaptor.capture());
+        List<SavingPaymentHistory> savedPayments = paymentCaptor.getAllValues();
+        
+        // 상품 1 (오늘 납입 예정)
+        SavingPaymentHistory payment1Saved = savedPayments.stream()
+                .filter(p -> p.getSubscriptionId().equals(1L))
+                .findFirst().orElseThrow();
+        assertThat(payment1Saved.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.PAID);
+        
+        // 상품 3 (과거 납입 예정)
+        SavingPaymentHistory payment3Saved = savedPayments.stream()
+                .filter(p -> p.getSubscriptionId().equals(3L))
+                .findFirst().orElseThrow();
+        assertThat(payment3Saved.getStatus()).isEqualTo(SavingPaymentHistory.PaymentStatus.PAID);
     }
 
     @Test
