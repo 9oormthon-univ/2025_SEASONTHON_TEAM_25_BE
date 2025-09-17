@@ -55,4 +55,10 @@ public class SavingExceptions {
             super("이미 가입한 적금에 또 가입할 수 없습니다.");
         }
     }
+
+    public static class SavingMaturityNotReachedException extends RuntimeException {
+        public SavingMaturityNotReachedException(String maturityDate) {
+            super("아직 만기일이 도래하지 않았습니다. 만기일: " + maturityDate);
+        }
+    }
 }

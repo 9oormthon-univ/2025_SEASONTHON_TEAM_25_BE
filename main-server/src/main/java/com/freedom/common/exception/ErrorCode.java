@@ -64,6 +64,7 @@ public enum ErrorCode {
     SAVING_DUPLICATE_SUBSCRIPTION("SAV009", "이미 가입한 적금에 또 가입할 수 없습니다.", HttpStatus.BAD_REQUEST),
     SAVING_NO_TODAY_PAYABLE("SAV010", "오늘 납입 가능한 회차가 없습니다.", HttpStatus.BAD_REQUEST),
     SAVING_EXCEEDS_MAX_LIMIT("SAV011", "요청 금액이 최고 한도를 초과합니다.", HttpStatus.BAD_REQUEST),
+    SAVING_MATURITY_NOT_REACHED("SAV012", "아직 만기일이 도래하지 않았습니다.", HttpStatus.BAD_REQUEST),
 
     // 퀘스트 에러
     USER_QUEST_NOT_FOUND("QUEST001", "사용자 퀘스트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

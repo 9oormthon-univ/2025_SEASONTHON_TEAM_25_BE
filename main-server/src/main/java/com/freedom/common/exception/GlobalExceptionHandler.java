@@ -200,6 +200,13 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ErrorCode.SAVING_INVALID_DATES);
     }
 
+    @ExceptionHandler(SavingExceptions.SavingMaturityNotReachedException.class)
+    public ResponseEntity<ErrorResponse> handleSavingMaturityNotReached(SavingExceptions.SavingMaturityNotReachedException e) {
+        log.warn("만기일 미도래 오류: {}", e.getMessage());
+        return ResponseEntity.status(ErrorCode.SAVING_MATURITY_NOT_REACHED.getStatus())
+                .body(ErrorResponse.of(ErrorCode.SAVING_MATURITY_NOT_REACHED, e.getMessage()));
+    }
+
     @ExceptionHandler(SavingExceptions.SavingPaymentInvalidParamsException.class)
     public ResponseEntity<ErrorResponse> handleSavingPaymentInvalidParams(SavingExceptions.SavingPaymentInvalidParamsException e) {
         log.warn("적금 납입 파라미터 오류: {}", e.getMessage());

@@ -61,8 +61,9 @@ public class MaturitySettlementService {
 
     private void ensureMaturedByDate(SavingSubscription sub) {
         LocalDate today = timeProvider.today();
-        if (today.isBefore(sub.getDates().getMaturityDate())) {
-            throw new SavingSubscriptionInvalidStateException("NOT_MATURED_YET");
+        LocalDate maturityDate = sub.getDates().getMaturityDate();
+        if (today.isBefore(maturityDate)) {
+            throw new SavingMaturityNotReachedException(maturityDate.toString());
         }
     }
 
