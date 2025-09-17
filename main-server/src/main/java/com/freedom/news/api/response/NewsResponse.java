@@ -20,6 +20,7 @@ public class NewsResponse {
     private String subTitle3;
     private LocalDateTime approveDate;
     private LocalDateTime modifyDate;
+    private String originalImgUrl;
     private String thumbnailUrl;
     private String aiSummary;
     private String plainTextContent;
@@ -35,6 +36,7 @@ public class NewsResponse {
                 .subTitle3(newsDto.getSubTitle3())
                 .approveDate(newsDto.getApproveDate())
                 .modifyDate(newsDto.getModifyDate())
+                .originalImgUrl(newsDto.getOriginalImgUrl())
                 .thumbnailUrl(newsDto.getThumbnailUrl())
                 .aiSummary(newsDto.getAiSummary())
                 .plainTextContent(newsDto.getPlainTextContent())
