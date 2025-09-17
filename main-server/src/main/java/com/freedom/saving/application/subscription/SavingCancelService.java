@@ -21,9 +21,11 @@ public class SavingCancelService {
     public void cancelByUser(Long userId, Long subscriptionId) {
         SavingSubscription sub = subscriptionRepo.findByIdAndUserId(subscriptionId, userId)
                 .orElseThrow(SavingSubscriptionNotFoundException::new);
+
         if (sub.getStatus() != SubscriptionStatus.ACTIVE) {
             throw new SavingSubscriptionInvalidStateException(sub.getStatus().name());
         }
+
         sub.cancelByUser();
         subscriptionRepo.save(sub);
     }

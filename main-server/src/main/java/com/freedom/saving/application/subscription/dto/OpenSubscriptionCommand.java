@@ -1,7 +1,5 @@
 package com.freedom.saving.application.subscription.dto;
 
-import lombok.Getter;
-
 import java.math.BigDecimal;
 
 import static com.freedom.common.exception.custom.SavingExceptions.*;
@@ -18,13 +16,13 @@ public record OpenSubscriptionCommand(Long userId, Long productSnapshotId, Integ
                                       BigDecimal autoDebitAmount) {
 
     public OpenSubscriptionCommand {
-        if (userId == null || userId.longValue() <= 0L) {
+        if (userId == null || userId <= 0L) {
             throw new SavingPaymentInvalidParamsException("userId는 필수입니다.");
         }
-        if (productSnapshotId == null || productSnapshotId.longValue() <= 0L) {
+        if (productSnapshotId == null || productSnapshotId <= 0L) {
             throw new SavingPaymentInvalidParamsException("productSnapshotId는 필수입니다.");
         }
-        if (termMonths == null || termMonths.intValue() <= 0) {
+        if (termMonths == null || termMonths <= 0) {
             throw new SavingPaymentInvalidParamsException("termMonths는 필수입니다.");
         }
     }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.freedom.saving.application.subscription.SavingStatusQueryService.*;
+
 @RestController
 @RequestMapping("/api/savings/subscriptions")
 @Validated
@@ -20,12 +22,12 @@ public class SavingSubscriptionQueryController {
     private final SavingStatusQueryService service;
 
     @GetMapping("/active")
-    public List<SavingStatusQueryService.ActiveDto> getActive(@AuthenticationPrincipal CustomUserPrincipal principal) {
+    public List<ActiveDto> getActive(@AuthenticationPrincipal CustomUserPrincipal principal) {
         return service.getActive(principal.getId());
     }
 
     @GetMapping("/completed")
-    public List<SavingStatusQueryService.CompletedDto> getCompleted(@AuthenticationPrincipal CustomUserPrincipal principal) {
+    public List<CompletedDto> getCompleted(@AuthenticationPrincipal CustomUserPrincipal principal) {
         return service.getCompleted(principal.getId());
     }
 }

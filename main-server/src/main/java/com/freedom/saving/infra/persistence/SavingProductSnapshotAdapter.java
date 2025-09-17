@@ -1,6 +1,7 @@
 package com.freedom.saving.infra.persistence;
 
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
+import com.freedom.saving.domain.model.SavingProductSnapshot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class SavingProductSnapshotAdapter implements SavingProductSnapshotPort {
     @Override
     public Integer getMaxLimit(Long productSnapshotId) {
         return productRepo.findById(productSnapshotId)
-                .map(s -> s.getMaxLimit())
+                .map(SavingProductSnapshot::getMaxLimit)
                 .orElse(null);
     }
 }

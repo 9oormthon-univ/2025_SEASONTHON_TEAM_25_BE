@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.freedom.saving.domain.model.entity.SavingPaymentHistory.*;
+
 @Component
 @RequiredArgsConstructor
 public class SavingPaymentHistoryJpaAdapter implements SavingPaymentHistoryRepository {
@@ -26,13 +28,13 @@ public class SavingPaymentHistoryJpaAdapter implements SavingPaymentHistoryRepos
     }
 
     @Override
-    public long countBySubscriptionIdAndStatus(Long subscriptionId, SavingPaymentHistory.PaymentStatus status) {
+    public long countBySubscriptionIdAndStatus(Long subscriptionId, PaymentStatus status) {
         return jpaRepository.countBySubscriptionIdAndStatus(subscriptionId, status);
     }
 
     @Override
     public Optional<SavingPaymentHistory> findNextPlannedPayment(Long subscriptionId) {
-        return jpaRepository.findFirstBySubscriptionIdAndStatusOrderByDueServiceDateAsc(subscriptionId, SavingPaymentHistory.PaymentStatus.PLANNED);
+        return jpaRepository.findFirstBySubscriptionIdAndStatusOrderByDueServiceDateAsc(subscriptionId, PaymentStatus.PLANNED);
     }
 
     @Override
@@ -43,6 +45,6 @@ public class SavingPaymentHistoryJpaAdapter implements SavingPaymentHistoryRepos
     @Override
     public Optional<SavingPaymentHistory> findNextPlannedPaymentFromDate(Long subscriptionId, LocalDate fromDate) {
         return jpaRepository.findFirstBySubscriptionIdAndStatusAndDueServiceDateGreaterThanEqualOrderByDueServiceDateAsc(
-                subscriptionId, SavingPaymentHistory.PaymentStatus.PLANNED, fromDate);
+                subscriptionId, PaymentStatus.PLANNED, fromDate);
     }
 }
