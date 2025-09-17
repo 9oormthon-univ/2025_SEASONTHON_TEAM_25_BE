@@ -5,7 +5,7 @@ import com.freedom.auth.infra.UserJpaRepository;
 import com.freedom.saving.application.service.AutoDebitService;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.model.vo.ServiceDates;
-import com.freedom.saving.domain.model.vo.SubscriptionStatus;
+import com.freedom.saving.domain.SubscriptionStatus;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.model.vo.AutoDebitAmount;
 import com.freedom.saving.domain.model.entity.SavingSubscription;

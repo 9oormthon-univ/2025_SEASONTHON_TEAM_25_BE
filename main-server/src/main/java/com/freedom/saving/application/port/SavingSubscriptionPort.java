@@ -1,8 +1,7 @@
-package com.freedom.saving.application.usecase;
+package com.freedom.saving.application.port;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 /**
  * 구독(가입) 생성 저장 포트(Out Port)

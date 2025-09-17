@@ -4,7 +4,7 @@ import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.model.entity.SavingSubscription;
-import com.freedom.saving.domain.model.vo.SubscriptionStatus;
+import com.freedom.saving.domain.SubscriptionStatus;
 import com.freedom.saving.infra.persistence.SavingProductOptionSnapshotJpaRepository;
 import com.freedom.saving.infra.persistence.SavingSubscriptionJpaRepository;
 import com.freedom.wallet.application.SavingTransactionService;
