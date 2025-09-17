@@ -1,5 +1,7 @@
 package com.freedom.saving.domain.subscription;
 
+import com.freedom.saving.domain.entities.SavingSubscription;
+
 import java.util.Optional;
 
 /**

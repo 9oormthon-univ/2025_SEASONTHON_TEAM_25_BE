@@ -1,6 +1,6 @@
 package com.freedom.saving.api.dto;
 
-import com.freedom.saving.application.SavingMaturityCalculationService.MaturityCalculationResult;
+import com.freedom.saving.application.service.SavingMaturityCalculationService.MaturityCalculationResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

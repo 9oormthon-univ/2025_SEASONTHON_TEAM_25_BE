@@ -2,10 +2,11 @@ package com.freedom.saving.application;
 
 import com.freedom.auth.domain.User;
 import com.freedom.auth.infra.UserJpaRepository;
-import com.freedom.saving.domain.payment.SavingPaymentHistory;
-import com.freedom.saving.domain.payment.SavingPaymentHistoryRepository;
+import com.freedom.saving.application.service.AutoDebitService;
+import com.freedom.saving.domain.entities.SavingPaymentHistory;
+import com.freedom.saving.domain.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.subscription.AutoDebitAmount;
-import com.freedom.saving.domain.subscription.SavingSubscription;
+import com.freedom.saving.domain.entities.SavingSubscription;
 import com.freedom.saving.domain.subscription.ServiceDates;
 import com.freedom.saving.domain.subscription.SubscriptionStatus;
 import com.freedom.saving.domain.subscription.TermMonths;

@@ -1,6 +1,6 @@
 package com.freedom.saving.infra.payment;
 
-import com.freedom.saving.domain.payment.SavingPaymentHistory;
+import com.freedom.saving.domain.entities.SavingPaymentHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

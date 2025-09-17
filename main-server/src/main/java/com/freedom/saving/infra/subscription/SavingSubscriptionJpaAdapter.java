@@ -2,7 +2,7 @@ package com.freedom.saving.infra.subscription;
 
 import com.freedom.saving.application.port.SavingSubscriptionPort;
 import com.freedom.saving.domain.subscription.AutoDebitAmount;
-import com.freedom.saving.domain.subscription.SavingSubscription;
+import com.freedom.saving.domain.entities.SavingSubscription;
 import com.freedom.saving.domain.subscription.ServiceDates;
 import com.freedom.saving.domain.subscription.TermMonths;
 import com.freedom.saving.infra.snapshot.SavingSubscriptionJpaRepository;
@@ -14,7 +14,6 @@ import com.freedom.common.exception.custom.SavingExceptions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 /**
  * SavingSubscriptionPort 구현체 (Infra -> JPA)
