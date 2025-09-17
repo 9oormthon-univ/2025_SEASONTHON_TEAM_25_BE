@@ -51,21 +51,21 @@ public class SavingOpenService {
     @Transactional
     public OpenSubscriptionResult open(OpenSubscriptionCommand cmd) {
         // 1) 스냅샷 존재
-        if (!snapshotPort.existsSnapshot(cmd.getProductSnapshotId())) {
-            throw new ProductSnapshotNotFoundException(cmd.getProductSnapshotId());
+        if (!snapshotPort.existsSnapshot(cmd.productSnapshotId())) {
+            throw new ProductSnapshotNotFoundException(cmd.productSnapshotId());
         }
 
         // 2) 기간 검증 (사용자가 선택한 기간이 유효한지 확인)
-        int chosenTerm = validateAndGetTerm(cmd.getProductSnapshotId(), cmd.getTermMonths());
+        int chosenTerm = validateAndGetTerm(cmd.productSnapshotId(), cmd.termMonths());
 
         // 3) 적립유형은 정액적립식으로 고정
         String chosenReserve = RESERVE_S;
 
         // 4) 정액식이므로 금액 필수
-        validateAutoDebitAmountForFixed(cmd.getAutoDebitAmount());
+        validateAutoDebitAmountForFixed(cmd.autoDebitAmount());
 
         // 5) 최고한도 검증
-        validateMaxLimit(cmd.getProductSnapshotId(), cmd.getAutoDebitAmount());
+        validateMaxLimit(cmd.productSnapshotId(), cmd.autoDebitAmount());
 
         // 6) 서비스 달력 날짜 계산
         ZonedDateTime now = timeProvider.now();
@@ -74,11 +74,11 @@ public class SavingOpenService {
 
         // 6) 저장 (서비스 일자 전달)
         Long subscriptionId = subscriptionPort.open(
-                cmd.getUserId(),
-                cmd.getProductSnapshotId(),
+                cmd.userId(),
+                cmd.productSnapshotId(),
                 chosenTerm,
                 chosenReserve,
-                cmd.getAutoDebitAmount(),
+                cmd.autoDebitAmount(),
                 startServiceDate,
                 maturityServiceDate
         );
@@ -87,7 +87,7 @@ public class SavingOpenService {
         if (RESERVE_S.equals(chosenReserve)) {
             // 첫 납입 예정일 = 가입일 (가입 당일부터 납입)
             LocalDate firstDue = tickPolicy.calcFirstTransferDate(startServiceDate);
-            BigDecimal expected = cmd.getAutoDebitAmount();
+            BigDecimal expected = cmd.autoDebitAmount();
             for (int i = 1; i <= chosenTerm; i++) {
                 // 납입일 = 가입일 + (i-1)일 (1회차: 가입일, 2회차: 가입일+1일, ...)
                 LocalDate due = firstDue.plusDays(i - 1L);
@@ -101,7 +101,7 @@ public class SavingOpenService {
             }
         }
         // 인기 집계 증가
-        snapshotPort.incrementSubscriberCount(cmd.getProductSnapshotId());
+        snapshotPort.incrementSubscriberCount(cmd.productSnapshotId());
         return new OpenSubscriptionResult(subscriptionId, startServiceDate, maturityServiceDate);
     }
 
