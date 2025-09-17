@@ -1,4 +1,4 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.subscription;
 
 import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SavingSubscriptionQueryService {
+public class SavingStatusQueryService {
 
     private final SavingSubscriptionJpaRepository subscriptionRepo;
     private final SavingProductSnapshotJpaRepository productSnapshotRepo;

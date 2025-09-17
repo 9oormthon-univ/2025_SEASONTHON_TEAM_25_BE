@@ -1,9 +1,8 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.payment;
 
 import com.freedom.auth.domain.User;
 import com.freedom.auth.infra.UserJpaRepository;
 import com.freedom.common.logging.Loggable;
-import com.freedom.saving.application.AutoDebitResult;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.domain.model.entity.SavingSubscription;

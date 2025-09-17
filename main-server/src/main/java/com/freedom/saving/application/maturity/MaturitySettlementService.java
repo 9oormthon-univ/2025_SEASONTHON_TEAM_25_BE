@@ -1,4 +1,4 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.maturity;
 
 import com.freedom.common.time.TimeProvider;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
@@ -19,6 +19,9 @@ import java.util.UUID;
 
 import static com.freedom.common.exception.custom.SavingExceptions.*;
 
+/**
+ * 적금 만기 정산 처리 서비스
+ */
 @Service
 @RequiredArgsConstructor
 public class MaturitySettlementService {
@@ -30,7 +33,6 @@ public class MaturitySettlementService {
     private final TimeProvider timeProvider;
 
     public record PayoutQuote(BigDecimal principal, BigDecimal rate, BigDecimal interest, BigDecimal total) {}
-
 
 
     /**

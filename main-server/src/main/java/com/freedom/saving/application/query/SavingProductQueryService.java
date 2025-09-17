@@ -1,10 +1,10 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.query;
 
 import com.freedom.common.exception.custom.SavingProductNotFoundException;
+import com.freedom.saving.application.query.dto.SavingProductDetail;
+import com.freedom.saving.application.query.dto.SavingProductListItem;
 import com.freedom.saving.util.ProductSortUtil;
 import com.freedom.saving.util.SavingProductQueryUtil;
-import com.freedom.saving.application.dto.SavingProductDetail;
-import com.freedom.saving.application.dto.SavingProductListItem;
 import com.freedom.saving.domain.model.SavingProductOptionSnapshot;
 import com.freedom.saving.domain.model.SavingProductSnapshot;
 import com.freedom.saving.infra.persistence.SavingProductOptionSnapshotJpaRepository;
@@ -33,13 +33,13 @@ import static com.freedom.saving.util.JoinDenyConverter.*;
  */
 @Service
 @Transactional(readOnly = true)
-public class SavingProductReadService {
+public class SavingProductQueryService {
 
     private final SavingProductSnapshotJpaRepository productRepo;
     private final SavingProductOptionSnapshotJpaRepository optionRepo;
 
-    public SavingProductReadService(SavingProductSnapshotJpaRepository productRepo,
-                                    SavingProductOptionSnapshotJpaRepository optionRepo) {
+    public SavingProductQueryService(SavingProductSnapshotJpaRepository productRepo,
+                                     SavingProductOptionSnapshotJpaRepository optionRepo) {
         this.productRepo = productRepo;
         this.optionRepo = optionRepo;
     }

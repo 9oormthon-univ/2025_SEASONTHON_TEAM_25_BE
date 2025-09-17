@@ -1,4 +1,4 @@
-package com.freedom.saving.application;
+package com.freedom.saving.application.subscription.dto;
 
 
 import java.time.LocalDate;

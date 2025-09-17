@@ -3,7 +3,7 @@ package com.freedom.saving.api.controller;
 import com.freedom.common.exception.SuccessResponse;
 import com.freedom.common.logging.Loggable;
 import com.freedom.common.security.CustomUserPrincipal;
-import com.freedom.saving.application.service.SavingPaymentCommandService;
+import com.freedom.saving.application.payment.SavingPaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SavingPaymentCommandController {
 
-    private final SavingPaymentCommandService commandService;
+    private final SavingPaymentService commandService;
 
     @Loggable("적금 납입 API")
     @PostMapping("/{subscriptionId}/payments")

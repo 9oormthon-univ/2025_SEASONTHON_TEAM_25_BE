@@ -1,4 +1,4 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.subscription;
 
 import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.model.entity.SavingSubscription;
@@ -12,7 +12,7 @@ import static com.freedom.common.exception.custom.SavingExceptions.*;
 
 @Service
 @RequiredArgsConstructor
-public class SavingSubscriptionCommandService {
+public class SavingCancelService {
 
     private final SavingSubscriptionJpaRepository subscriptionRepo;
 

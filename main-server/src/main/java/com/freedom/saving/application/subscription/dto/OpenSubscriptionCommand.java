@@ -1,14 +1,17 @@
-package com.freedom.saving.application;
+package com.freedom.saving.application.subscription.dto;
 
-import com.freedom.common.exception.custom.SavingExceptions;
+import lombok.Getter;
 
 import java.math.BigDecimal;
+
+import static com.freedom.common.exception.custom.SavingExceptions.*;
 
 /**
  * 가입 요청 입력 모델(애플리케이션 계층)
  * - 기간(termMonths)은 필수: 사용자가 상품 옵션에서 선택
  * - 적립유형은 정액적립식으로 고정
  */
+@Getter
 public class OpenSubscriptionCommand {
 
     private final Long userId;
@@ -21,13 +24,13 @@ public class OpenSubscriptionCommand {
                                    Integer termMonths,
                                    BigDecimal autoDebitAmount) {
         if (userId == null || userId.longValue() <= 0L) {
-            throw new SavingExceptions.SavingPaymentInvalidParamsException("userId는 필수입니다.");
+            throw new SavingPaymentInvalidParamsException("userId는 필수입니다.");
         }
         if (productSnapshotId == null || productSnapshotId.longValue() <= 0L) {
-            throw new SavingExceptions.SavingPaymentInvalidParamsException("productSnapshotId는 필수입니다.");
+            throw new SavingPaymentInvalidParamsException("productSnapshotId는 필수입니다.");
         }
         if (termMonths == null || termMonths.intValue() <= 0) {
-            throw new SavingExceptions.SavingPaymentInvalidParamsException("termMonths는 필수입니다.");
+            throw new SavingPaymentInvalidParamsException("termMonths는 필수입니다.");
         }
         this.userId = userId;
         this.productSnapshotId = productSnapshotId;
@@ -35,8 +38,4 @@ public class OpenSubscriptionCommand {
         this.autoDebitAmount = autoDebitAmount; // 정액적립식이므로 필수
     }
 
-    public Long getUserId() { return userId; }
-    public Long getProductSnapshotId() { return productSnapshotId; }
-    public Integer getTermMonths() { return termMonths; }
-    public BigDecimal getAutoDebitAmount() { return autoDebitAmount; }
 }

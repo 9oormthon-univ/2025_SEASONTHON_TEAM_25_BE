@@ -1,7 +1,9 @@
-package com.freedom.saving.application;
+package com.freedom.saving.application.subscription;
 
 import com.freedom.common.logging.Loggable;
 import com.freedom.common.time.TimeProvider;
+import com.freedom.saving.application.subscription.dto.OpenSubscriptionCommand;
+import com.freedom.saving.application.subscription.dto.OpenSubscriptionResult;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
 import com.freedom.saving.domain.repository.SavingPaymentHistoryRepository;
 import com.freedom.saving.application.port.SavingProductSnapshotPort;
@@ -30,7 +32,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class SavingSubscriptionService {
+public class SavingOpenService {
 
     private final SavingProductSnapshotPort snapshotPort;
     private final SavingSubscriptionPort subscriptionPort;

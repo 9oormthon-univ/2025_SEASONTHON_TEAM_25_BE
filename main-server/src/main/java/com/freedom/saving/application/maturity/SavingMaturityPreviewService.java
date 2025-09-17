@@ -1,4 +1,4 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.maturity;
 
 import com.freedom.saving.api.dto.MaturityPreviewRequest;
 import com.freedom.saving.api.dto.MaturityPreviewResponse;

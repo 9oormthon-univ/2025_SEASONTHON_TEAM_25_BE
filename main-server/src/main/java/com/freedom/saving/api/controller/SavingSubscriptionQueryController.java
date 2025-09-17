@@ -1,7 +1,7 @@
 package com.freedom.saving.api.controller;
 
 import com.freedom.common.security.CustomUserPrincipal;
-import com.freedom.saving.application.service.SavingSubscriptionQueryService;
+import com.freedom.saving.application.subscription.SavingStatusQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -17,15 +17,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SavingSubscriptionQueryController {
 
-    private final SavingSubscriptionQueryService service;
+    private final SavingStatusQueryService service;
 
     @GetMapping("/active")
-    public List<SavingSubscriptionQueryService.ActiveDto> getActive(@AuthenticationPrincipal CustomUserPrincipal principal) {
+    public List<SavingStatusQueryService.ActiveDto> getActive(@AuthenticationPrincipal CustomUserPrincipal principal) {
         return service.getActive(principal.getId());
     }
 
     @GetMapping("/completed")
-    public List<SavingSubscriptionQueryService.CompletedDto> getCompleted(@AuthenticationPrincipal CustomUserPrincipal principal) {
+    public List<SavingStatusQueryService.CompletedDto> getCompleted(@AuthenticationPrincipal CustomUserPrincipal principal) {
         return service.getCompleted(principal.getId());
     }
 }

@@ -1,4 +1,4 @@
-package com.freedom.saving.application.dto;
+package com.freedom.saving.application.query.dto;
 
 import lombok.Getter;
 import lombok.Setter;

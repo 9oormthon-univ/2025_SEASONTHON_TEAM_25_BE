@@ -1,4 +1,4 @@
-package com.freedom.saving.application.service;
+package com.freedom.saving.application.payment;
 
 import com.freedom.common.logging.Loggable;
 import com.freedom.saving.domain.model.entity.SavingPaymentHistory;
@@ -20,7 +20,7 @@ import static com.freedom.common.exception.custom.SavingExceptions.*;
 
 @Service
 @RequiredArgsConstructor
-public class SavingPaymentCommandService {
+public class SavingPaymentService {
 
     private final SavingSubscriptionJpaRepository subscriptionRepo;
     private final SavingPaymentHistoryRepository paymentRepo;

@@ -1,4 +1,4 @@
-package com.freedom.saving.application;
+package com.freedom.saving.application.payment;
 
 /**
  * 자동납입 처리 결과

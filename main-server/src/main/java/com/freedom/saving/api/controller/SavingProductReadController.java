@@ -2,9 +2,9 @@ package com.freedom.saving.api.controller;
 
 import com.freedom.saving.api.dto.MaturityPreviewRequest;
 import com.freedom.saving.api.dto.MaturityPreviewResponse;
-import com.freedom.saving.application.service.SavingMaturityPreviewService;
-import com.freedom.saving.application.service.SavingProductReadService;
-import com.freedom.saving.application.dto.SavingProductDetail;
+import com.freedom.saving.application.maturity.SavingMaturityPreviewService;
+import com.freedom.saving.application.query.SavingProductQueryService;
+import com.freedom.saving.application.query.dto.SavingProductDetail;
 import com.freedom.saving.util.SavingProductQueryUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SavingProductReadController {
 
-    private final SavingProductReadService readService;
+    private final SavingProductQueryService readService;
     private final SavingMaturityPreviewService maturityPreviewService;
 
     @GetMapping
