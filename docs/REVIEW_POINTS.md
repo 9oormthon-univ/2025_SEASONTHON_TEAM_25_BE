@@ -96,7 +96,7 @@
 
 * [`WalletTransactionJpaRepository.java`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/main/java/com/freedom/wallet/infra/WalletTransactionJpaRepository.java)
 * [`SavingTransactionService.java`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/main/java/com/freedom/wallet/application/SavingTransactionService.java)
-* [`SavingPaymentCommandService.java`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/main/java/com/freedom/saving/application/payment/SavingPaymentService.java)
+* [`SavingPaymentService.java`](https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_25_BE/blob/main/main-server/src/main/java/com/freedom/saving/application/payment/SavingPaymentService.java)
 
 ### 성과
 
