@@ -8,13 +8,11 @@ import com.freedom.achievement.domain.service.AchievementCommandService;
 import com.freedom.common.logging.Loggable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AchievementAppService {
     
     private final AchievementReadService achievementReadService;

@@ -6,6 +6,7 @@ import com.freedom.achievement.infra.UserAchievementRepository;
 import com.freedom.common.logging.Loggable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class AchievementReadService {
     private final UserAchievementRepository userAchievementRepository;
     
     @Loggable("사용자 업적 목록 조회")
+    @Transactional(readOnly = true)
     public List<AchievementDto> getUserAchievements(Long userId) {
         List<UserAchievement> userAchievements = userAchievementRepository.findByUserId(userId);
         return userAchievements.stream()
