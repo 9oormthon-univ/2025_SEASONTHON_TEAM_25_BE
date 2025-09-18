@@ -17,6 +17,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
@@ -404,6 +405,29 @@ public class GlobalExceptionHandler {
 
             fieldErrors.add(ValidationFieldError.of(field, rejected, code, message));
         }
+
+        ValidationErrorResponse body = ValidationErrorResponse.of(ErrorCode.VALIDATION_ERROR, fieldErrors);
+        return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getStatus()).body(body);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
+        log.warn("핸들러 메서드 유효성 검증 실패: {}", e.getMessage());
+
+        java.util.List<ValidationFieldError> fieldErrors = new java.util.ArrayList<>();
+        
+        // HandlerMethodValidationException에서 ParameterValidationResult를 통해 오류 정보 추출
+        e.getValueResults().forEach(result -> {
+            String parameterName = result.getMethodParameter().getParameterName();
+            Object rejectedValue = result.getArgument();
+            
+            result.getResolvableErrors().forEach(error -> {
+                String[] codes = error.getCodes();
+                String code = (codes != null && codes.length > 0) ? codes[0] : "ValidationError";
+                String message = error.getDefaultMessage();
+                fieldErrors.add(ValidationFieldError.of(parameterName, rejectedValue, code, message));
+            });
+        });
 
         ValidationErrorResponse body = ValidationErrorResponse.of(ErrorCode.VALIDATION_ERROR, fieldErrors);
         return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getStatus()).body(body);
