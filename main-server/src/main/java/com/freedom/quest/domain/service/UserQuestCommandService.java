@@ -68,18 +68,14 @@ public class UserQuestCommandService {
     }
 
     @Transactional
-    public UserQuestDto updateAttendanceQuest(Long userQuestId, boolean attendanceCheck, int requirementCount) {
-        if(!attendanceCheck) {
-            return updateQuestProgress(
-                    userQuestId,
-                    requirementCount,
-                    UserQuest::currentStreakZero
-            );
-        }
+    public UserQuestDto updateAttendanceQuest(Long userQuestId, int consecutiveDays, int requirementCount) {
         return updateQuestProgress(
                 userQuestId,
                 requirementCount,
-                UserQuest::currentStreakPlusOne
+                (userQuest) -> {
+                    userQuest.updateCurrentStreak(consecutiveDays);
+                    userQuest.updateProgressCount(requirementCount, consecutiveDays);
+                }
         );
     }
 

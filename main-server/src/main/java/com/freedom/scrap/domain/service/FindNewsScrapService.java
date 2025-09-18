@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class FindNewsScrapService {
         return newsScrapRepository.findByUserIdOrderByScrappedDateDesc(userId, pageable);
     }
 
+    @Transactional(readOnly = true)
     public NewsScrapDto getNewsScrapById(Long newsId, Long userId) {
         NewsScrap newsScrap = newsScrapRepository.findByUserIdAndNewsArticleId(userId, newsId).orElse(null);
         return newsScrap != null ? NewsScrapDto.from(newsScrap) : null;

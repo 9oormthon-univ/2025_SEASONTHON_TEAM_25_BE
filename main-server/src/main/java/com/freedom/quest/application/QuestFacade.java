@@ -66,8 +66,8 @@ public class QuestFacade {
     private UserQuestDto updateSingleQuest(UserQuestDto uq, Long userId) {
         return switch(uq.getQuest().getTargetType()) {
             case "ATTENDANCE" -> {
-                boolean attendanceCheck = attendanceReadService.wasAttendedYesterday(userId);
-                yield userQuestCommandService.updateAttendanceQuest(uq.getUserQuestId(), attendanceCheck, uq.getQuest().getRequirementCount());
+                int consecutiveDays = attendanceReadService.getWeeklyConsecutiveAttendanceDays(userId);
+                yield userQuestCommandService.updateAttendanceQuest(uq.getUserQuestId(), consecutiveDays, uq.getQuest().getRequirementCount());
             }
             case "NEWS" -> {
                 int newsHistoryCount = findNewsService.findNewsHistoryCountByUserId(userId);
