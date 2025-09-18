@@ -7,6 +7,7 @@ import com.freedom.quiz.infra.QuizHistoryRepository;
 import com.freedom.quiz.infra.UserQuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class FindUserQuizService {
     private final UserQuizRepository userQuizRepository;
     private final QuizHistoryRepository quizHistoryRepository;
 
+    @Transactional(readOnly = true)
     public List<UserQuizDto> findDailyQuizzes(Long userId, LocalDate quizDate) {
         List<UserQuiz> userQuizzes = userQuizRepository.findByUserIdAndQuizDate(userId, quizDate);
         

@@ -63,12 +63,8 @@ public class UserQuest extends BaseEntity {
         this.completed = false;
     }
 
-    public void currentStreakPlusOne(){
-        this.currentStreak += 1;
-    }
-
-    public void currentStreakZero(){
-        this.currentStreak = 0;
+    public void updateCurrentStreak(int streak) {
+        this.currentStreak = Math.max(0, streak);
     }
 
     public void completeQuest() {

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.DayOfWeek;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +40,26 @@ public class AttendanceReadService {
     }
 
     @Transactional(readOnly = true)
-    public boolean wasAttendedYesterday(Long userId) {
+    public int getWeeklyConsecutiveAttendanceDays(Long userId) {
         LocalDate today = LocalDate.now();
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        return attendanceRepository.existsByUserIdAndCheckDate(userId, yesterday) && !attendanceRepository.existsByUserIdAndCheckDate(userId, today);
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+        
+        int consecutiveDays = 0;
+        LocalDate checkDate = today;
+        
+        while (!checkDate.isBefore(startOfWeek)) {
+            if (attendanceRepository.existsByUserIdAndCheckDate(userId, checkDate)) {
+                consecutiveDays++;
+                checkDate = checkDate.minusDays(1);
+            } else {
+                if (checkDate.equals(today)) {
+                    checkDate = checkDate.minusDays(1);
+                    continue;
+                }
+                break;
+            }
+        }
+        return consecutiveDays;
     }
 
     @Transactional(readOnly = true)
